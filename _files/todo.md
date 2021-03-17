@@ -73,3 +73,48 @@ status: {
     code:,
     message:
 }, data: []
+
+
+# ENDPOINTS
+- GET /offers
+
+- POST /offers
+    - offer
+
+- POST /offers/:offer_id/buy
+    - phone_number
+
+# ConsumptionController
+- POST consumptions/calls
+    - phone_number
+    - phone_number_dest
+    - duration
+    - date
+
+- POST consumptions/messages
+    - phone_number
+    - phone_number_dest
+    - text
+    - date 
+
+- POST consumptions/internet
+    - phone
+    - application_id
+    - consumed_data
+
+# OfferLogic
+- when making calls, when sending messages, when browsing
+
+
+# StatisticsController
+- GET stats/offers
+
+- GET stats/consumptions
+
+
+# TarfisController
+- POST tarifs/messages
+
+- POST tarifs/internet
+
+- POST tarifs/calls

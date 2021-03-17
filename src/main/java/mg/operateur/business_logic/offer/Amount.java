@@ -14,6 +14,9 @@ public class Amount {
     private Application application;
     private double value;
 
+    public Amount() {
+    }
+
     public Amount(Application application, double value) throws Exception {
         setApplication(application);
         setValue(value);

@@ -9,24 +9,13 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import mg.operateur.business_logic.mobile_credit.Credit;
-import mg.operateur.business_logic.mobile_credit.Customer;
 import mg.operateur.business_logic.offer.Offer;
-import mg.operateur.conn.ConnGen;
-import mg.operateur.gen.CDate;
 import mg.operateur.web_services.ResponseBody;
-import mg.operateur.web_services.resources.commons.TransferJSON;
-import mg.operateur.web_services.resources.credit.CreditJSON;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.domain.EntityScan;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -38,7 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class OfferController {
     private static final String prefix = "/offers";
 
-            @Autowired
+    @Autowired
     private OfferRepository repository;
     
     private void out(Exception ex) {
@@ -84,9 +73,11 @@ public class OfferController {
         ResponseBody response = new ResponseBody();
         Connection conn = null;
         try {
-//            List<Offer> allOffers = repository.findAll();
-//            response.setData(allOffers);
-//            response.getStatus().setMessage("Ok");
+            List<Offer> allOffers = repository.findAll();
+            ArrayList<Object> list = new ArrayList<Object>();
+            allOffers.forEach(o -> list.add(o));
+            response.setData(list);
+            response.getStatus().setMessage("Ok");
         } catch(Exception ex) {
             setError(response, ex);
             out(ex);
