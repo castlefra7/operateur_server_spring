@@ -1,0 +1,14 @@
+# Quand user effectue une opération appel, internet, message
+- Voir liste de ses forfaits en cours: i.e all forfaits_achetés where date_achat + duration >= date_en_cours, order by priorité
+- Si n'existe pas alors utiliser crédit selon appel, message ou internet:
+    - si message et appel, alors vérifier si interne ou externe
+- Si existe:
+    - get all forfaits with remaining amounts
+    - if all remaining_amount = 0 then use credit
+    - else
+        - Si type opération = message:
+            - Get Message consommation then  substract the remaining with that, if remaining is not enough use the next forfait or use credit
+        - Si type opération = internet:
+            - substract the remaining amount and if consumption is greater than remaining then use next forfait else use credit
+        - Si type opération = appel:
+            - substract the remaining amount and if consumption is greater than remaining then use next forfait else use credit
