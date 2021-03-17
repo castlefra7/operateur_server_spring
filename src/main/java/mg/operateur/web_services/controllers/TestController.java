@@ -33,20 +33,7 @@ public class TestController {
     @RequestMapping("/test")
 	public ResponseBody index() {
             ResponseBody response = new ResponseBody();
-            Connection conn = null;
-            try {
-                Customer customer = new Customer();
-                conn = ConnGen.getConn();
-                System.out.println(customer.find("+261331125636", conn).getId());
-            } catch(Exception ex) {
-                ex.printStackTrace();
-            } finally {
-                try {
-                    if(conn!=null) conn.close();
-                }  catch(SQLException ex) {
-                    ex.printStackTrace();
-                }
-            }            
+          
             response.getStatus().setMessage("Test");
             return response;
 	}
