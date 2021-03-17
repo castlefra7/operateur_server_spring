@@ -6,9 +6,12 @@
 package mg.operateur.business_logic.offer;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.springframework.data.annotation.Id;
 
 /**
  *
@@ -16,10 +19,11 @@ import java.util.Map;
  */
 public class Offer {
     
+    @Id
     private int id;
     private String name;
     private double price;
-    private SmartDate createdAt;
+    private Date createdAt;
     private int validityDay;
     private Limitation limitation;
     private List<Amount> amounts;
@@ -27,7 +31,7 @@ public class Offer {
     public Offer() {
     }
 
-    public Offer(int id, String name, SmartDate createdAt, double price, int validityDay, Limitation limitation, List<Amount> amounts) throws Exception {
+    public Offer(int id, String name, Date createdAt, double price, int validityDay, Limitation limitation, List<Amount> amounts) throws Exception {
         setId(id);
         setName(name);
         setCreatedAt(createdAt);
@@ -37,7 +41,7 @@ public class Offer {
         setAmounts(amounts);
     }
     
-    public Offer(String name, SmartDate createdAt, double price, int validityDay, Limitation limitation, List<Amount> amounts) throws Exception {
+    public Offer(String name, Date createdAt, double price, int validityDay, Limitation limitation, List<Amount> amounts) throws Exception {
         setName(name);
         setCreatedAt(createdAt);
         setPrice(price);
@@ -55,7 +59,7 @@ public class Offer {
             throw new Exception("Offer name is required");
         this.name = name; 
     }
-    public void setCreatedAt(SmartDate createdAt) throws Exception {
+    public void setCreatedAt(Date createdAt) throws Exception {
         if (createdAt == null)
             throw new Exception("must enter offer date creation");
         this.createdAt = createdAt; 
@@ -85,7 +89,7 @@ public class Offer {
     
     public int getId() { return id; }
     public String getName() { return name; }
-    public SmartDate getCreatedAt() { return createdAt; }
+    public Date getCreatedAt() { return createdAt; }
     public double getPrice() { return price; }
     public int getValidityDay() { return validityDay; }
     public Limitation getLimitation() { return limitation; }
