@@ -1,13 +1,11 @@
 package mg.operateur.web_services.controllers;
 
+import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.text.ParseException;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import java.util.concurrent.atomic.AtomicLong;
-import org.springframework.web.bind.annotation.RequestParam;
-import java.util.*;
 import mg.operateur.business_logic.mobile_credit.Credit;
 import mg.operateur.business_logic.mobile_credit.Customer;
 import mg.operateur.business_logic.mobile_credit.Deposit;
@@ -15,10 +13,10 @@ import mg.operateur.business_logic.mobile_credit.Fee;
 import mg.operateur.business_logic.mobile_credit.Withdraw;
 import mg.operateur.conn.ConnGen;
 import mg.operateur.gen.CDate;
+import mg.operateur.gen.InvalidAmountException;
 import mg.operateur.web_services.ResponseBody;
 import mg.operateur.web_services.resources.mobilemoney.DepositJSON;
 import mg.operateur.web_services.resources.commons.TransferJSON;
-import mg.operateur.web_services.resources.credit.CreditJSON;
 import mg.operateur.web_services.resources.credit.CreditMobileJSON;
 import mg.operateur.web_services.resources.mobilemoney.FeeJSON;
 import mg.operateur.web_services.resources.mobilemoney.WithdrawJSON;
@@ -44,8 +42,6 @@ public class MobileMoneyController {
         @PostMapping(prefix+"/buycredit")
         public ResponseBody buyCredit(@RequestBody CreditMobileJSON _credit) {
             ResponseBody response = new ResponseBody();
-            // TODO:
-            // call customer.buycredit
             Connection conn = null;
             try {
                 conn = ConnGen.getConn();
@@ -81,15 +77,12 @@ public class MobileMoneyController {
                 
                 fee.insert(conn);
                 response.getStatus().setMessage("Succés");
-            } catch(Exception ex) {
+            } catch(IllegalAccessException | IllegalArgumentException | InvocationTargetException | SQLException | ParseException | InvalidAmountException ex) {
                 setError(response, ex);
                 out(ex);
             } finally {
                 try { if(conn!=null)conn.close();} catch(SQLException ex) {out(ex);}
             }
-            // TODO create FeeJSON
-            // create FeeLogic
-            // insert Fee
             return response;
         }
         

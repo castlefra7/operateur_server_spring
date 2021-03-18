@@ -22,6 +22,21 @@ import java.util.List;
  */
 public class FctGen {
     
+    public static boolean update(String req, Connection conn) throws SQLException {
+        boolean result = false;
+        PreparedStatement pstmt = null;
+        try {
+            pstmt = conn.prepareStatement(req);
+            int affectedRows = pstmt.executeUpdate();
+            if(affectedRows >= 1) result = true;
+        } catch(SQLException ex) {
+            throw ex;
+        } finally {
+            if(pstmt!=null) pstmt.close();
+        }
+        return result;
+    }
+    
     public static int getInt(String columnName, String req, Connection conn) throws SQLException {
         int result = 0;
         PreparedStatement pstmt = null;
@@ -175,7 +190,7 @@ public class FctGen {
         } else if (returnClass.getSimpleName().toLowerCase().equals("string")) {
             args[0] = rs.getString(colName);
         } else if (returnClass.getSimpleName().toLowerCase().equals("date")) {
-            args[0] = rs.getDate(colName);
+            args[0] = rs.getTimestamp(colName);
         }
         method.invoke(ob, args);
     }

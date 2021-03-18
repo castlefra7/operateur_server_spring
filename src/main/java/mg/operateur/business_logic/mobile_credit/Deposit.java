@@ -9,7 +9,6 @@ import mg.operateur.gen.FctGen;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.Date;
 
 /**
  *
@@ -17,12 +16,24 @@ import java.util.Date;
  */
 public class Deposit extends Transaction{
 
+    public Deposit(int _id) {
+        this.setId(_id);
+    }
+    
+    public Deposit() {}
     
     @Override
     public void insert(Connection conn) throws IllegalAccessException, InvocationTargetException, IllegalArgumentException, SQLException {
         FctGen.insert(this, columns(), tableName(), conn);
     }
+    
 
+    
+    public void validate(Connection conn) throws SQLException {
+        String req = String.format("update mg.deposits set isvalidated = true where id =%d", this.getId());
+        FctGen.update(req, conn);
+    }
+    
     @Override
     public String tableName() {
         return "mg.deposits";
@@ -32,6 +43,8 @@ public class Deposit extends Transaction{
     public String[] columns() {
         return new String[]{"created_at", "customer_id", "amount", "customer_source_id"};
     }
+    
+
     
     /* PROPERTIES */
     private int customer_source_id;
