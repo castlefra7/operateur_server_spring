@@ -76,7 +76,7 @@ public class PurchaseController {
                 throw new Exception("L'offre specifié n'existe pas");
             
             mg.operateur.business_logic.offer.Customer customer = new mg.operateur.business_logic.offer.
-                    Customer(foundCustomer.getId(), foundCustomer.getName(), foundCustomer.getEmail(), new PhoneNumber());
+                    Customer(foundCustomer.getId(), foundCustomer.getName(), foundCustomer.getEmail(), "");
             
             List<Purchase> purchases = Purchase.findByCustomerId(foundCustomer.getId(), conn);
             
@@ -94,30 +94,6 @@ public class PurchaseController {
             customer.purchase(offer, sdf.parse(_purchase.getDate()), conn);
             
             response.getStatus().setMessage(String.valueOf(_purchase.getPhone_number()));
-        } catch(Exception ex) {
-            setError(response, ex);
-            out(ex);
-        } finally {
-            try {
-                if(conn!=null) conn.close();
-            }  catch(SQLException ex) {
-                setError(response, ex);
-                out(ex);
-            }
-        }
-        return response;
-    }
-    
-    @PostMapping("/transfer")
-    public ResponseBody transfer(@RequestBody TransferJSON _transfer) {
-        ResponseBody response = new ResponseBody();
-        Connection conn = null;
-        try {
-            conn = ConnGen.getConn();
-            Customer customer = new Customer().find(_transfer.getPhone_number(), conn);
-            Customer customerDest = new Customer().find(_transfer.getPhone_number_destination(), conn);
-            
-            customer.transferCredit(_transfer.getAmount(), _transfer.getPassword(), CDate.getDate().parse(_transfer.getDate()), customerDest.getId(), conn);
         } catch(Exception ex) {
             setError(response, ex);
             out(ex);
