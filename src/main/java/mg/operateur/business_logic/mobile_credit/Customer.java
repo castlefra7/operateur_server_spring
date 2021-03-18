@@ -12,6 +12,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import mg.operateur.gen.InvalidAmountException;
+import mg.operateur.gen.InvalidDateException;
 import mg.operateur.gen.NotFoundException;
 
 /**
@@ -67,10 +69,38 @@ public class Customer extends Person {
         }
     }
     
+    public void buyCreditFromMobile(Credit credit, String pwd, Connection conn) throws SQLException, InvalidDateException, InvalidAmountException, Exception {
+        conn.setAutoCommit(false);
+        
+        Date lastOp = lastCreditOpDate(conn);
+        if(lastOp!=null) if(credit.getCreated_at().compareTo(lastOp) <0) throw new InvalidDateException();
+        if(credit.getAmount() > this.mobileBalance(credit.getCreated_at(), conn)) throw new InvalidAmountException("Votre solde est insuffisant");
+       
+        try {
+            Withdraw _withdraw = new Withdraw();
+            _withdraw.setCreated_at(credit.getCreated_at());
+            _withdraw.setCustomer_id(credit.getCustomer_id());
+            _withdraw.setFee(0);
+            _withdraw.setAmount(credit.getAmount());
+            
+            this.withdraw(_withdraw, pwd, true, conn);
+            this.buyCredit(credit, conn);
+            
+            conn.commit();
+        } catch(Exception ex) {
+            conn.rollback();
+            throw ex;
+        } finally {
+            
+        }
+        
+    }
+    
     public void buyCredit(Credit credit, Connection conn) throws SQLException, Exception {
+        conn.setAutoCommit(false);
         Date lastOp = lastCreditOpDate(conn);
         if(lastOp!=null) if(credit.getCreated_at().compareTo(lastOp) <0) throw new Exception("Veuillez vérifier la date de l'opération");
-        conn.setAutoCommit(false);
+        
         try {
             credit.insert(conn);
             conn.commit();
@@ -98,7 +128,7 @@ public class Customer extends Person {
         _deposit.setAmount(amountToDeposit);
         
         try {
-            withdraw(_withdraw, pwd, conn);
+            withdraw(_withdraw, pwd, false, conn);
             Customer newCust = new Customer(_customer_dest_id);
             newCust.deposit(_deposit, conn);
             
@@ -111,7 +141,7 @@ public class Customer extends Person {
         }
     }
       
-    public void withdraw(Withdraw withdraw, String pwd, Connection conn) throws SQLException, InstantiationException, NoSuchMethodException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, Exception {
+    public void withdraw(Withdraw withdraw, String pwd, boolean isFree, Connection conn) throws SQLException, InstantiationException, NoSuchMethodException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, Exception {
         conn.setAutoCommit(false);
         Date lastOp = lastOperationDate(null, conn);
         if(lastOp != null)if(withdraw.getCreated_at().compareTo(lastOp) < 0) throw new Exception("Veuillez vérifier la date de l'opération");
@@ -119,7 +149,7 @@ public class Customer extends Person {
         Customer currCust = find(getId(), conn);
         if(!currCust.getPassword().equals(pwd)) throw new Exception("Mot de passe incorrect");
 
-        withdraw.setFee(getFeeAmount(withdraw.getAmount(), conn));
+        if(isFree == false)withdraw.setFee(getFeeAmount(withdraw.getAmount(), conn));
         if((withdraw.getAmount() + withdraw.getFee()) > mobileBalance(withdraw.getCreated_at(), conn)) throw new Exception("Votre solde est insuffisant pour effectuer cette opération");
 
         try {

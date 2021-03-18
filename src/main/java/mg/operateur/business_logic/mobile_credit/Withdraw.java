@@ -9,6 +9,7 @@ import mg.operateur.gen.FctGen;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
 import java.sql.SQLException;
+import mg.operateur.gen.InvalidAmountException;
 
 /**
  *
@@ -39,7 +40,8 @@ public class Withdraw extends Transaction {
         return fee;
     }
 
-    public void setFee(double fee) {
+    public void setFee(double fee) throws InvalidAmountException {
+        if(fee < 0) throw new InvalidAmountException();
         this.fee = fee;
     }
     

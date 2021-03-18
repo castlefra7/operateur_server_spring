@@ -43,6 +43,7 @@ public class FctGen {
     }
     
     public static String getString(String req, Connection conn) throws SQLException {
+        if(conn == null) throw new NullPointerException("La connection est nulle");
         String result = null;
         PreparedStatement pstmt = null;
         ResultSet rs = null;
@@ -63,6 +64,7 @@ public class FctGen {
     }
     
     public static Date getDate(String req, String colName, Connection conn) throws SQLException {
+        if(conn == null) throw new NullPointerException("La connection est nulle");
         Date result = null;
         PreparedStatement pstmt = null;
         ResultSet rs = null;
@@ -84,6 +86,7 @@ public class FctGen {
     }
     
     public static double getAmount(String req, String colName, Connection conn) throws SQLException {
+        if(conn == null) throw new NullPointerException("La connection est nulle");
         double result = 0;
         PreparedStatement pstmt = null;
         ResultSet rs = null;
@@ -111,6 +114,7 @@ public class FctGen {
     }
     
     public static List<Object> findAll(Object ob, String req, String[] columns, Connection conn) throws SQLException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException {
+        if(conn == null) throw new NullPointerException("La connection est nulle");
         List<Object> result = new ArrayList();
         
         Class cls = ob.getClass();
@@ -209,7 +213,7 @@ public class FctGen {
     }
     
     public static void insert(Object ob, String[] columns, String tableName, Connection conn) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, SQLException {
-
+        if(conn == null) throw new NullPointerException("La connection est nulle");
         Class cls = ob.getClass();
         List<Method> methods = getSpecMethods(cls.getMethods(), "get");
         
