@@ -20,7 +20,7 @@ import org.springframework.data.annotation.Id;
  *
  * @author dodaa
  */
-public class Offer {
+public final class Offer {
     
     @Id
     private int id;

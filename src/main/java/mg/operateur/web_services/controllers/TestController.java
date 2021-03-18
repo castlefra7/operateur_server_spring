@@ -11,7 +11,6 @@ import mg.operateur.business_logic.mobile_credit.Customer;
 import mg.operateur.conn.ConnGen;
 import mg.operateur.web_services.ResponseBody;
 import mg.operateur.web_services.resources.consumptions.CallJSON;
-import mg.operateur.web_services.resources.consumptions.MessageJSON;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;

@@ -15,13 +15,10 @@ import java.util.logging.Logger;
 import mg.operateur.business_logic.mobile_credit.Customer;
 import mg.operateur.business_logic.offer.Account;
 import mg.operateur.business_logic.offer.Offer;
-import mg.operateur.business_logic.offer.PhoneNumber;
 import mg.operateur.business_logic.offer.Purchase;
 import mg.operateur.conn.ConnGen;
-import mg.operateur.gen.CDate;
 import mg.operateur.web_services.ResponseBody;
 import mg.operateur.web_services.resources.commons.TransacJSON;
-import mg.operateur.web_services.resources.commons.TransferJSON;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -68,8 +65,6 @@ public class PurchaseController {
         try {
             conn = ConnGen.getConn();
             Customer foundCustomer = new Customer().find(_purchase.getPhone_number(), conn);
-            if (foundCustomer == null)
-                throw new Exception("Le numero spécifié n'existe pas");
             
             Offer offer = offerRepository.findById(_offerId);
             if (offer == null)

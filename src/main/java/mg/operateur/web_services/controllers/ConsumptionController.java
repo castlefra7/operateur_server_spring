@@ -5,10 +5,16 @@
  */
 package mg.operateur.web_services.controllers;
 
+import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.text.ParseException;
 import mg.operateur.business_logic.mobile_credit.Customer;
 import mg.operateur.conn.ConnGen;
+import mg.operateur.gen.InvalidAmountException;
+import mg.operateur.gen.InvalidDateException;
+import mg.operateur.gen.InvalidFormatException;
+import mg.operateur.gen.NotFoundException;
 import mg.operateur.web_services.ResponseBody;
 import mg.operateur.web_services.resources.consumptions.CallJSON;
 import mg.operateur.web_services.resources.consumptions.MessageJSON;
@@ -52,7 +58,7 @@ public class ConsumptionController {
                 conn = ConnGen.getConn();                
                 new Customer().makeCall(_call, conn);
                 response.getStatus().setMessage("Succés");
-            } catch(Exception ex) {
+            } catch(IllegalAccessException | IllegalArgumentException | InstantiationException | NoSuchMethodException | InvocationTargetException | SQLException | ParseException | InvalidAmountException | InvalidDateException | InvalidFormatException | NotFoundException ex) {
                 this.setError(response, ex);
                 out(ex);
             } finally {
@@ -69,7 +75,7 @@ public class ConsumptionController {
                 conn = ConnGen.getConn();                
                 new Customer().sendMessage(_message, conn);
                 response.getStatus().setMessage("Succés");
-            } catch(Exception ex) {
+            } catch(IllegalAccessException | IllegalArgumentException | InstantiationException | NoSuchMethodException | InvocationTargetException | SQLException | ParseException | InvalidAmountException | InvalidDateException | NotFoundException ex) {
                 this.setError(response, ex);
                 out(ex);
             } finally {
