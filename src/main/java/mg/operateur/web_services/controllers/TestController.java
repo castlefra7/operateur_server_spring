@@ -33,8 +33,26 @@ public class TestController {
     @RequestMapping("/test")
 	public ResponseBody index() {
             ResponseBody response = new ResponseBody();
-          
+            response.getData().add(new AA(15000.15));
             response.getStatus().setMessage("Test");
             return response;
 	}
+}
+
+
+class AA {
+    private double montant;
+    
+    public AA(double _montant) {
+        this.setMontant(_montant);
+    }
+
+    public double getMontant() {
+        return montant;
+    }
+
+    public void setMontant(double montant) {
+        this.montant = montant;
+    }
+    
 }
