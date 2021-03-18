@@ -32,8 +32,7 @@ public class PricingJSON {
     public void setApplication_id(int application_id) {
         this.application_id = application_id;
     }
-
-
+    
     public double getAmount_interior() {
         return amount_interior;
     }
