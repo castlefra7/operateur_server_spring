@@ -7,6 +7,7 @@ import mg.operateur.conn.ConnGen;
 import mg.operateur.gen.CDate;
 import mg.operateur.web_services.ResponseBody;
 import mg.operateur.web_services.resources.pricings.PricingJSON;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
  *
  * @author lacha
  */
+@CrossOrigin(origins = "*")
 @RestController
 public class PricingController {
     private static final String prefix = "/pricings";

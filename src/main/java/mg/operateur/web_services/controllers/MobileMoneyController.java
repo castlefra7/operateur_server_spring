@@ -8,14 +8,19 @@ import org.springframework.web.bind.annotation.GetMapping;
 import java.util.concurrent.atomic.AtomicLong;
 import org.springframework.web.bind.annotation.RequestParam;
 import java.util.*;
+import mg.operateur.business_logic.mobile_credit.Credit;
 import mg.operateur.business_logic.mobile_credit.Customer;
 import mg.operateur.business_logic.mobile_credit.Deposit;
+import mg.operateur.business_logic.mobile_credit.Fee;
 import mg.operateur.business_logic.mobile_credit.Withdraw;
 import mg.operateur.conn.ConnGen;
 import mg.operateur.gen.CDate;
 import mg.operateur.web_services.ResponseBody;
 import mg.operateur.web_services.resources.mobilemoney.DepositJSON;
 import mg.operateur.web_services.resources.commons.TransferJSON;
+import mg.operateur.web_services.resources.credit.CreditJSON;
+import mg.operateur.web_services.resources.credit.CreditMobileJSON;
+import mg.operateur.web_services.resources.mobilemoney.FeeJSON;
 import mg.operateur.web_services.resources.mobilemoney.WithdrawJSON;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -34,6 +39,58 @@ public class MobileMoneyController {
         private void setError(ResponseBody response, Exception ex) {
             response.getStatus().setCode(500);
             response.getStatus().setMessage(ex.getMessage());
+        }
+        
+        @PostMapping(prefix+"/buycredit")
+        public ResponseBody buyCredit(@RequestBody CreditMobileJSON _credit) {
+            ResponseBody response = new ResponseBody();
+            // TODO:
+            // call customer.buycredit
+            Connection conn = null;
+            try {
+                conn = ConnGen.getConn();
+                Customer customer = new Customer().find(_credit.getPhone_number(), conn);
+                Credit credit = new Credit();
+                credit.setCreated_at(CDate.getDate().parse(_credit.getDate()));
+                credit.setAmount(_credit.getAmount());
+                credit.setCustomer_id(customer.getId());
+                credit.setCustomer_source_id(customer.getId());
+                
+                customer.buyCreditFromMobile(credit, _credit.getPassword(), conn);
+                response.getStatus().setMessage("Succés");
+            } catch(Exception ex) {
+                this.setError(response, ex);
+                out(ex);
+            } finally {
+                try { if(conn!=null)conn.close();} catch(SQLException ex) {out(ex);}
+            }
+            return response;
+        }
+        
+        @PostMapping(prefix+"/fees")
+        public ResponseBody fees(@RequestBody FeeJSON _fee) {
+            ResponseBody response = new ResponseBody();
+            Connection conn = null;
+            try {
+                conn = ConnGen.getConn();
+                Fee fee = new Fee();
+                fee.setCreated_at(CDate.getDate().parse(_fee.getDate()));
+                fee.setAmount_max(_fee.getAmount_max());
+                fee.setAmount_min(_fee.getAmount_min());
+                fee.setAmount_fee(_fee.getAmount_fee());
+                
+                fee.insert(conn);
+                response.getStatus().setMessage("Succés");
+            } catch(Exception ex) {
+                setError(response, ex);
+                out(ex);
+            } finally {
+                try { if(conn!=null)conn.close();} catch(SQLException ex) {out(ex);}
+            }
+            // TODO create FeeJSON
+            // create FeeLogic
+            // insert Fee
+            return response;
         }
         
 	@RequestMapping(prefix)
@@ -65,12 +122,7 @@ public class MobileMoneyController {
                 setError(response, ex);
                 out(ex);
             } finally {
-                try {
-                    if(conn!=null) conn.close();
-                }  catch(SQLException ex) {
-                    setError(response, ex);
-                    out(ex);
-                }
+                try { if(conn!=null)conn.close();} catch(SQLException ex) {out(ex);}
             }
             return response;
         }
@@ -91,18 +143,13 @@ public class MobileMoneyController {
                 withdraw.setCustomer_id(customer.getId());
                 String pwd = _withdraw.getPassword();
                 
-                customer.withdraw(withdraw, pwd, conn);
+                customer.withdraw(withdraw, pwd, false, conn);
                 response.getStatus().setMessage("Succés");
             } catch(Exception ex) {
                 setError(response, ex);
                 out(ex);
             } finally {
-                try {
-                    if(conn!=null) conn.close();
-                }  catch(SQLException ex) {
-                    setError(response, ex);
-                    out(ex);
-                }
+                try { if(conn!=null)conn.close();} catch(SQLException ex) {out(ex);}
             }
             return response;
         }
@@ -124,12 +171,7 @@ public class MobileMoneyController {
                 setError(response, ex);
                 out(ex);
             } finally {
-                try {
-                    if(conn!=null) conn.close();
-                }  catch(SQLException ex) {
-                    setError(response, ex);
-                    out(ex);
-                }
+                try { if(conn!=null)conn.close();} catch(SQLException ex) {out(ex);}
             }
             return response;
         }

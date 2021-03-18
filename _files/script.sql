@@ -20,7 +20,8 @@ create table mg.fees (
     created_at timestamp not null,
     amount_min decimal,
     amount_max decimal check (amount_max > 0),
-    amount_fee decimal check (amount_fee >= 0)
+    amount_fee decimal check (amount_fee >= 0),
+    unique (amount_min)
 );
 
 create table mg.deposits (
@@ -38,7 +39,7 @@ create table mg.withdraws (
     created_at timestamp not null,
     customer_id int,
     amount decimal check(amount > 0),
-    fee decimal check (fee > 0),
+    fee decimal check (fee >= 0),
     foreign key (customer_id) references mg.customers(id)
 );
 
@@ -82,6 +83,12 @@ create table mg.pricings (
     foreign key (application_id) references mg.applications(id),
     unique (application_id)
 );
+
+
+-- create table mg.consumptions (
+--     id serial primary key,
+
+-- )
 
 /* MAX DATE OPERATION */
 create view mg.all_customer_operations as (select mg.deposits.created_at, mg.deposits.customer_id from mg.deposits union all select mg.withdraws.created_at, mg.withdraws.customer_id from mg.withdraws);

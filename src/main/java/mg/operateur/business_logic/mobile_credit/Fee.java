@@ -12,6 +12,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import mg.operateur.gen.InvalidAmountException;
 
 /**
  *
@@ -28,8 +29,8 @@ public class Fee extends BaseClass {
         return (Fee)FctGen.find(new Fee(), String.format(" select * from %s where created_at <= '%s' order by created_at desc limit 1", tableName(), date.toString()), columns(), conn);
     }
     
-    public void insert(Connection conn) {
-        // insert fee
+    public void insert(Connection conn) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, SQLException {
+        FctGen.insert(this, columns(), tableName(), conn);
     }
     
     @Override
@@ -61,8 +62,8 @@ public class Fee extends BaseClass {
         return amount_min;
     }
 
-    public void setAmount_min(double amount_min) throws Exception {
-        if(amount_min < 0) throw new Exception("Veuillez entrer un montant valide");
+    public void setAmount_min(double amount_min) throws InvalidAmountException {
+        if(amount_min < 0) throw new InvalidAmountException();
         this.amount_min = amount_min;
     }
 
@@ -70,8 +71,8 @@ public class Fee extends BaseClass {
         return amount_max;
     }
 
-    public void setAmount_max(double amount_max) throws Exception {
-        if(amount_max < 0) throw new Exception("Veuillez entrer un montant valide");
+    public void setAmount_max(double amount_max) throws InvalidAmountException {
+        if(amount_max < 0) throw new InvalidAmountException();
         this.amount_max = amount_max;
     }
 
@@ -79,8 +80,8 @@ public class Fee extends BaseClass {
         return amount_fee;
     }
 
-    public void setAmount_fee(double amount_fee) throws Exception {
-        if(amount_fee < 0) throw new Exception("Veuillez entrer un montant valide");
+    public void setAmount_fee(double amount_fee) throws InvalidAmountException {
+        if(amount_fee < 0) throw new InvalidAmountException();
         this.amount_fee = amount_fee;
     }
     

@@ -9,12 +9,8 @@ package mg.operateur.gen;
  *
  * @author lacha
  */
-public class InvalidAmountException extends Exception {
-    public InvalidAmountException() {
-        super("Veuillez entrer un montant valide");
-    }
-    
-    public InvalidAmountException(String message) {
-        super(message);
+public class InvalidDateException extends Exception {
+    public InvalidDateException() {
+        super("Veuillez vérifier la date");
     }
 }
