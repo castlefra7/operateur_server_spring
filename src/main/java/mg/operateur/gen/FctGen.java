@@ -22,6 +22,26 @@ import java.util.List;
  */
 public class FctGen {
     
+    public static int getInt(String columnName, String req, Connection conn) throws SQLException {
+        int result = 0;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        try {
+            pstmt = conn.prepareStatement(req);
+            rs = pstmt.executeQuery();
+            if(rs.next()) {
+                result = rs.getInt(columnName);
+            }
+        } catch(SQLException ex) {
+            throw ex;
+        } finally {
+            if(pstmt!=null) pstmt.close();
+            if(rs!=null) rs.close();
+        }
+        
+        return result;
+    }
+    
     public static String getString(String req, Connection conn) throws SQLException {
         String result = null;
         PreparedStatement pstmt = null;

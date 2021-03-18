@@ -9,8 +9,15 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import mg.operateur.business_logic.offer.Amount;
+import mg.operateur.business_logic.offer.Application;
+import mg.operateur.business_logic.offer.Limitation;
 import mg.operateur.business_logic.offer.Offer;
+import mg.operateur.business_logic.offer.Unit;
+import mg.operateur.conn.ConnGen;
 import mg.operateur.web_services.ResponseBody;
+import mg.operateur.web_services.resources.commons.offer.AmountJSON;
+import mg.operateur.web_services.resources.commons.offer.OfferJSON;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -48,16 +55,36 @@ public class OfferController {
     }
     
     @PostMapping(prefix)
-    public ResponseBody create(@RequestBody Offer _offer) {
+    public ResponseBody create(@RequestBody OfferJSON _offer) {
         ResponseBody response = new ResponseBody();
+        Connection conn = null;
         try {
+            conn = ConnGen.getConn();
             // function checks()
-            repository.save(_offer);
+            Limitation limitation = new Limitation(_offer.getLimitation().getBuyingLimit(), _offer.getLimitation().getDurationInDays());
+            ArrayList<Amount> amounts = new ArrayList<Amount>();
+
+            for (int i = 0; i < _offer.getAmounts().size(); i++) {
+                AmountJSON amountJSON = _offer.getAmounts().get(i);
+                Unit unit = new Unit(amountJSON.getApplication().getUnit().getId(), amountJSON.getApplication().getUnit().getSuffix());
+                Application application = new Application(amountJSON.getApplication().getId(), amountJSON.getApplication().getName(), unit);
+                amounts.add(new Amount(application, amountJSON.getValue()));
+            }
+            
+            int lastId = Offer.getLastId(conn);
+            Offer offer = new Offer(lastId, _offer.getName(), _offer.getCreatedAt(), _offer.getPrice(), _offer.getValidityDay(), limitation, amounts);
+            repository.save(offer);
+            response.getStatus().setMessage("Offer Created");
         } catch(Exception ex) {
             setError(response, ex);
             out(ex);
         } finally {
-            
+             try {
+                    if(conn!=null) conn.close();
+                }  catch(SQLException ex) {
+                    setError(response, ex);
+                    out(ex);
+                }
         }
         return response;
     }

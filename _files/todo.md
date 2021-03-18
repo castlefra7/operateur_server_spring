@@ -95,7 +95,7 @@ status: {
     - phone_number
     - phone_number_dest
     - text
-    - date 
+    - date
 
 - POST consumptions/internet
     - phone

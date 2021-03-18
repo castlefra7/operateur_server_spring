@@ -15,3 +15,5 @@ create table mg.offer_purchases (
     offer_id int not null,
     foreign key (customer_id) references mg.customers (id)
 );
+
+create sequence mg.offerSeq;

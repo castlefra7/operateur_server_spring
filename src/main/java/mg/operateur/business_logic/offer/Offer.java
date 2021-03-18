@@ -5,11 +5,14 @@
  */
 package mg.operateur.business_logic.offer;
 
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import mg.operateur.gen.FctGen;
 
 import org.springframework.data.annotation.Id;
 
@@ -142,6 +145,10 @@ public class Offer {
     
     public boolean isSameOfferTypeAs(Offer offer) {
         return this.equals(offer);
+    }
+    
+    public static int getLastId(Connection conn) throws SQLException {
+       return FctGen.getInt("seq", "SELECT nextVal('mg.offerSeq') as seq", conn);
     }
 
     @Override
