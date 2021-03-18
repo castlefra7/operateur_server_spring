@@ -350,7 +350,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\"amount\": \"1000\", \"phone_number\": \"+261331125636\", \"date\": \"2021-03-17\", \"password\": \"2811\"}",
+					"raw": "{\"amount\": \"5000\", \"phone_number\": \"+261331125636\", \"date\": \"2021-03-19\", \"password\": \"2811\"}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -376,14 +376,14 @@
 				"method": "PUT",
 				"header": [],
 				"url": {
-					"raw": "{{URL}}/pos/validate/2",
+					"raw": "{{URL}}/pos/validate/1",
 					"host": [
 						"{{URL}}"
 					],
 					"path": [
 						"pos",
 						"validate",
-						"2"
+						"1"
 					]
 				}
 			},
@@ -402,6 +402,33 @@
 					"path": [
 						"pos",
 						"deposits"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Send message",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"date\": \"2021-03-19\", \"phone_number_source\": \"+261331125636\",  \"phone_number_destination\": \"+261331525636\", \"text\": \"12\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL}}/consume/messages",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"consume",
+						"messages"
 					]
 				}
 			},

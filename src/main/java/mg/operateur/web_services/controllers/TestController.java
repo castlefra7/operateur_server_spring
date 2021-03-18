@@ -10,6 +10,8 @@ import java.sql.SQLException;
 import mg.operateur.business_logic.mobile_credit.Customer;
 import mg.operateur.conn.ConnGen;
 import mg.operateur.web_services.ResponseBody;
+import mg.operateur.web_services.resources.consumptions.CallJSON;
+import mg.operateur.web_services.resources.consumptions.MessageJSON;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -21,7 +23,16 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class TestController {
     private static final String prefix = "/test";
-    
+    private void out(Exception ex) {
+            ex.printStackTrace();
+            System.out.println(ex.getMessage());
+        }
+        
+        private void setError(ResponseBody response, Exception ex) {
+            response.getStatus().setCode(500);
+            response.getStatus().setMessage(ex.getMessage());
+        }
+        
     @GetMapping("/error")
     public ResponseBody error() {
         ResponseBody response = new ResponseBody();
@@ -33,8 +44,24 @@ public class TestController {
     @RequestMapping("/test")
 	public ResponseBody index() {
             ResponseBody response = new ResponseBody();
-            response.getData().add(new AA(15000.15));
-            response.getStatus().setMessage("Test");
+            Connection conn = null;
+            try {
+                conn = ConnGen.getConn();
+                CallJSON _message = new CallJSON();
+                _message.setDate("2021-03-19");
+                _message.setPhone_number_source("+261331125636");
+                _message.setPhone_number_destination("+261331525636");
+                _message.setDuration("0:41:30");
+                
+                Customer c = new Customer();
+                c.makeCall(_message, conn);
+                response.getStatus().setMessage("Succés");
+            } catch(Exception ex) {
+                this.setError(response, ex);
+                out(ex);
+            } finally {
+                try { if(conn!=null)conn.close();} catch(SQLException ex) {out(ex);}
+            }
             return response;
 	}
 }

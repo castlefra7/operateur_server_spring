@@ -9,12 +9,17 @@ import mg.operateur.gen.FctGen;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import mg.operateur.gen.CDate;
 import mg.operateur.gen.InvalidAmountException;
 import mg.operateur.gen.InvalidDateException;
+import mg.operateur.gen.InvalidFormatException;
 import mg.operateur.gen.NotFoundException;
+import mg.operateur.web_services.resources.consumptions.CallJSON;
+import mg.operateur.web_services.resources.consumptions.MessageJSON;
 
 /**
  *
@@ -25,6 +30,93 @@ public class Customer extends Person {
     public Customer(){}
     public Customer(int _id) {
         setId(_id);
+    }
+    
+    public void makeCall(CallJSON _call, Connection conn) throws SQLException, InstantiationException, NoSuchMethodException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NotFoundException, ParseException, InvalidAmountException, InvalidDateException, InvalidFormatException{
+        conn.setAutoCommit(false);
+        Date date = CDate.getDate().parse(_call.getDate());
+        Customer source = this.find(_call.getPhone_number_source(), conn);
+        Customer dest = this.find(_call.getPhone_number_destination(), conn);
+        CallPricing lastPricing = (CallPricing) new CallPricing().getLastPricing(date, conn);
+        int numberSecond = CDate.numberSeconds(_call.getDuration());
+        if(numberSecond <= 0) throw new InvalidAmountException("Veuillez entrer une durée d'appel valide");
+
+        // TODO CHECK IF EXTERIOR
+        // TODO check last operation of message, calls, internet, deposits, withdraws, transfers, buy credit, buy offer and So date should be >= lastDate
+        double creditBalance = source.creditBalance(date, conn);
+        int nUnitICanAfford = Math.min((int)Math.floor(creditBalance / lastPricing.getAmount_interior()), numberSecond);
+        if(nUnitICanAfford <= 0) throw new InvalidAmountException("Votre crédit est insuffisant");
+        double priceToPay = (double)nUnitICanAfford * lastPricing.getAmount_interior();
+
+        
+        try {
+            MessageCallConsumption consumption = new MessageCallConsumption();
+            consumption.setT_type('c');
+            consumption.setAmount(nUnitICanAfford);
+            consumption.setCreated_at(date);
+            consumption.setCustomer_id(source.getId());
+            consumption.setCustomer_destination_id(dest.getId());
+            consumption.insert(conn);
+            
+            CreditConsumption creditCons = new CreditConsumption();
+            creditCons.setCreated_at(date);
+            creditCons.setCons_amount(priceToPay);
+            creditCons.setCustomer_id(source.getId());
+            creditCons.insert(conn);
+            
+            conn.commit();
+        } catch(IllegalAccessException | IllegalArgumentException | InvocationTargetException | SQLException ex) {
+            conn.rollback();
+            throw ex;
+        } finally {
+            
+        }
+    }
+    
+    public void sendMessage(MessageJSON _message, Connection conn) throws SQLException, InstantiationException, NoSuchMethodException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NotFoundException, ParseException, InvalidAmountException, InvalidDateException {
+        conn.setAutoCommit(false);
+        Date date = CDate.getDate().parse(_message.getDate());
+        Customer source = this.find(_message.getPhone_number_source(), conn);
+        Customer dest = this.find(_message.getPhone_number_destination(), conn);
+        MessagePricing lastPricing = (MessagePricing) new MessagePricing().getLastPricing(date, conn);
+        
+        int lengthMessage=  _message.getText().length();
+        int lengthUnit = (int) Math.ceil((double)lengthMessage / (double)lastPricing.getUnit());
+        if(lengthUnit <= 0) throw new InvalidAmountException("Veuillez entrer un message valide");
+        // TODO CHECK IF EXTERIOR
+        // TODO check last operation of message, calls, internet, deposits, withdraws, transfers, buy credit, buy offer and So date should be >= lastDate
+        double creditBalance = source.creditBalance(date, conn);
+        
+        int howManyUnit = (int)Math.ceil(creditBalance / lastPricing.getAmount_interior());
+        int nUnitICanAfford = Math.min(howManyUnit, lengthUnit);
+        System.out.println(creditBalance);
+        
+        if(nUnitICanAfford <= 0) throw new InvalidAmountException("Votre crédit est insuffisant");
+        
+        double priceToPay = (double)nUnitICanAfford * lastPricing.getAmount_interior();
+
+        try {
+            MessageCallConsumption consumption = new MessageCallConsumption();
+            consumption.setT_type('m');
+            consumption.setAmount(nUnitICanAfford);
+            consumption.setCreated_at(date);
+            consumption.setCustomer_id(source.getId());
+            consumption.setCustomer_destination_id(dest.getId());
+            consumption.insert(conn);
+            
+            CreditConsumption creditCons = new CreditConsumption();
+            creditCons.setCreated_at(date);
+            creditCons.setCons_amount(priceToPay);
+            creditCons.setCustomer_id(source.getId());
+            creditCons.insert(conn);
+            
+            conn.commit();
+        } catch(IllegalAccessException | IllegalArgumentException | InvocationTargetException | SQLException | InvalidAmountException ex) {
+            conn.rollback();
+            throw ex;
+        } finally {
+            
+        }
     }
     
     public double mobileBalance(Date date, Connection conn) throws SQLException {

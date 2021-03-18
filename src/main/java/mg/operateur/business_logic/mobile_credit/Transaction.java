@@ -9,6 +9,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Date;
+import mg.operateur.gen.InvalidAmountException;
+import mg.operateur.gen.InvalidDateException;
 
 /**
  *
@@ -25,8 +27,8 @@ public abstract class Transaction extends BaseClass {
         return created_at;
     }
 
-    public void setCreated_at(Date created_at) throws Exception {
-        if(created_at == null) throw new Exception("Veuillez entrer une date valide");
+    public void setCreated_at(Date created_at) throws InvalidDateException {
+        if(created_at == null) throw new InvalidDateException();
         this.created_at = created_at;
     }
 
@@ -42,8 +44,8 @@ public abstract class Transaction extends BaseClass {
         return amount;
     }
 
-    public void setAmount(double amount) throws Exception {
-        if(amount <= 0) throw new Exception("Veuillez entrer un montant correct");
+    public void setAmount(double amount) throws InvalidAmountException {
+        if(amount <= 0) throw new InvalidAmountException();
         this.amount = amount;
     }
     

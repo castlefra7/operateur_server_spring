@@ -16,4 +16,13 @@ public class CDate {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd"); // TODO ADD HOURS AND MINUTES
         return sdf;
     }
+    
+    public static int numberSeconds(String hhMM) throws InvalidFormatException {
+        String[] numb = hhMM.split(":");
+        if(numb.length < 3) throw new InvalidFormatException("Format de date invalide. Doit-être de type hh:mm");
+        int result = Integer.parseInt(numb[1]) * 60;
+        result += Integer.parseInt(numb[0]) * 60 * 60;
+        result += Integer.parseInt(numb[2]);
+        return result;
+    }
 }

@@ -1,97 +1,50 @@
-create table customers (
+create table mg.messages_calls_consumptions (
     id serial primary key,
-    created_at timestamp,
-    name varchar(255),
-    email varchar(255),
-    phone_number varchar(255),
-    unique (phone_number)
-);
-
-create type offer_types as enum ("postpaid", "prepaid");
-
-create table offers (
-    id serial primary key,
-    created_at timestamp,
-    name varchar(100),
-    duration int,
-    amount decimal,
-    cons_interior decimal,
-    cons_exterior decimal,
-    price_prepaid decimal,
-    price_postpaid decimal,
-    limit_per_period int,
-    limit_period int,
-    offer_type offer_types
-);
-
-create table offer_types (
-    id serial primary key,
-    name varchar(10)
-);
-
-create table offer_types_offer (
-    id serial primary key,
-    offer_id int,
-    offer_type_id int,
-    foreign key (offer_id) references offers(id),
-    foreign key (offer_type_id) references offer_types(id)
-);
-
-create table offer_parents (
-    id serial primary key,
-    offer_id int,
-    offer_parent_id int,
-    foreign key (offer_id) references offers(id),
-    foreign key (offer_parent_id) references offers(id)
-);
-
-create table customers_subscriptions (
-    id serial primary key,
-    created_at timestamp,
+    created_at timestamp not null,
     customer_id int,
-    foreign key (customer_id) references customers(id)
+    customer_destination_id int,
+    amount int,
+    t_type char(1) not null,
+    foreign key (customer_id) references mg.customers(id),
+    foreign key (customer_destination_id) references mg.customers(id)
 );
 
-create table customers_payments (
+/*TODO: Store message to MONGODB */
+create table mg.messages_pricings (
     id serial primary key,
-    created_at timestamp,
-    customers_subscription_id int,
-    foreign key (customers_subscription_id) references customers_subscriptions(id)
+    created_at timestamp not null,
+    amount_interior decimal check(amount_interior > 0),
+    amount_exterior decimal check(amount_exterior > 0),
+    unit int default 160
 );
 
-create table fees (
+create table mg.calls_pricings (
     id serial primary key,
-    created_at timestamp,
-    amount_min decimal,
-    amount_max decimal,
-    amount_fee decimal
+    created_at timestamp not null,
+    amount_interior decimal check(amount_interior > 0),
+    amount_exterior decimal check(amount_exterior > 0)
 );
 
-create table deposits (
+create table mg.internet_pricings (
     id serial primary key,
-    created_at timestamp,
-    customer_id int,
-    amount decimal
+    created_at timestamp not null,
+    amount decimal check(amount > 0)
 );
 
-create table withdraws (
+create table mg.internet_applications (
     id serial primary key,
-    created_at timestamp,
+    created_at timestamp not null
+);
+
+create table mg.internet_consumptions (
+    id serial primary key,
+    created_at timestamp not null,
     customer_id int,
     amount decimal,
-    fee decimal
+    internet_application_id int,
+    foreign key (customer_id) references mg.customers(id),
+    foreign key (internet_application_id) references mg.internet_applications(id)
 );
 
-
-
-
-/* DATA EXAMPLE */
-create view deposits_sums as select customer_id, sum(amount) as sum_deposits from deposits group by customer_id;
-create view withdraws_sums as select customer_id sum(amount - fee) as sum_withdraws from withdraws group by customer_id;
-create view customers_balances as select customers.id, customer_id, (coalesce(sum_deposits, 0) - coalesce(sum_withdraws, 0)) as balance from customers left join deposits_sums on deposits_sums.customer_id = customers.id left join withdraws_sums on withdraws_sums.customer_id = customers.id;
-
-
-
-insert into customers (created_at, name, email, phone_number) values ('2021-03-11 15:00', 'razanakoto pascal', 'rakoto@gmail.com', '0321215222');
-
-insert into offers (created_at, name, duration, amount, price_postpaid, limit_per_period, limit_period, offer_type) values ('2020-01-01 00:00', 'net 10 Go', 30, -1, 'postpaid');
+insert into mg.messages_pricings (created_at, amount_interior, amount_exterior, unit) values ('2000-01-01', 100,100, 10);
+insert into mg.calls_pricings (created_at, amount_interior, amount_exterior) values ('2000-01-01', 2,2);

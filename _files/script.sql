@@ -91,9 +91,9 @@ create table mg.pricings (
     foreign key (application_id) references mg.applications(id),
     unique (application_id)
 );
-
-drop table mg.pricings;
-drop table mg.applications;
+create sequence mg.offerSeq;
+--drop table mg.pricings;
+--drop table mg.applications;
 
 
 -- create table mg.consumptions (

@@ -218,6 +218,8 @@ public class FctGen {
              if( value != null)result = "'" + (String)value + "'";
         } else if (returnClass.getSimpleName().toLowerCase().equals("date")) {
             if (value != null) result = "'" + value.toString() + "'";
+        } else if (returnClass.getSimpleName().toLowerCase().equals("char")) {
+            if(value!=null) result = "'" + value.toString() + "'";
         }
         return result;
     }
