@@ -68,16 +68,15 @@ public class Operator {
     public void setPhoneNumberPrefix(String phoneNumberPrefix) throws Exception {
         if (phoneNumberPrefix == null)
             throw new Exception("PhonNumPrefException : Prefix must not be null");
-        if (phoneNumberPrefix.length() != 3)
-            throw new Exception("PhonNumPrefException : Prefix must be a string of length 3");
+        if (phoneNumberPrefix.length() != 6)
+            throw new Exception("PhonNumPrefException : Prefix must be a string of length 6");
         this.phoneNumberPrefix = phoneNumberPrefix;
     }
     
-    public PhoneNumber issueNewPhoneNumber() {
+    public String issueNewPhoneNumber() {
         String generatedNumber = generatePhoneNumber();
         PhoneNumber newPhoneNumber = new PhoneNumber(this);
-        newPhoneNumber.setValue(phoneNumberPrefix + " " + generatedNumber);
-        return newPhoneNumber;
+        return phoneNumberPrefix + "" + generatedNumber;
     }
 
     private String generatePhoneNumber() {
@@ -86,7 +85,7 @@ public class Operator {
         num1 = generator.nextInt(20) + 1;
         num2 = generator.nextInt(999);
         num3 = generator.nextInt(80);
-        return String.format("%02d", num1) + " " + String.format("%03d", num2) + " " + String.format("%02d", num3);
+        return String.format("%02d", num1) + "" + String.format("%03d", num2) + "" + String.format("%02d", num3);
     }
 
     public void createOffer(Offer offer) {
