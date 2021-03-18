@@ -7,8 +7,14 @@ package mg.operateur.business_logic.pricings;
 
 import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import mg.operateur.business_logic.mobile_credit.Transaction;
+import mg.operateur.business_logic.offer.Offer;
+import mg.operateur.business_logic.offer.Purchase;
 import mg.operateur.gen.FctGen;
 
 /**
@@ -26,7 +32,20 @@ public class Pricing extends Transaction {
     public void insert(Connection conn) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, SQLException {
         FctGen.insert(this, columns(), tableName(), conn);
     }
-
+    
+    public void dropAll(Connection conn) throws SQLException, Exception {
+        PreparedStatement pst = null;
+        try{
+            pst = conn.prepareStatement("DELETE FROM mg.pricings WHERE application_id = ?");
+            pst.setInt(1, application_id);
+            pst.executeUpdate();
+        }catch(Exception ex){   
+            throw ex;
+        }finally{
+            if(pst!=null)pst.close();
+        }
+    }
+    
     @Override
     public String tableName() {
         return "mg.pricings";

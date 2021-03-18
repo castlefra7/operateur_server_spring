@@ -60,7 +60,6 @@ public class OfferController {
         Connection conn = null;
         try {
             conn = ConnGen.getConn();
-            // function checks()
             Limitation limitation = new Limitation(_offer.getLimitation().getBuyingLimit(), _offer.getLimitation().getDurationInDays());
             ArrayList<Amount> amounts = new ArrayList<Amount>();
 

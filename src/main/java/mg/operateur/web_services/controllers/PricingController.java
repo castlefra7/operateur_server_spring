@@ -56,6 +56,7 @@ public class PricingController {
             pricing.setCreated_at(CDate.getDate().parse(_message.getDate()));
             pricing.setAmount_exterior(_message.getAmount_exterior());
             pricing.setAmount_interior(_message.getAmount_interior());
+            pricing.dropAll(conn);
             pricing.insert(conn);
             response.getStatus().setMessage("Succés");
         } catch(Exception ex) {
@@ -83,6 +84,7 @@ public class PricingController {
             pricing.setCreated_at(CDate.getDate().parse(_message.getDate()));
             pricing.setAmount_exterior(_message.getAmount_interior());
             pricing.setAmount_interior(_message.getAmount_interior());
+            pricing.dropAll(conn);
             pricing.insert(conn);
             response.getStatus().setMessage("Succés");
         } catch(Exception ex) {
