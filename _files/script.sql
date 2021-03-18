@@ -84,6 +84,9 @@ create table mg.pricings (
     unique (application_id)
 );
 
+drop table mg.pricings;
+drop table mg.applications;
+
 
 -- create table mg.consumptions (
 --     id serial primary key,
