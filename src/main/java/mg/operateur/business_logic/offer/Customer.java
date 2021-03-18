@@ -5,7 +5,9 @@
  */
 package mg.operateur.business_logic.offer;
 
+import java.sql.Connection;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 /**
  *
@@ -70,7 +72,7 @@ public class Customer {
     public String getEmail() { return email; }
     public PhoneNumber getPhoneNumber() { return phoneNumber; }
     
-    public void purchase (Offer offer, SmartDate newPurchaseDate) throws Exception {
+    public void purchase (Offer offer, Date newPurchaseDate) throws Exception {
         
         int buyingLimit = offer.getLimitation().getBuyingLimit();
         int buys = 1;
@@ -83,7 +85,23 @@ public class Customer {
                     throw new Exception("La limite d'achat du forfait " + offer.getName() + " est atteinte");
             }
         }
-        account.getPurchases().add(new Purchase(id, offer, newPurchaseDate));
+        account.getPurchases().add(new Purchase(id, offer, newPurchaseDate, offer.getId()));
+    }
+    
+    public void purchase (Offer offer, Date newPurchaseDate, Connection conn) throws Exception {
+        
+        int buyingLimit = offer.getLimitation().getBuyingLimit();
+        int buys = 1;
+        
+        List<Purchase> validPurchase = account.getValidPurchasesAtDate(newPurchaseDate);
+        for (Purchase purchase : validPurchase) {
+            if (purchase.getOffer().equals(offer)) {
+                buys ++;
+                if (buys > buyingLimit) 
+                    throw new Exception("La limite d'achat du forfait " + offer.getName() + " est atteinte");
+            }
+        }
+        new Purchase(id, offer, newPurchaseDate, offer.getId()).save(conn);
     }
     
     public void consume(Application app, Amount consumed, SmartDate consumptionDate) throws Exception {

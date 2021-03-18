@@ -4,34 +4,55 @@
  * and open the template in the editor.
  */
 package mg.operateur.business_logic.offer;
+
+import java.lang.reflect.InvocationTargetException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import mg.operateur.gen.FctGen;
+
 /**
  *
  * @author dodaa
  */
 public class Purchase {
     private int id;
-    private int customerId;
-    private SmartDate purchaseDate;
+    private int customer_id;
+    private Date date;
     private Offer offer;
+    private int offer_id;
 
-    public Purchase(int customerId, Offer purchasedOffer, SmartDate purchaseDate) throws Exception {
-        setCustomerId(customerId);
+    public Purchase(int customerId, Offer purchasedOffer, Date purchaseDate, int offer_id) throws Exception {
+        setCustomer_id(customerId);
         setOffer(purchasedOffer);
-        setPurchaseDate(purchaseDate);
+        setDate(purchaseDate);
+        setOffer_id(offer_id);
     }
 
-    public void setPurchaseDate(SmartDate purchaseDate) throws Exception {
-        if (purchaseDate == null)
+    public int getOffer_id() {
+        return offer_id;
+    }
+
+    public void setOffer_id(int offer_id) {
+        this.offer_id = offer_id;
+    }
+    
+    public void setDate(Date date) throws Exception {
+        if (date == null)
             throw new Exception("purchase date is required");
-        this.purchaseDate = purchaseDate;
+        this.date = date;
     }
     
     public void setId(int id) {
         this.id = id;
     }
     
-    public void setCustomerId(int customerId) {
-        this.customerId = customerId;
+    public void setCustomer_id(int customer_id) {
+        this.customer_id = customer_id;
     }
     
     public void setOffer(Offer offer) throws Exception {
@@ -41,18 +62,52 @@ public class Purchase {
     }
 
     public int getId() { return id; }
-    public int getCustomerId() { return customerId; }
+    public int getCustomer_id() { return customer_id; }
     public Offer getOffer() { return offer; }
-    public SmartDate getPurchaseDate() { return purchaseDate; }
+    public Date getDate() { return date; }
 
-    public boolean isStillValidAt(SmartDate newPurchaseDate) {
+    public boolean isStillValidAt(Date newPurchaseDate) {
         int validityDay = offer.getValidityDay();
-        SmartDate addDays = purchaseDate.addDays(validityDay);
+        SmartDate smartDate = new SmartDate(date.getTime());
+        SmartDate addDays = smartDate.addDays(validityDay);
         return newPurchaseDate.before(addDays);
     }
+    
+    public void save(Connection conn) 
+            throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, SQLException {
+        FctGen.insert(this, new String[] {"customer_id", "date", "offer_id"} , "mg.offer_purchases", conn);
+    }
+    
+    public static List<Purchase> findByCustomerId(int customerId, Connection conn) throws SQLException, Exception {
+        PreparedStatement pst = null;
+        List<Purchase> list = new ArrayList<>();
+        try{
+            pst = conn.prepareStatement("SELECT * FROM mg.offer_purchases WHERE customer_id = ?");
+            pst.setInt(1, customerId);
+            ResultSet res = pst.executeQuery();
+            
+            while (res.next()) {
+                
+                list.add(new Purchase(
+                        res.getInt("customer_id"),
+                        new Offer(),
+                        res.getDate("date"),
+                        res.getInt("offer_id")
+                    )
+                );
+            }
+            return list;
+        }catch(Exception ex){   
+            throw ex;
+        }finally{
+            if(pst!=null)pst.close();
+        }
+    }
+    
+    
 
     @Override
     public String toString() {
-        return "OfferPurchase{" + "\t\nid=" + id + ", \t\ncustomerId=" + customerId + ", \t\npurchaseDate=" + purchaseDate + ", \t\noffer=" + offer + '}';
+        return "OfferPurchase{" + "\t\nid=" + id + ", \t\ncustomerId=" + customer_id + ", \t\npurchaseDate=" + date + ", \t\noffer=" + offer + '}';
     }
 }

@@ -53,7 +53,6 @@ public class Offer {
     public void setId(int id) {
         this.id = id;
     }
-    
     public void setName(String name) throws Exception { 
         if (name == null)
             throw new Exception("Offer name is required");

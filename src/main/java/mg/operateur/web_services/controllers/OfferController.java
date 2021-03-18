@@ -50,7 +50,6 @@ public class OfferController {
     @PostMapping(prefix)
     public ResponseBody create(@RequestBody Offer _offer) {
         ResponseBody response = new ResponseBody();
-        Connection conn = null;
         try {
             // function checks()
             repository.save(_offer);
@@ -58,12 +57,7 @@ public class OfferController {
             setError(response, ex);
             out(ex);
         } finally {
-            try {
-                if(conn!=null) conn.close();
-            }  catch(SQLException ex) {
-                setError(response, ex);
-                out(ex);
-            }
+            
         }
         return response;
     }
@@ -71,7 +65,6 @@ public class OfferController {
     @GetMapping(prefix)
     public ResponseBody read() {
         ResponseBody response = new ResponseBody();
-        Connection conn = null;
         try {
             List<Offer> allOffers = repository.findAll();
             ArrayList<Object> list = new ArrayList<Object>();
@@ -82,12 +75,7 @@ public class OfferController {
             setError(response, ex);
             out(ex);
         } finally {
-            try {
-                if(conn!=null) conn.close();
-            }  catch(SQLException ex) {
-                setError(response, ex);
-                out(ex);
-            }
+            
         }
         return response;
     }

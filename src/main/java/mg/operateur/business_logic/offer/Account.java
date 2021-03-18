@@ -6,6 +6,7 @@
 package mg.operateur.business_logic.offer;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -54,7 +55,7 @@ public class Account {
         this.purchases = purchases;
     }
     
-    public List<Purchase> getValidPurchasesAtDate(SmartDate date) {
+    public List<Purchase> getValidPurchasesAtDate(Date date) {
         List<Purchase> validPurchases = new ArrayList<>();
         for (int i = 0; i < purchases.size(); i++) {
             if (purchases.get(i).isStillValidAt(date)) {

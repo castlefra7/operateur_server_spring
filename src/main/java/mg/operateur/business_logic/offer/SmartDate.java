@@ -16,7 +16,7 @@ import java.util.Date;
  */
 public class SmartDate extends Date{
     
-    private static final String DATE_FORMAT = "dd/MM/yyyy";
+    private static final String DATE_FORMAT = "yyyy-MM-dd";
     
     public SmartDate(long timeStamp) {
         this.setTime(timeStamp);
