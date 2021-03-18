@@ -60,6 +60,29 @@ create table mg.credit_consumptions (
     foreign key (customer_id) references mg.customers(id)
 );
 
+create table mg.offer_purchases (
+    id serial primary key,
+    customer_id int not null,
+    date date not null,
+    offer_id int not null,
+    foreign key (customer_id) references mg.customers (id)
+);
+
+create table mg.applications (
+    id serial primary key,
+    name varchar(255)
+);
+
+create table mg.pricings (
+    id serial primary key,
+    created_at date not null,
+    application_id int,
+    amount_interior decimal check(amount_interior > 0),
+    amount_exterior decimal check(amount_exterior > 0),
+    foreign key (application_id) references mg.applications(id),
+    unique (application_id)
+);
+
 /* MAX DATE OPERATION */
 create view mg.all_customer_operations as (select mg.deposits.created_at, mg.deposits.customer_id from mg.deposits union all select mg.withdraws.created_at, mg.withdraws.customer_id from mg.withdraws);
 
@@ -82,13 +105,16 @@ insert into mg.customers (created_at, name, email, phone_number, password) value
 insert into mg.customers (created_at, name, email, phone_number, password) values ('2021-03-16 08:00', 'razaka rivo', 'rivo@gmail.com', '+261331525636', '0108');
 insert into mg.customers (created_at, name, email, phone_number, password) values ('2021-03-16 08:00', 'ramanajaka rabe', 'rabe@gmail.com', '+261335125636', '2202');
 
-
 insert into mg.fees (created_at, amount_min, amount_max, amount_fee) values ('2000-01-01 00:00', 100, 1000, 50);
 insert into mg.fees (created_at, amount_min, amount_max, amount_fee) values ('2000-01-01 00:00', 1001, 5000, 50);
 insert into mg.fees (created_at, amount_min, amount_max, amount_fee) values ('2000-01-01 00:00', 5001, 10000, 100);
 insert into mg.fees (created_at, amount_min, amount_max, amount_fee) values ('2000-01-01 00:00', 10001, 25000, 200);
 insert into mg.fees (created_at, amount_min, amount_max, amount_fee) values ('2000-01-01 00:00', 25001, 50000, 400);
 insert into mg.fees (created_at, amount_min, amount_max, amount_fee) values ('2000-01-01 00:00', 50001, 100000, 800);
+
+insert into mg.applications (name) values ('internet');
+insert into mg.applications (name) values ('message');
+insert into mg.applications (name) values ('call');
 
 select * from mg.deposits;
 select * from mg.withdraws;
