@@ -1,0 +1,411 @@
+{
+	"info": {
+		"_postman_id": "bf6227fe-5397-4f21-af44-72bd96091f44",
+		"name": "Operateur",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Deposit mobile money",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"amount\": \"10000\", \"phone_number\": \"+261331125636\", \"date\": \"2021-03-19\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL}}/mobilemoney/deposit",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"mobilemoney",
+						"deposit"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Withdraw mobile money",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"amount\": \"1000\", \"phone_number\": \"+261331125636\", \"date\": \"2021-03-18\", \"password\": \"2811\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL}}/mobilemoney/withdraw",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"mobilemoney",
+						"withdraw"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "transfer mobile money",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"amount\": \"10000\", \"phone_number\": \"+261331125636\", \"date\": \"2021-03-17\", \"password\": \"2811\", \"phone_number_destination\": \"+261331525636\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL}}/mobilemoney/transfer",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"mobilemoney",
+						"transfer"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Buy credit",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"amount\": \"-1\", \"phone_number\": \"+261331125636\", \"date\": \"2021-03-17\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL}}/credit/buy",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"credit",
+						"buy"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "credit transfer",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"amount\": \"15700\", \"phone_number\": \"+261331125636\", \"date\": \"2021-03-17\", \"password\": \"2811\", \"phone_number_destination\": \"+261331525636\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL}}/credit/transfer",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"credit",
+						"transfer"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Testing New Funtionnality",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{URL}}/test",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"test"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Offer",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"id\" : 12,\r\n    \"name\": \"Barea\",\r\n    \"createdAt\": \"2021-03-17\",\r\n    \"validityDay\": 7,\r\n    \"limitation\": {\r\n        \"buyingLimit\": 2,\r\n        \"durationInDays\": 7\r\n    },\r\n    \"amounts\": [\r\n        {\r\n            \"application\": {\r\n                \"id\": 1,\r\n                \"name\": \"Facebook\",\r\n                \"unit\": {\r\n                    \"id\": 1,\r\n                    \"suffix\": \"Mo\"\r\n                }\r\n            },\r\n            \"value\": 1000\r\n        }\r\n    ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/offers",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"offers"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "FindOffers",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/offers",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"offers"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Purchase Offer",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"phone_number\" : \"+261331525636\",\r\n    \"date\" : \"2021-07-02\",\r\n    \"amount\" : 1\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/offers/10/buy",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"offers",
+						"10",
+						"buy"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Insert message pricing",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"date\": \"2021-02-01 15:00\", \"application_id\": \"2\", \"amount_interior\": \"50\", \"amount_exterior\": \"100\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL}}/pricings",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"pricings"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Insert call pricing",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"date\": \"2021-02-01 15:00\", \"application_id\": \"3\", \"amount_interior\": \"50\", \"amount_exterior\": \"100\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL}}/pricings",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"pricings"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Insert internet pricing",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"date\": \"2021-02-01 15:00\", \"application_id\": \"1\", \"amount_interior\": \"50\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL}}/pricings/internet",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"pricings",
+						"internet"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Insert mobile money fees",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"date\":\"2000-01-01\", \"amount_min\": \"100001\", \"amount_max\": \"250000\", \"amount_fee\": \"1500\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL}}/mobilemoney/fees",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"mobilemoney",
+						"fees"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Buy credit from mobile money",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"amount\": \"1000\", \"phone_number\": \"+261331125636\", \"date\": \"2021-03-17\", \"password\": \"2811\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL}}/mobilemoney/buycredit",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"mobilemoney",
+						"buycredit"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Validate Deposit",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"url": {
+					"raw": "{{URL}}/pos/validate/2",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"pos",
+						"validate",
+						"2"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Non validated deposits",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{URL}}/pos/deposits",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"pos",
+						"deposits"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
