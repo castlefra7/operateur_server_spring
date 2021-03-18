@@ -69,15 +69,7 @@ public class Customer {
     }
 
     public void setPassword(String password) throws NoSuchAlgorithmException {
-        String generatedPassword = null;
-        MessageDigest md = MessageDigest.getInstance("MD5");
-        md.update(password.getBytes());
-        byte[] bytes = md.digest();
-        StringBuilder sb = new StringBuilder();
-        for(int i=0; i< bytes.length ;i++) {
-            sb.append(Integer.toString((bytes[i] & 0xff) + 0x100, 16).substring(1));
-        }
-        this.password = sb.toString();
+        this.password = PasswordHelper.md5(password);
     }
 
     public Date getCreated_at() {
