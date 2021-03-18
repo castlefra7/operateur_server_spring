@@ -29,12 +29,13 @@ public class Offer {
     private Date createdAt;
     private int validityDay;
     private Limitation limitation;
+    private int priority;
     private List<Amount> amounts;
 
     public Offer() {
     }
 
-    public Offer(int id, String name, Date createdAt, double price, int validityDay, Limitation limitation, List<Amount> amounts) throws Exception {
+    public Offer(int id, String name, Date createdAt, double price, int validityDay, Limitation limitation, List<Amount> amounts, int priority) throws Exception {
         setId(id);
         setName(name);
         setCreatedAt(createdAt);
@@ -42,15 +43,17 @@ public class Offer {
         setValidityDay(validityDay);
         setLimitation(limitation);
         setAmounts(amounts);
+        setPriority(priority);
     }
     
-    public Offer(String name, Date createdAt, double price, int validityDay, Limitation limitation, List<Amount> amounts) throws Exception {
+    public Offer(String name, Date createdAt, double price, int validityDay, Limitation limitation, List<Amount> amounts, int priority) throws Exception {
         setName(name);
         setCreatedAt(createdAt);
         setPrice(price);
         setValidityDay(validityDay);
         setLimitation(limitation);
         setAmounts(amounts);
+        setPriority(priority);
     }
     
     public void setId(int id) {
@@ -88,8 +91,12 @@ public class Offer {
             throw new Exception("offer has a minimal of 1 amount");
         this.amounts = amounts;
     }
-    
+
+    public void setPriority(int priority) {
+        this.priority = priority;
+    }
     public int getId() { return id; }
+    public int getPriority() { return priority; }
     public String getName() { return name; }
     public Date getCreatedAt() { return createdAt; }
     public double getPrice() { return price; }
@@ -127,7 +134,7 @@ public class Offer {
             String key = (String)mapElement.getKey();
             val.add(amountMap.get(key));
         }
-        return new Offer(id, name, createdAt, price, validityDay, limitation, val);
+        return new Offer(id, name, createdAt, price, validityDay, limitation, val, priority);
     }
     
     public void retreive(Amount amount) throws Exception {

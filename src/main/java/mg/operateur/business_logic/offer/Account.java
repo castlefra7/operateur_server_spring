@@ -102,7 +102,7 @@ public class Account {
                     a.setValue(0);
                     amounts.add(a);
                 }
-                Offer newOffer = new Offer(offer.getId(), offer.getName(), offer.getCreatedAt(), offer.getPrice(), offer.getValidityDay(), offer.getLimitation(), amounts);
+                Offer newOffer = new Offer(offer.getId(), offer.getName(), offer.getCreatedAt(), offer.getPrice(), offer.getValidityDay(), offer.getLimitation(), amounts, offer.getPriority());
                 offersMap.put(key, newOffer);
             }
         }

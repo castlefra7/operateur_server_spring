@@ -72,7 +72,7 @@ public class OfferController {
             }
             
             int lastId = Offer.getLastId(conn);
-            Offer offer = new Offer(lastId, _offer.getName(), _offer.getCreatedAt(), _offer.getPrice(), _offer.getValidityDay(), limitation, amounts);
+            Offer offer = new Offer(lastId, _offer.getName(), _offer.getCreatedAt(), _offer.getPrice(), _offer.getValidityDay(), limitation, amounts, _offer.getPriority());
             repository.save(offer);
             response.getStatus().setMessage("Offer Created");
         } catch(Exception ex) {

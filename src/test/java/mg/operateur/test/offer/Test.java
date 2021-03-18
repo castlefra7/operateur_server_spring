@@ -44,8 +44,8 @@ public class Test {
             yellow100Amounts.add(messages);
             yellow100Amounts.add(appels);
             
-            Offer faceboobaka = new Offer(1, "faceboobaka", SmartDate.now(), 1000, 7, faceboobakaLimit, faceboobakaAmounts);
-            Offer yellow100 = new Offer(2, "yellow100", SmartDate.now(), 100, 1, yellow100Limit, yellow100Amounts);
+            Offer faceboobaka = new Offer(1, "faceboobaka", SmartDate.now(), 1000, 7, faceboobakaLimit, faceboobakaAmounts, 1);
+            Offer yellow100 = new Offer(2, "yellow100", SmartDate.now(), 100, 1, yellow100Limit, yellow100Amounts, 2);
             
             Operator telma = new Operator(1, "telma", "034");
             
