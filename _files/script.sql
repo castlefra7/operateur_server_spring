@@ -5,6 +5,13 @@ alter database db_operateur owner to operateur;
 drop schema mg cascade;
 
 create schema mg;
+
+create table mg.users (
+    id serial primary key,
+    created_at timestamp not null,
+    name varchar(255) not null
+);
+
 create table mg.customers (
     id serial primary key,
     created_at timestamp not null,
@@ -30,6 +37,7 @@ create table mg.deposits (
     customer_id int,
     customer_source_id int,
     amount decimal check (amount > 0),
+    isValidated boolean default false,
     foreign key (customer_id) references mg.customers(id),
     foreign key (customer_source_id) references mg.customers(id)
 );
@@ -90,11 +98,15 @@ create table mg.pricings (
 
 -- )
 
+/* ALL NON VALIDATED DEPOSITS */
+create view mg.all_customers_deposits as select mg.deposits.*, mg.customers.phone_number, mg.customers.name from mg.deposits join mg.customers 
+on mg.customers.id = mg.deposits.customer_id;
+
 /* MAX DATE OPERATION */
 create view mg.all_customer_operations as (select mg.deposits.created_at, mg.deposits.customer_id from mg.deposits union all select mg.withdraws.created_at, mg.withdraws.customer_id from mg.withdraws);
 
 /* MOBILE MONEY */
-create view mg.deposits_sums as select customer_id, sum(amount) as sum_deposits from mg.deposits group by customer_id;
+create view mg.deposits_sums as select customer_id, sum(amount) as sum_deposits from mg.deposits where isValidated = true group by customer_id;
 create view mg.withdraws_sums as select customer_id, sum(amount + fee) as sum_withdraws from mg.withdraws group by customer_id;
 create view mg.customers_balances as select mg.customers.id, (coalesce(sum_deposits, 0) - coalesce(sum_withdraws, 0)) as balance from mg.customers left join mg.deposits_sums on mg.deposits_sums.customer_id = mg.customers.id left join mg.withdraws_sums on mg.withdraws_sums.customer_id = mg.customers.id;
 
