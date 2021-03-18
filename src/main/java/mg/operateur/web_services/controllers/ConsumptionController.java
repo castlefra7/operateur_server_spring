@@ -32,21 +32,21 @@ public class ConsumptionController {
     @PostMapping(prefix+"/calls")
     public ResponseBody consumeCalls(@RequestBody String _req) {
         ResponseBody response = new ResponseBody();
-        
+        // TODO
         return response;
     }
     
     @PostMapping(prefix+"/messages")
     public ResponseBody consumeMessages(@RequestBody String _req) {
         ResponseBody response = new ResponseBody();
-        
+        // TODO
         return response;
     }
     
     @PostMapping(prefix+"/internet")
     public ResponseBody consumeInternet(@RequestBody String _req) {
         ResponseBody response = new ResponseBody();
-        
+        // TODO
         return response;
     }
 }
