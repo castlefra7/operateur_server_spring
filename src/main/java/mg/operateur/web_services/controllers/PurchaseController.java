@@ -68,6 +68,9 @@ public class PurchaseController {
         try {
             conn = ConnGen.getConn();
             Customer foundCustomer = new Customer().find(_purchase.getPhone_number(), conn);
+            if (foundCustomer == null)
+                throw new Exception("Le numero spécifié n'existe pas");
+            
             Offer offer = offerRepository.findById(_offerId);
             if (offer == null)
                 throw new Exception("L'offre specifié n'existe pas");
