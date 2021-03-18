@@ -16,7 +16,7 @@ public class Application {
     private String name;
     private Unit unit;
 
-    public Application(int id, String name, Unit unit) throws Exception {
+    public Application(int id, String name, Unit unit) throws Exception {   
         setId(id);
         setName(name);
         setUnit(unit);

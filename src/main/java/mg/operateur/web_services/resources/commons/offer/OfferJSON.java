@@ -20,9 +20,18 @@ public class OfferJSON {
     private Date createdAt;
     private int validityDay;
     private LimitationJSON limitation;
+    private int priority;
     private List<AmountJSON> amounts;
 
     public OfferJSON() {
+    }
+
+    public int getPriority() {
+        return priority;
+    }
+
+    public void setPriority(int priority) {
+        this.priority = priority;
     }
 
     public void setId(int id) {
