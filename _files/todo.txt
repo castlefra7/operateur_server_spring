@@ -1,0 +1,22 @@
+- statistiques
+- nouvelle insertion tarification
+- solde crédit, solde mobile money
+- automatic phone_number generation
+- clean up code: controllers should be short
+- URL string for mongodb
+- deploy spring to heroku
+- deploy angular back office to heroku
+- maquette
+- in CDATE class, make dateformat as "yyyy-MM-dd hh:mm"
+- add specific link to access back office
+- add specific link to access front office
+- create a operator table (id, name, phone_prefix)
+- create a function to get prefix from a phone_number (033/+26133): get prefix from base and compare to check if a number is interior or exterior
+
+- offer algorithm for message and calls with interior and exterior price
+
+
+### Offer algorithm ###
+- in Offer JSON:
+	- add field to application: t_type ('m', 'c', 'i')
+	- we only play with ('second', 'Ko', 'message_unit') which means inside functions there should be conversion from Mo -> ko, Minute -> sec etc...

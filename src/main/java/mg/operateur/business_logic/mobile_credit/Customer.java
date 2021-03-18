@@ -73,8 +73,26 @@ public class Customer extends Person {
         }
     }
     
+    public boolean useMessageOffer(MessageJSON _message, Connection conn) {
+        boolean result = false;
+        // should have a table: customer_id, created_at, offer_id, all_amounts with remainings
+        // get all offers of this where offer.buy_date + duration >= currentDate
+        // order the offer by priority
+        // for each offers get all amounts, 
+            // if amout contains t_type == 'm' and remaining_amout > 0
+                // remaining = remaing - messageLength > 0 ? remaing - messageLength: 0
+                // messageconsumption.amount = min(remaing, messageLength)
+                //  remaing - messageLength >= 0 break
+                // else go to the next offer and apply same algorithm
+                // if there is no more offer with t_type == 'm' then apply credit algorithm
+        
+        return result;
+    }
+    
     public void sendMessage(MessageJSON _message, Connection conn) throws SQLException, InstantiationException, NoSuchMethodException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NotFoundException, ParseException, InvalidAmountException, InvalidDateException {
         conn.setAutoCommit(false);
+        if(this.useMessageOffer(_message, conn)) return;
+        
         Date date = CDate.getDate().parse(_message.getDate());
         Customer source = this.find(_message.getPhone_number_source(), conn);
         Customer dest = this.find(_message.getPhone_number_destination(), conn);
@@ -331,8 +349,6 @@ public class Customer extends Person {
     public void setPassword(String password) {
         this.password = password;
     }
-
-    
 
     public String getPhone_number() {
         return phone_number;
