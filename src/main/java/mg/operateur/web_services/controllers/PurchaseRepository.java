@@ -6,8 +6,10 @@
 package mg.operateur.web_services.controllers;
 
 import java.util.List;
+import mg.operateur.business_logic.offer.Offer;
 import mg.operateur.business_logic.offer.Purchase;
 import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.mongodb.repository.Query;
 
 /**
  *
@@ -15,5 +17,7 @@ import org.springframework.data.mongodb.repository.MongoRepository;
  */
 public interface PurchaseRepository extends MongoRepository<Purchase, String> {
     
+    @Query("{ 'customer_id' : ?0 }")
     public List<Purchase> findByCustomer_id(int customer_id);
+    public Purchase findById(int id);
 }

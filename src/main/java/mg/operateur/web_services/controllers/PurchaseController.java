@@ -78,7 +78,7 @@ public class PurchaseController {
 //            
 //            List<Purchase> purchases = Purchase.findByCustomerId(foundCustomer.getId(), conn);
             List<Purchase> purchases = purchaseRepository.findByCustomer_id(foundCustomer.getId());
-//            
+            
             purchases.forEach(p -> {
                 try {
                     p.setOffer(offerRepository.findById(p.getOffer_id()));
@@ -93,7 +93,6 @@ public class PurchaseController {
             customer.purchase(offer, sdf.parse(_purchase.getDate()), conn, purchaseRepository);
 //            
             response.getStatus().setMessage(String.valueOf("ok"));
-//             response.getData().add(offer);
         } catch(Exception ex) {
             setError(response, ex);
             out(ex);

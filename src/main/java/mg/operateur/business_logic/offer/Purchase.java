@@ -11,12 +11,15 @@ import java.util.Date;
 import java.util.List;
 import mg.operateur.gen.FctGen;
 import mg.operateur.web_services.controllers.PurchaseRepository;
+import org.springframework.data.annotation.Id;
 
 /**
  *
  * @author dodaa
  */
 public final class Purchase {
+    
+    @Id
     private int id;
     private int customer_id;
     private Customer customer;
@@ -121,7 +124,6 @@ public final class Purchase {
     public static List<Purchase> findByCustomerId(int customerId, PurchaseRepository repo) {
         return repo.findByCustomer_id(customerId);
     }
-    
 
     @Override
     public String toString() {
