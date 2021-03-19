@@ -103,8 +103,6 @@ public class Purchase {
             if(pst!=null)pst.close();
         }
     }
-    
-    
 
     @Override
     public String toString() {
