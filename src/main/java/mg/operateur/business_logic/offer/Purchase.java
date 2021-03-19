@@ -25,6 +25,8 @@ public class Purchase {
     private Date date;
     private Offer offer;
     private int offer_id;
+    
+    public Purchase() {}
 
     public Purchase(int customerId, Offer purchasedOffer, Date purchaseDate, int offer_id) throws Exception {
         setCustomer_id(customerId);
