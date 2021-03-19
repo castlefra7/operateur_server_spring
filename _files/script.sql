@@ -87,6 +87,9 @@ create table mg.offer_purchases (
     foreign key (customer_id) references mg.customers (id)
 );
 
+create sequence mg.offerSeq;
+create sequence mg.purhaseSeq;
+
 create table mg.messages_calls_consumptions (
     id serial primary key,
     created_at timestamp not null,
@@ -122,6 +125,7 @@ create table mg.internet_pricings (
 
 create table mg.internet_applications (
     id serial primary key,
+    name varchar(255) not null,
     created_at timestamp not null
 );
 
@@ -171,12 +175,13 @@ insert into mg.fees (created_at, amount_min, amount_max, amount_fee) values ('20
 insert into mg.fees (created_at, amount_min, amount_max, amount_fee) values ('2000-01-01 00:00', 25001, 50000, 400);
 insert into mg.fees (created_at, amount_min, amount_max, amount_fee) values ('2000-01-01 00:00', 50001, 100000, 800);
 
+insert into mg.internet_applications (name, created_at) values ('Facebook', '2021-03-19');
+insert into mg.internet_applications (name, created_at) values ('Instagram', '2021-03-19');
+insert into mg.internet_applications (name, created_at) values ('Tiktok', '2021-03-19');
+insert into mg.internet_applications (name, created_at) values ('Internet', '2021-03-19');
 
 select * from mg.deposits;
 select * from mg.withdraws;
 select * from mg.customers_balances order by id;
 select * from mg.customers_credit_balances order by id;
 select * from mg.buyed_credits;
-
-create sequence mg.purhaseSeq;
-create sequence mg.offerSeq;

@@ -1,7 +1,7 @@
 {
 	"info": {
-		"_postman_id": "bf6227fe-5397-4f21-af44-72bd96091f44",
-		"name": "Operateur",
+		"_postman_id": "fdae777a-fb5f-4b4d-bfdf-a20fab8fffdf",
+		"name": "Operateur Copy",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
@@ -167,7 +167,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"id\" : 12,\r\n    \"name\": \"Barea\",\r\n    \"createdAt\": \"2021-03-17\",\r\n    \"validityDay\": 7,\r\n    \"limitation\": {\r\n        \"buyingLimit\": 2,\r\n        \"durationInDays\": 7\r\n    },\r\n    \"amounts\": [\r\n        {\r\n            \"application\": {\r\n                \"id\": 1,\r\n                \"name\": \"Facebook\",\r\n                \"unit\": {\r\n                    \"id\": 1,\r\n                    \"suffix\": \"Mo\"\r\n                }\r\n            },\r\n            \"value\": 1000\r\n        }\r\n    ]\r\n}",
+					"raw": "{\r\n    \"id\" : 12,\r\n    \"name\": \"iTA AMZAY\",\r\n    \"price\" : 1000,\r\n    \"createdAt\": \"2021-03-17\",\r\n    \"validityDay\": 7,\r\n    \"limitation\": {\r\n        \"buyingLimit\": 2,\r\n        \"durationInDays\": 7\r\n    },\r\n    \"priority\" : 2,\r\n    \"amounts\": [\r\n        {\r\n            \"application\": {\r\n                \"id\" : 1,\r\n                \"name\": \"Facebook\",\r\n                \"t_type\": \"i\",\r\n                \"internet_application_id\": 1,\r\n                \"unit\": {\r\n                    \"id\": 1,\r\n                    \"suffix\": \"Mo\"\r\n                }\r\n            },\r\n            \"value\": 1000\r\n        }\r\n    ]\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -175,12 +175,10 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8080/offers",
-					"protocol": "http",
+					"raw": "{{URL}}/offers",
 					"host": [
-						"localhost"
+						"{{URL}}"
 					],
-					"port": "8080",
 					"path": [
 						"offers"
 					]
@@ -214,7 +212,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"phone_number\" : \"+261331525636\",\r\n    \"date\" : \"2021-07-02\",\r\n    \"amount\" : 1\r\n}",
+					"raw": "{\r\n    \"phone_number\" : \"+261330869341\",\r\n    \"date\" : \"2021-07-02\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -222,15 +220,13 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8080/offers/10/buy",
-					"protocol": "http",
+					"raw": "{{URL}}/offers/2/buy",
 					"host": [
-						"localhost"
+						"{{URL}}"
 					],
-					"port": "8080",
 					"path": [
 						"offers",
-						"10",
+						"2",
 						"buy"
 					]
 				}
@@ -244,7 +240,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\"date\": \"2021-02-01 15:00\", \"application_id\": \"2\", \"amount_interior\": \"50\", \"amount_exterior\": \"100\"}",
+					"raw": "{\"date\": \"2021-02-01 15:00\", \"amount_interior\": \"50\", \"amount_exterior\": \"100\", \"unit\": 160}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -252,12 +248,13 @@
 					}
 				},
 				"url": {
-					"raw": "{{URL}}/pricings",
+					"raw": "{{URL}}/pricings/messages",
 					"host": [
 						"{{URL}}"
 					],
 					"path": [
-						"pricings"
+						"pricings",
+						"messages"
 					]
 				}
 			},
@@ -270,7 +267,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\"date\": \"2021-02-01 15:00\", \"application_id\": \"3\", \"amount_interior\": \"50\", \"amount_exterior\": \"100\"}",
+					"raw": "{\"date\": \"2021-02-01 15:00\", \"amount_interior\": \"50\", \"amount_exterior\": \"100\"}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -278,12 +275,13 @@
 					}
 				},
 				"url": {
-					"raw": "{{URL}}/pricings",
+					"raw": "{{URL}}/pricings/calls",
 					"host": [
 						"{{URL}}"
 					],
 					"path": [
-						"pricings"
+						"pricings",
+						"calls"
 					]
 				}
 			},
@@ -296,7 +294,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\"date\": \"2021-02-01 15:00\", \"application_id\": \"1\", \"amount_interior\": \"50\"}",
+					"raw": "{\"date\": \"2021-02-01 15:00\", \"amount\": \"50\"}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -429,6 +427,35 @@
 					"path": [
 						"consume",
 						"messages"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Signup",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"Baks\",\r\n    \"email\" : \"baks@gmail.com\",\r\n    \"password\" : \"tainalika\",\r\n    \"createdAt\" : \"2021-03-18\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL}}/signup",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"signup"
 					]
 				}
 			},
