@@ -13,5 +13,6 @@ import mg.operateur.business_logic.offer.Offer;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 public interface OfferRepository extends MongoRepository<Offer, String> {
+    
     public Offer findById(int id);
 }

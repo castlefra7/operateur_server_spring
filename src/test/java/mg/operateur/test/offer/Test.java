@@ -51,18 +51,18 @@ public class Test {
             
             Customer baks = new Customer(1, "Baks", "andri.bakoson@gmail.com", telma.issueNewPhoneNumber());
 
-            baks.purchase(faceboobaka, SmartDate.now());
-            baks.purchase(faceboobaka, SmartDate.now());
-            baks.purchase(yellow100, SmartDate.now());
-            baks.purchase(yellow100, SmartDate.now());
-            baks.purchase(yellow100, SmartDate.now());
-            baks.purchase(yellow100, SmartDate.now());
-            baks.purchase(yellow100, SmartDate.now());
-            baks.purchase(yellow100, SmartDate.now());
-            baks.purchase(yellow100, SmartDate.now());
-            baks.purchase(yellow100, SmartDate.now());
-            baks.purchase(yellow100, SmartDate.now());
-            baks.purchase(yellow100, SmartDate.now());
+//            baks.purchase(faceboobaka, SmartDate.now());
+//            baks.purchase(faceboobaka, SmartDate.now());
+//            baks.purchase(yellow100, SmartDate.now());
+//            baks.purchase(yellow100, SmartDate.now());
+//            baks.purchase(yellow100, SmartDate.now());
+//            baks.purchase(yellow100, SmartDate.now());
+//            baks.purchase(yellow100, SmartDate.now());
+//            baks.purchase(yellow100, SmartDate.now());
+//            baks.purchase(yellow100, SmartDate.now());
+//            baks.purchase(yellow100, SmartDate.now());
+//            baks.purchase(yellow100, SmartDate.now());
+//            baks.purchase(yellow100, SmartDate.now());
 
             List<Offer> infoConsoAt = baks.getAccount().getPurchasesTotalAt(SmartDate.now().addDays(1));
             System.out.println(infoConsoAt);

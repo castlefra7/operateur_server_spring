@@ -38,6 +38,9 @@ public class PurchaseController {
     @Autowired
     private OfferRepository offerRepository;
     
+    @Autowired
+    private PurchaseRepository purchaseRepository;
+    
     private void out(Exception ex) {
         ex.printStackTrace();
         System.out.println(ex.getMessage());
@@ -65,16 +68,17 @@ public class PurchaseController {
         try {
             conn = ConnGen.getConn();
             Customer foundCustomer = new Customer().find(_purchase.getPhone_number(), conn);
-            
+//            
             Offer offer = offerRepository.findById(_offerId);
             if (offer == null)
                 throw new Exception("L'offre specifié n'existe pas");
-            
+//            
             mg.operateur.business_logic.offer.Customer customer = new mg.operateur.business_logic.offer.
                     Customer(foundCustomer.getId(), foundCustomer.getName(), foundCustomer.getEmail(), "");
-            
-            List<Purchase> purchases = Purchase.findByCustomerId(foundCustomer.getId(), conn);
-            
+//            
+//            List<Purchase> purchases = Purchase.findByCustomerId(foundCustomer.getId(), conn);
+            List<Purchase> purchases = purchaseRepository.findByCustomer_id(foundCustomer.getId());
+//            
             purchases.forEach(p -> {
                 try {
                     p.setOffer(offerRepository.findById(p.getOffer_id()));
@@ -82,13 +86,14 @@ public class PurchaseController {
                     Logger.getLogger(PurchaseController.class.getName()).log(Level.SEVERE, null, ex);
                 }
             });
-            
+//            
             Account account = new Account(foundCustomer.getId(), purchases, new ArrayList<>());
             customer.setAccount(account);
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-            customer.purchase(offer, sdf.parse(_purchase.getDate()), conn);
-            
-            response.getStatus().setMessage(String.valueOf(_purchase.getPhone_number()));
+            customer.purchase(offer, sdf.parse(_purchase.getDate()), purchaseRepository);
+//            
+            response.getStatus().setMessage(String.valueOf("ok"));
+//             response.getData().add(offer);
         } catch(Exception ex) {
             setError(response, ex);
             out(ex);
