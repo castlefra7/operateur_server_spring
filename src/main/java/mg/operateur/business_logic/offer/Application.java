@@ -18,10 +18,21 @@ public class Application {
     private int internet_application_id;
     private Unit unit;
 
+    public Application() {
+    }
+
     public Application(int id, String name, Unit unit) throws Exception {   
         setId(id);
         setName(name);
         setUnit(unit);
+    }
+    
+    public Application(int id, String name, char t_type, int internet_application_id, Unit unit) throws Exception {   
+        setId(id);
+        setName(name);
+        setUnit(unit);
+        setT_type(t_type);
+        setInternet_application_id(internet_application_id);
     }
 
     public char getT_type() {

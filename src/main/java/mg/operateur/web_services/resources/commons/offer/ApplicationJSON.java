@@ -16,10 +16,28 @@ import mg.operateur.business_logic.offer.Unit;
 public class ApplicationJSON {
     private int id;
     private String name;
+    private char t_type;
+    private int internet_application_id;
     private UnitJSON unit;
 
     public int getId() {
         return id;
+    }
+
+    public int getInternet_application_id() {
+        return internet_application_id;
+    }
+
+    public void setInternet_application_id(int internet_application_id) {
+        this.internet_application_id = internet_application_id;
+    }
+
+    public char getT_type() {
+        return t_type;
+    }
+
+    public void setT_type(char t_type) {
+        this.t_type = t_type;
     }
 
     public void setId(int id) {

@@ -62,11 +62,11 @@ public class OfferController {
             conn = ConnGen.getConn();
             Limitation limitation = new Limitation(_offer.getLimitation().getBuyingLimit(), _offer.getLimitation().getDurationInDays());
             ArrayList<Amount> amounts = new ArrayList<Amount>();
-
+//
             for (int i = 0; i < _offer.getAmounts().size(); i++) {
                 AmountJSON amountJSON = _offer.getAmounts().get(i);
                 Unit unit = new Unit(amountJSON.getApplication().getUnit().getId(), amountJSON.getApplication().getUnit().getSuffix());
-                Application application = new Application(amountJSON.getApplication().getId(), amountJSON.getApplication().getName(), unit);
+                Application application = new Application(amountJSON.getApplication().getId(), amountJSON.getApplication().getName(), amountJSON.getApplication().getT_type(), amountJSON.getApplication().getInternet_application_id(), unit);
                 amounts.add(new Amount(application, amountJSON.getValue()));
             }
             
@@ -74,6 +74,7 @@ public class OfferController {
             Offer offer = new Offer(lastId, _offer.getName(), _offer.getCreatedAt(), _offer.getPrice(), _offer.getValidityDay(), limitation, amounts, _offer.getPriority());
             repository.save(offer);
             response.getStatus().setMessage("Offer Created");
+                response.getData().add(offer);
         } catch(Exception ex) {
             setError(response, ex);
             out(ex);

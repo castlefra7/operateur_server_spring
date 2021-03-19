@@ -117,6 +117,7 @@ public final class Purchase {
 //        }
 //    }
     
+    // TODO Limit averina mandeha
     public static List<Purchase> findByCustomerId(int customerId, PurchaseRepository repo) {
         return repo.findByCustomer_id(customerId);
     }
