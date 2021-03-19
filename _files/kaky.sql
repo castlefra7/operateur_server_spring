@@ -46,5 +46,12 @@ create table mg.internet_consumptions (
     foreign key (internet_application_id) references mg.internet_applications(id)
 );
 
+create table mg.operator_configs (
+    id serial primary key,
+    created_at timestamp not null,
+    name varchar(255),
+    phone_prefix char(2)
+);
+
 insert into mg.messages_pricings (created_at, amount_interior, amount_exterior, unit) values ('2000-01-01', 100,100, 10);
 insert into mg.calls_pricings (created_at, amount_interior, amount_exterior) values ('2000-01-01', 2,2);

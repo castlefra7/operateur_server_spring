@@ -21,6 +21,8 @@ public final class Purchase {
     private Date date;
     private Offer offer;
     private int offer_id;
+    
+    public Purchase() {}
 
     public Purchase() {
     }

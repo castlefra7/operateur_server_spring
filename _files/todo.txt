@@ -12,6 +12,8 @@
 - add specific link to access front office
 - create a operator table (id, name, phone_prefix)
 - create a function to get prefix from a phone_number (033/+26133): get prefix from base and compare to check if a number is interior or exterior
+- SQL data types performance
+- optimisation Purchase Collection in MONGODB, and findAllPurchaseByCustomerID
 
 - offer algorithm for message and calls with interior and exterior price
 

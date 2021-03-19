@@ -13,6 +13,10 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import mg.operateur.business_logic.offer.Amount;
+import mg.operateur.business_logic.offer.Application;
+import mg.operateur.business_logic.offer.Offer;
+import mg.operateur.business_logic.offer.Purchase;
 import mg.operateur.gen.CDate;
 import mg.operateur.gen.InvalidAmountException;
 import mg.operateur.gen.InvalidDateException;
@@ -88,47 +92,71 @@ public class Customer extends Person {
         return result;
     }
     
-    public void sendMessage(MessageJSON _message, Connection conn) throws SQLException, InstantiationException, NoSuchMethodException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NotFoundException, ParseException, InvalidAmountException, InvalidDateException {
-        conn.setAutoCommit(false);
-        if(this.useMessageOffer(_message, conn)) return;
-        
+    public void sendMessage(MessageJSON _message, Connection conn) throws SQLException, InstantiationException, NoSuchMethodException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NotFoundException, ParseException, InvalidAmountException, InvalidDateException, Exception {
         Date date = CDate.getDate().parse(_message.getDate());
+        
+        /**** Begin Send message message using offers *****/
+        List<Purchase> validPurchases = findAllValidPurchases(date, conn);
+        if(validPurchases.size() > 0) {
+            for(Purchase purchase: validPurchases) {
+                List<Amount> allAmounts = purchase.getOffer().getAmounts();
+                for(Amount amount: allAmounts) {
+                    Application app = amount.getApplication();
+                }
+            }
+        }
+        
+        /***** Begin Send message With credit *****/
         Customer source = this.find(_message.getPhone_number_source(), conn);
         Customer dest = this.find(_message.getPhone_number_destination(), conn);
         MessagePricing lastPricing = (MessagePricing) new MessagePricing().getLastPricing(date, conn);
-        
         int lengthMessage=  _message.getText().length();
         int lengthUnit = (int) Math.ceil((double)lengthMessage / (double)lastPricing.getUnit());
         if(lengthUnit <= 0) throw new InvalidAmountException("Veuillez entrer un message valide");
         // TODO CHECK IF EXTERIOR
         // TODO check last operation of message, calls, internet, deposits, withdraws, transfers, buy credit, buy offer and So date should be >= lastDate
         double creditBalance = source.creditBalance(date, conn);
-        
         int howManyUnit = (int)Math.ceil(creditBalance / lastPricing.getAmount_interior());
         int nUnitICanAfford = Math.min(howManyUnit, lengthUnit);
-        System.out.println(creditBalance);
-        
         if(nUnitICanAfford <= 0) throw new InvalidAmountException("Votre crédit est insuffisant");
-        
         double priceToPay = (double)nUnitICanAfford * lastPricing.getAmount_interior();
-
+        /***** End Send message With credit *****/
+        
+        this.insertMessageConsumption(nUnitICanAfford, date, source.getId(), dest.getId(), priceToPay, conn);
+    }
+    
+    public List<Purchase> findAllValidPurchases(Date _date, Connection conn) throws Exception {
+        List<Purchase> result = new ArrayList();
+        List<Purchase> allPurchases = Purchase.findByCustomerId(getId(), conn);
+        // TODO sort by Offer priority
+        for(Purchase purchase: allPurchases) {
+            Offer offer = purchase.getOffer();
+            Date endValidity = CDate.addDay(offer.getCreatedAt(), offer.getValidityDay());
+            if(endValidity.after(_date)) result.add(purchase);
+        }
+        
+        return result;
+    }
+    
+    private void insertMessageConsumption(int messUnit, Date date, int custSrcId, int custDestId, double creditConsAmount, Connection conn) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, SQLException, InvalidDateException, InvalidAmountException {
+        conn.setAutoCommit(false);
         try {
             MessageCallConsumption consumption = new MessageCallConsumption();
             consumption.setT_type('m');
-            consumption.setAmount(nUnitICanAfford);
+            consumption.setAmount(messUnit);
             consumption.setCreated_at(date);
-            consumption.setCustomer_id(source.getId());
-            consumption.setCustomer_destination_id(dest.getId());
+            consumption.setCustomer_id(custSrcId);
+            consumption.setCustomer_destination_id(custDestId);
             consumption.insert(conn);
             
             CreditConsumption creditCons = new CreditConsumption();
             creditCons.setCreated_at(date);
-            creditCons.setCons_amount(priceToPay);
-            creditCons.setCustomer_id(source.getId());
+            creditCons.setCons_amount(creditConsAmount);
+            creditCons.setCustomer_id(custSrcId);
             creditCons.insert(conn);
             
             conn.commit();
-        } catch(IllegalAccessException | IllegalArgumentException | InvocationTargetException | SQLException | InvalidAmountException ex) {
+        } catch(IllegalAccessException | IllegalArgumentException | InvocationTargetException | SQLException ex) {
             conn.rollback();
             throw ex;
         } finally {

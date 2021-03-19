@@ -6,6 +6,8 @@
 package mg.operateur.gen;
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 
 /**
  *
@@ -24,5 +26,12 @@ public class CDate {
         result += Integer.parseInt(numb[0]) * 60 * 60;
         result += Integer.parseInt(numb[2]);
         return result;
+    }
+    
+    public static Date addDay(Date date, int number) {
+        Calendar c = Calendar.getInstance();
+        c.setTime(date);
+        c.add(Calendar.DAY_OF_MONTH, number);
+        return c.getTime();
     }
 }
