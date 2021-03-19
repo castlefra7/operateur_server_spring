@@ -178,3 +178,5 @@ select * from mg.withdraws;
 select * from mg.customers_balances order by id;
 select * from mg.customers_credit_balances order by id;
 select * from mg.buyed_credits;
+
+create sequence mg.purhaseSeq;

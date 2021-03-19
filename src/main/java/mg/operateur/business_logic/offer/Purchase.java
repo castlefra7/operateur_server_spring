@@ -5,34 +5,38 @@
  */
 package mg.operateur.business_logic.offer;
 
-import java.lang.reflect.InvocationTargetException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
-import mg.operateur.gen.FctGen;
 
 /**
  *
  * @author dodaa
  */
-public class Purchase {
+public final class Purchase {
     private int id;
     private int customer_id;
+    private Customer customer;
     private Date date;
     private Offer offer;
     private int offer_id;
     
     public Purchase() {}
 
+    public Purchase() {
+    }
+
     public Purchase(int customerId, Offer purchasedOffer, Date purchaseDate, int offer_id) throws Exception {
         setCustomer_id(customerId);
         setOffer(purchasedOffer);
         setDate(purchaseDate);
         setOffer_id(offer_id);
+    }
+
+    public Customer getCustomer() {
+        return customer;
+    }
+
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
     }
 
     public int getOffer_id() {
@@ -75,37 +79,36 @@ public class Purchase {
         return newPurchaseDate.before(addDays);
     }
     
-    public void save(Connection conn) 
-            throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, SQLException {
-        FctGen.insert(this, new String[] {"customer_id", "date", "offer_id"} , "mg.offer_purchases", conn);
-    }
+//    public void save(Connection conn) 
+//            throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, SQLException {
+//        FctGen.insert(this, new String[] {"customer_id", "date", "offer_id"} , "mg.offer_purchases", conn);
+//    }
     
-    public static List<Purchase> findByCustomerId(int customerId, Connection conn) throws SQLException, Exception {
-        PreparedStatement pst = null;
-        List<Purchase> list = new ArrayList<>();
-        try{
-            pst = conn.prepareStatement("SELECT * FROM mg.offer_purchases WHERE customer_id = ?");
-            pst.setInt(1, customerId);
-            ResultSet res = pst.executeQuery();
-            
-            while (res.next()) {
-                
-                list.add(new Purchase(
-                        res.getInt("customer_id"),
-                        new Offer(),
-                        res.getDate("date"),
-                        res.getInt("offer_id")
-                    )
-                );
-            }
-            return list;
-        }catch(Exception ex){   
-            throw ex;
-        }finally{
-            if(pst!=null)pst.close();
-        }
-    }
-    
+//    public static List<Purchase> findByCustomerId(int customerId, Connection conn) throws SQLException, Exception {
+//        PreparedStatement pst = null;
+//        List<Purchase> list = new ArrayList<>();
+//        try{
+//            pst = conn.prepareStatement("SELECT * FROM mg.offer_purchases WHERE customer_id = ?");
+//            pst.setInt(1, customerId);
+//            ResultSet res = pst.executeQuery();
+//            
+//            while (res.next()) {
+//                
+//                list.add(new Purchase(
+//                        res.getInt("customer_id"),
+//                        new Offer(),
+//                        res.getDate("date"),
+//                        res.getInt("offer_id")
+//                    )
+//                );
+//            }
+//            return list;
+//        }catch(Exception ex){   
+//            throw ex;
+//        }finally{
+//            if(pst!=null)pst.close();
+//        }
+//    }
     
 
     @Override

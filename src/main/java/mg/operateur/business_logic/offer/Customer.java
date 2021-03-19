@@ -6,21 +6,20 @@
 package mg.operateur.business_logic.offer;
 
 import java.lang.reflect.InvocationTargetException;
-import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import mg.operateur.gen.FctGen;
+import mg.operateur.web_services.controllers.PurchaseRepository;
 /**
  *
  * @author dodaa
  */
 public class Customer {
+    
     private int id;
     private String name;
     private String email;
@@ -106,23 +105,23 @@ public class Customer {
     public String getEmail() { return email; }
     public String getPhone_number() { return phone_number; }
     
-    public void purchase (Offer offer, Date newPurchaseDate) throws Exception {
-        
-        int buyingLimit = offer.getLimitation().getBuyingLimit();
-        int buys = 1;
-        
-        List<Purchase> validPurchase = account.getValidPurchasesAtDate(newPurchaseDate);
-        for (Purchase purchase : validPurchase) {
-            if (purchase.getOffer().equals(offer)) {
-                buys ++;
-                if (buys > buyingLimit) 
-                    throw new Exception("La limite d'achat du forfait " + offer.getName() + " est atteinte");
-            }
-        }
-        account.getPurchases().add(new Purchase(id, offer, newPurchaseDate, offer.getId()));
-    }
+//    public void purchase (Offer offer, Date newPurchaseDate) throws Exception {
+//        
+//        int buyingLimit = offer.getLimitation().getBuyingLimit();
+//        int buys = 1;
+//        
+//        List<Purchase> validPurchase = account.getValidPurchasesAtDate(newPurchaseDate);
+//        for (Purchase purchase : validPurchase) {
+//            if (purchase.getOffer().equals(offer)) {
+//                buys ++;
+//                if (buys > buyingLimit) 
+//                    throw new Exception("La limite d'achat du forfait " + offer.getName() + " est atteinte");
+//            }
+//        }
+//        account.getPurchases().add(new Purchase(id, offer, newPurchaseDate, offer.getId()));
+//    }
     
-    public void purchase (Offer offer, Date newPurchaseDate, Connection conn) throws Exception {
+    public void purchase (Offer offer, Date newPurchaseDate, PurchaseRepository repo) throws Exception {
         
         int buyingLimit = offer.getLimitation().getBuyingLimit();
         int buys = 1;
@@ -135,7 +134,9 @@ public class Customer {
                     throw new Exception("La limite d'achat du forfait " + offer.getName() + " est atteinte");
             }
         }
-        new Purchase(id, offer, newPurchaseDate, offer.getId()).save(conn);
+        Purchase newPurchase = new Purchase(id, offer, newPurchaseDate, offer.getId());
+//        newPurchase.save(conn);
+        repo.save(newPurchase);
     }
     
     public void consume(Application app, Amount consumed, SmartDate consumptionDate) throws Exception {
