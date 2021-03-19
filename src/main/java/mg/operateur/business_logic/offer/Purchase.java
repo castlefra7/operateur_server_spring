@@ -5,7 +5,12 @@
  */
 package mg.operateur.business_logic.offer;
 
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.Date;
+import java.util.List;
+import mg.operateur.gen.FctGen;
+import mg.operateur.web_services.controllers.PurchaseRepository;
 
 /**
  *
@@ -21,10 +26,8 @@ public final class Purchase {
     
     public Purchase() {}
 
-    public Purchase() {
-    }
-
-    public Purchase(int customerId, Offer purchasedOffer, Date purchaseDate, int offer_id) throws Exception {
+    public Purchase(int id, int customerId, Offer purchasedOffer, Date purchaseDate, int offer_id) throws Exception {
+        setId(id);
         setCustomer_id(customerId);
         setOffer(purchasedOffer);
         setDate(purchaseDate);
@@ -79,6 +82,10 @@ public final class Purchase {
         return newPurchaseDate.before(addDays);
     }
     
+    public static int getNextId(Connection conn) throws SQLException {
+        return FctGen.getInt("seq", "SELECT nextval('mg.purhaseSeq') as seq", conn);
+    }
+    
 //    public void save(Connection conn) 
 //            throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, SQLException {
 //        FctGen.insert(this, new String[] {"customer_id", "date", "offer_id"} , "mg.offer_purchases", conn);
@@ -109,6 +116,10 @@ public final class Purchase {
 //            if(pst!=null)pst.close();
 //        }
 //    }
+    
+    public static List<Purchase> findByCustomerId(int customerId, PurchaseRepository repo) {
+        return repo.findByCustomer_id(customerId);
+    }
     
 
     @Override

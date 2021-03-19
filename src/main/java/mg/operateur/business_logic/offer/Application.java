@@ -92,8 +92,6 @@ public class Application {
         return true;
     }
 
-
-
     @Override
     public String toString() {
         return "Application{" + "\t\nid=" + id + ", \t\nname=" + name + ", \t\nunit=" + unit + '}';

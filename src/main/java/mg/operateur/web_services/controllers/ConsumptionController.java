@@ -68,7 +68,7 @@ public class ConsumptionController {
     }
     
     @PostMapping(prefix+"/messages")
-    public ResponseBody consumeMessages(@RequestBody MessageJSON _message) {
+    public ResponseBody consumeMessages(@RequestBody MessageJSON _message) throws Exception {
          ResponseBody response = new ResponseBody();
             Connection conn = null;
             try {

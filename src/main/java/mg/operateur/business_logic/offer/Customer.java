@@ -121,7 +121,7 @@ public class Customer {
 //        account.getPurchases().add(new Purchase(id, offer, newPurchaseDate, offer.getId()));
 //    }
     
-    public void purchase (Offer offer, Date newPurchaseDate, PurchaseRepository repo) throws Exception {
+    public void purchase (Offer offer, Date newPurchaseDate, Connection conn, PurchaseRepository repo) throws Exception {
         
         int buyingLimit = offer.getLimitation().getBuyingLimit();
         int buys = 1;
@@ -134,7 +134,8 @@ public class Customer {
                     throw new Exception("La limite d'achat du forfait " + offer.getName() + " est atteinte");
             }
         }
-        Purchase newPurchase = new Purchase(id, offer, newPurchaseDate, offer.getId());
+        int nextId = Purchase.getNextId(conn);
+        Purchase newPurchase = new Purchase(nextId, id, offer, newPurchaseDate, offer.getId());
 //        newPurchase.save(conn);
         repo.save(newPurchase);
     }
