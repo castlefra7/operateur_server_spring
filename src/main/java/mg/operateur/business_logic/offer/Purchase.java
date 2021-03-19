@@ -8,7 +8,9 @@ package mg.operateur.business_logic.offer;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Date;
+import java.util.List;
 import mg.operateur.gen.FctGen;
+import mg.operateur.web_services.controllers.PurchaseRepository;
 
 /**
  *
@@ -23,9 +25,6 @@ public final class Purchase {
     private int offer_id;
     
     public Purchase() {}
-
-    public Purchase() {
-    }
 
     public Purchase(int id, int customerId, Offer purchasedOffer, Date purchaseDate, int offer_id) throws Exception {
         setId(id);
@@ -117,6 +116,10 @@ public final class Purchase {
 //            if(pst!=null)pst.close();
 //        }
 //    }
+    
+    public static List<Purchase> findByCustomerId(int customerId, PurchaseRepository repo) {
+        return repo.findByCustomer_id(customerId);
+    }
     
 
     @Override

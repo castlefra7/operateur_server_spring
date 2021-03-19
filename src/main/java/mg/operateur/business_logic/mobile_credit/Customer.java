@@ -22,14 +22,19 @@ import mg.operateur.gen.InvalidAmountException;
 import mg.operateur.gen.InvalidDateException;
 import mg.operateur.gen.InvalidFormatException;
 import mg.operateur.gen.NotFoundException;
+import mg.operateur.web_services.controllers.PurchaseRepository;
 import mg.operateur.web_services.resources.consumptions.CallJSON;
 import mg.operateur.web_services.resources.consumptions.MessageJSON;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  *
  * @author lacha
  */
 public class Customer extends Person {
+    
+    @Autowired
+    PurchaseRepository purchaseRepository;
     
     public Customer(){}
     public Customer(int _id) {
@@ -127,7 +132,7 @@ public class Customer extends Person {
     
     public List<Purchase> findAllValidPurchases(Date _date, Connection conn) throws Exception {
         List<Purchase> result = new ArrayList();
-        List<Purchase> allPurchases = Purchase.findByCustomerId(getId(), conn);
+        List<Purchase> allPurchases = Purchase.findByCustomerId(getId(), purchaseRepository);
         // TODO sort by Offer priority
         for(Purchase purchase: allPurchases) {
             Offer offer = purchase.getOffer();
