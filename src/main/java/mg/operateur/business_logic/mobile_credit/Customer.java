@@ -94,6 +94,10 @@ public class Customer extends Person {
     
     public void sendMessage(MessageJSON _message, Connection conn) throws SQLException, InstantiationException, NoSuchMethodException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NotFoundException, ParseException, InvalidAmountException, InvalidDateException, Exception {
         Date date = CDate.getDate().parse(_message.getDate());
+        int lengthMessage=  _message.getText().length();
+        MessagePricing lastPricing = (MessagePricing) new MessagePricing().getLastPricing(date, conn);
+        int lengthUnit = (int) Math.ceil((double)lengthMessage / (double)lastPricing.getUnit());
+        if(lengthUnit <= 0) throw new InvalidAmountException("Veuillez entrer un message valide");
         
         /**** Begin Send message message using offers *****/
         List<Purchase> validPurchases = findAllValidPurchases(date, conn);
@@ -102,17 +106,23 @@ public class Customer extends Person {
                 List<Amount> allAmounts = purchase.getOffer().getAmounts();
                 for(Amount amount: allAmounts) {
                     Application app = amount.getApplication();
+                    if(app.getT_type() == 'm' && amount.getValue() > 0) {
+                        int remainingValue = ((int)amount.getValue() - lengthUnit) > 0 ? ((int)amount.getValue() - lengthUnit) : 0 ;
+                        amount.setValue(remainingValue);
+                        // messageconsumption.amount = min(remaing, messageLength)
+                        if(((int)amount.getValue() - lengthUnit) >=  0) {
+                            break;
+                        }
+                    }
                 }
+                // purchase.save(conn);
             }
         }
         
         /***** Begin Send message With credit *****/
         Customer source = this.find(_message.getPhone_number_source(), conn);
         Customer dest = this.find(_message.getPhone_number_destination(), conn);
-        MessagePricing lastPricing = (MessagePricing) new MessagePricing().getLastPricing(date, conn);
-        int lengthMessage=  _message.getText().length();
-        int lengthUnit = (int) Math.ceil((double)lengthMessage / (double)lastPricing.getUnit());
-        if(lengthUnit <= 0) throw new InvalidAmountException("Veuillez entrer un message valide");
+        
         // TODO CHECK IF EXTERIOR
         // TODO check last operation of message, calls, internet, deposits, withdraws, transfers, buy credit, buy offer and So date should be >= lastDate
         double creditBalance = source.creditBalance(date, conn);
