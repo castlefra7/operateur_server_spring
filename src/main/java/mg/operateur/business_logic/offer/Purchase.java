@@ -5,7 +5,10 @@
  */
 package mg.operateur.business_logic.offer;
 
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.Date;
+import mg.operateur.gen.FctGen;
 
 /**
  *
@@ -22,7 +25,8 @@ public final class Purchase {
     public Purchase() {
     }
 
-    public Purchase(int customerId, Offer purchasedOffer, Date purchaseDate, int offer_id) throws Exception {
+    public Purchase(int id, int customerId, Offer purchasedOffer, Date purchaseDate, int offer_id) throws Exception {
+        setId(id);
         setCustomer_id(customerId);
         setOffer(purchasedOffer);
         setDate(purchaseDate);
@@ -75,6 +79,10 @@ public final class Purchase {
         SmartDate smartDate = new SmartDate(date.getTime());
         SmartDate addDays = smartDate.addDays(validityDay);
         return newPurchaseDate.before(addDays);
+    }
+    
+    public static int getNextId(Connection conn) throws SQLException {
+        return FctGen.getInt("seq", "SELECT nextval('mg.purhaseSeq') as seq", conn);
     }
     
 //    public void save(Connection conn) 

@@ -180,3 +180,4 @@ select * from mg.customers_credit_balances order by id;
 select * from mg.buyed_credits;
 
 create sequence mg.purhaseSeq;
+create sequence mg.offerSeq;

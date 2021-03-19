@@ -90,7 +90,7 @@ public class PurchaseController {
             Account account = new Account(foundCustomer.getId(), purchases, new ArrayList<>());
             customer.setAccount(account);
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-            customer.purchase(offer, sdf.parse(_purchase.getDate()), purchaseRepository);
+            customer.purchase(offer, sdf.parse(_purchase.getDate()), conn, purchaseRepository);
 //            
             response.getStatus().setMessage(String.valueOf("ok"));
 //             response.getData().add(offer);
