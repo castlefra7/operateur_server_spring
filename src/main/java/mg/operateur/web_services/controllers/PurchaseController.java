@@ -58,6 +58,7 @@ public class PurchaseController {
         return response;
     }
     
+    // TODO Check credit
     @PostMapping(value = "offers/{offer_id}/buy")
     public ResponseBody create(
             @PathVariable("offer_id") int _offerId, 
