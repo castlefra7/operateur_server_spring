@@ -1,5 +1,5 @@
 - statistiques
-- nouvelle insertion tarification
+- nouvelle insertion tarification   DONE
 - solde crédit, solde mobile money      DONE
 - automatic phone_number generation
 - clean up code: controllers should be short
@@ -14,6 +14,13 @@
 - create a function to get prefix from a phone_number (033/+26133): get prefix from base and compare to check if a number is interior or exterior
 - SQL data types performance
 - optimisation Purchase Collection in MONGODB, and findAllPurchaseByCustomerID
+
+
+- buy offer from credit DONE
+- buy offer from mobile money
+
+
+
 
 - offer algorithm for message and calls with interior and exterior price
 

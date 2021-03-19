@@ -116,24 +116,23 @@ public class Customer extends Person {
                 for(Amount amount: allAmounts) {
                     Application app = amount.getApplication();
                     if(app.getT_type() == 'm' && amount.getValue() > 0) {
-                        int remainingValue = ((int)amount.getValue() - lengthUnit) > 0 ? ((int)amount.getValue() - lengthUnit) : 0 ;
+                        double orgValue = amount.getValue();
+                        int remainingValue = ((int)orgValue - lengthUnit) > 0 ? ((int)orgValue - lengthUnit) : 0 ;
                         amount.setValue(remainingValue);
-                        // messageconsumption.amount = min(remaing, messageLength)
-                        if(((int)amount.getValue() - lengthUnit) >=  0) {
+                        if(((int)orgValue - lengthUnit) >=  0) {
+                            lengthUnit = 0;
                             break;
-                        }
-                        lengthUnit = Math.abs(((int)amount.getValue() - lengthUnit));
+                        } else { lengthUnit = Math.abs(((int)amount.getValue() - lengthUnit)); }
+                        
                     }
                 }
                 purchaseRepository.save(purchase);
             }
         }
         
-        
         if(lengthUnit > 0) {
             shouldUseCredit = true;
         }
-        
         
         if(shouldUseCredit) {
             // TODO CHECK IF EXTERIOR
