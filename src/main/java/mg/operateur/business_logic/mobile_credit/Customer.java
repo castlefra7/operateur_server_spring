@@ -102,7 +102,9 @@ public class Customer extends Person {
         int lengthMessage=  _message.getText().length();
         MessagePricing lastPricing = (MessagePricing) new MessagePricing().getLastPricing(date, conn);
         int lengthUnit = (int) Math.ceil((double)lengthMessage / (double)lastPricing.getUnit());
+        int orgLengthUnit = lengthUnit;
         if(lengthUnit <= 0) throw new InvalidAmountException("Veuillez entrer un message valide");
+        boolean shouldUseCredit = false;
         
         /**** Begin Send message message using offers *****/
         List<Purchase> validPurchases = findAllValidPurchases(date, conn);
@@ -118,26 +120,36 @@ public class Customer extends Person {
                         if(((int)amount.getValue() - lengthUnit) >=  0) {
                             break;
                         }
+                        lengthUnit = Math.abs(((int)amount.getValue() - lengthUnit));
                     }
                 }
                 // purchase.save(conn);
             }
         }
         
+        if(lengthUnit > 0) {
+            shouldUseCredit = true;
+        }
+        
         /***** Begin Send message With credit *****/
         Customer source = this.find(_message.getPhone_number_source(), conn);
         Customer dest = this.find(_message.getPhone_number_destination(), conn);
         
-        // TODO CHECK IF EXTERIOR
-        // TODO check last operation of message, calls, internet, deposits, withdraws, transfers, buy credit, buy offer and So date should be >= lastDate
-        double creditBalance = source.creditBalance(date, conn);
-        int howManyUnit = (int)Math.ceil(creditBalance / lastPricing.getAmount_interior());
-        int nUnitICanAfford = Math.min(howManyUnit, lengthUnit);
-        if(nUnitICanAfford <= 0) throw new InvalidAmountException("Votre crédit est insuffisant");
-        double priceToPay = (double)nUnitICanAfford * lastPricing.getAmount_interior();
-        /***** End Send message With credit *****/
-        
-        this.insertMessageConsumption(nUnitICanAfford, date, source.getId(), dest.getId(), priceToPay, conn);
+        if(shouldUseCredit) {
+            // TODO CHECK IF EXTERIOR
+            // TODO check last operation of message, calls, internet, deposits, withdraws, transfers, buy credit, buy offer and So date should be >= lastDate
+            double creditBalance = source.creditBalance(date, conn);
+            int howManyUnit = (int)Math.ceil(creditBalance / lastPricing.getAmount_interior());
+            int nUnitICanAfford = Math.min(howManyUnit, lengthUnit);
+            if(nUnitICanAfford <= 0) throw new InvalidAmountException("Votre crédit est insuffisant");
+            double priceToPay = (double)nUnitICanAfford * lastPricing.getAmount_interior();
+            /***** End Send message With credit *****/
+
+            this.insertMessageCreditConsumption(shouldUseCredit, nUnitICanAfford, date, source.getId(), dest.getId(), priceToPay, conn);
+        } else {
+            this.insertMessageCreditConsumption(false, orgLengthUnit, date, source.getId(), dest.getId(), 0.0, conn);
+        }
+      
     }
     
     public List<Purchase> findAllValidPurchases(Date _date, Connection conn) throws Exception {
@@ -153,7 +165,7 @@ public class Customer extends Person {
         return result;
     }
     
-    private void insertMessageConsumption(int messUnit, Date date, int custSrcId, int custDestId, double creditConsAmount, Connection conn) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, SQLException, InvalidDateException, InvalidAmountException {
+    private void insertMessageCreditConsumption(boolean useCredit, int messUnit, Date date, int custSrcId, int custDestId, double creditConsAmount, Connection conn) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, SQLException, InvalidDateException, InvalidAmountException {
         conn.setAutoCommit(false);
         try {
             MessageCallConsumption consumption = new MessageCallConsumption();
@@ -164,11 +176,14 @@ public class Customer extends Person {
             consumption.setCustomer_destination_id(custDestId);
             consumption.insert(conn);
             
-            CreditConsumption creditCons = new CreditConsumption();
-            creditCons.setCreated_at(date);
-            creditCons.setCons_amount(creditConsAmount);
-            creditCons.setCustomer_id(custSrcId);
-            creditCons.insert(conn);
+            if(useCredit) {
+                CreditConsumption creditCons = new CreditConsumption();
+                creditCons.setCreated_at(date);
+                creditCons.setCons_amount(creditConsAmount);
+                creditCons.setCustomer_id(custSrcId);
+                creditCons.insert(conn);
+            }
+            
             
             conn.commit();
         } catch(IllegalAccessException | IllegalArgumentException | InvocationTargetException | SQLException ex) {
