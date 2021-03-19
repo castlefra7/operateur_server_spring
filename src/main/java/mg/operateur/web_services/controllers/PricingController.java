@@ -2,10 +2,15 @@ package mg.operateur.web_services.controllers;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import mg.operateur.business_logic.mobile_credit.CallPricing;
+import mg.operateur.business_logic.mobile_credit.InternetPricing;
+import mg.operateur.business_logic.mobile_credit.MessagePricing;
 import mg.operateur.business_logic.pricings.Pricing;
 import mg.operateur.conn.ConnGen;
 import mg.operateur.gen.CDate;
 import mg.operateur.web_services.ResponseBody;
+import mg.operateur.web_services.resources.pricings.InternetPricingJSON;
+import mg.operateur.web_services.resources.pricings.MessagePricingJSON;
 import mg.operateur.web_services.resources.pricings.PricingJSON;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -45,18 +50,42 @@ public class PricingController {
         return response;
     }
     
-    @PostMapping(prefix)
-    public ResponseBody messageCallPricing(@RequestBody PricingJSON _message) {
+    @PostMapping(prefix + "/messages")
+    public ResponseBody messageCallPricing(@RequestBody MessagePricingJSON _message) {
         ResponseBody response = new ResponseBody();
         Connection conn = null;
         try {
             conn = ConnGen.getConn();
-            Pricing pricing = new Pricing();
-            pricing.setApplication_id(_message.getApplication_id());
+            MessagePricing pricing = new MessagePricing();
             pricing.setCreated_at(CDate.getDate().parse(_message.getDate()));
             pricing.setAmount_exterior(_message.getAmount_exterior());
             pricing.setAmount_interior(_message.getAmount_interior());
-            pricing.dropAll(conn);
+            pricing.setUnit(_message.getUnit());
+            pricing.insert(conn);
+            response.getStatus().setMessage("Succés");
+        } catch(Exception ex) {
+            this.setError(response, ex);
+            out(ex);
+        } finally {
+            try {
+                if(conn!=null) conn.close();
+            } catch(SQLException ex) {
+                out(ex);
+            }
+        }
+        return response;
+    }
+    
+    @PostMapping(prefix + "/calls")
+    public ResponseBody messagePricing(@RequestBody PricingJSON _message) {
+        ResponseBody response = new ResponseBody();
+        Connection conn = null;
+        try {
+            conn = ConnGen.getConn();
+            CallPricing pricing = new CallPricing();
+            pricing.setCreated_at(CDate.getDate().parse(_message.getDate()));
+            pricing.setAmount_exterior(_message.getAmount_exterior());
+            pricing.setAmount_interior(_message.getAmount_interior());
             pricing.insert(conn);
             response.getStatus().setMessage("Succés");
         } catch(Exception ex) {
@@ -74,17 +103,14 @@ public class PricingController {
     
     
     @PostMapping(prefix + "/internet")
-    public ResponseBody internetPricing(@RequestBody PricingJSON _message) {
+    public ResponseBody internetPricing(@RequestBody InternetPricingJSON _internet) {
         ResponseBody response = new ResponseBody();
         Connection conn = null;
         try {
             conn = ConnGen.getConn();
-            Pricing pricing = new Pricing();
-            pricing.setApplication_id(_message.getApplication_id());
-            pricing.setCreated_at(CDate.getDate().parse(_message.getDate()));
-            pricing.setAmount_exterior(_message.getAmount_interior());
-            pricing.setAmount_interior(_message.getAmount_interior());
-            pricing.dropAll(conn);
+            InternetPricing pricing = new InternetPricing();
+            pricing.setCreated_at(CDate.getDate().parse(_internet.getDate()));
+            pricing.setAmount(_internet.getAmount());
             pricing.insert(conn);
             response.getStatus().setMessage("Succés");
         } catch(Exception ex) {

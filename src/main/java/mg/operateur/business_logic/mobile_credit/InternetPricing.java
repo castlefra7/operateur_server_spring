@@ -8,36 +8,43 @@ package mg.operateur.business_logic.mobile_credit;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Date;
 import mg.operateur.gen.FctGen;
 
 /**
  *
- * @author lacha
+ * @author dodaa
  */
-public class MessagePricing extends Pricing {
-    
-    private int unit;
+public class InternetPricing {
+    private Date created_at;
+    private double amount;
 
-    public int getUnit() {
-        return unit;
+    public Date getCreated_at() {
+        return created_at;
     }
 
-    public void setUnit(int unit) {
-        this.unit = unit;
+    public void setCreated_at(Date created_at) {
+        this.created_at = created_at;
+    }
+
+    public double getAmount() {
+        return amount;
+    }
+
+    public void setAmount(double amount) {
+        this.amount = amount;
     }
     
     public void insert(Connection conn) 
-            throws IllegalAccessException, IllegalArgumentException, SQLException, InvocationTargetException {
+            throws IllegalAccessException, InvocationTargetException, SQLException {
         FctGen.insert(this, columns(), tableName(), conn);
     }
     
-    @Override
     public String tableName() {
-        return "mg.messages_pricings";
+        return "mg.internet_pricings";
     }
     
-    @Override
     public String[] columns() {
-        return new String[]{"amount_interior", "amount_exterior", "created_at", "unit"};
+        return new String[]{"created_at", "amount"};
     }
 }
