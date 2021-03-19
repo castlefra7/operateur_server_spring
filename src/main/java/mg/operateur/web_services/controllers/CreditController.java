@@ -12,9 +12,12 @@ import mg.operateur.business_logic.mobile_credit.Customer;
 import mg.operateur.conn.ConnGen;
 import mg.operateur.gen.CDate;
 import mg.operateur.web_services.ResponseBody;
+import mg.operateur.web_services.resources.commons.AskJSON;
 import mg.operateur.web_services.resources.commons.TransferJSON;
+import mg.operateur.web_services.resources.commons.MessageJSON;
 import mg.operateur.web_services.resources.credit.CreditJSON;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -46,6 +49,24 @@ public class CreditController {
         return response;
     }
     
+    @GetMapping(prefix+"/balance")
+    public ResponseBody balance( @RequestBody AskJSON _ask) {
+        ResponseBody response = new ResponseBody();
+        Connection conn = null;
+        try {
+            conn = ConnGen.getConn();
+            double balance = new Customer(_ask.getCustomer_id()).creditBalance(CDate.getDate().parse(_ask.getDate()), conn);
+            response.getData().add(new MessageJSON("Solde de votre crédit est de " + balance));
+        } catch(Exception ex) {
+            setError(response, ex);
+            out(ex);
+        } finally {
+            try {if(conn!=null) conn.close();}catch(SQLException ex) {setError(response, ex);out(ex);}
+        }
+        
+        return response;
+    }
+    
     @PostMapping(prefix+"/buy")
     public ResponseBody buy(@RequestBody CreditJSON _credit) {
         ResponseBody response = new ResponseBody();
@@ -65,12 +86,7 @@ public class CreditController {
             setError(response, ex);
             out(ex);
         } finally {
-            try {
-                if(conn!=null) conn.close();
-            }  catch(SQLException ex) {
-                setError(response, ex);
-                out(ex);
-            }
+            try {if(conn!=null) conn.close();}catch(SQLException ex) {setError(response, ex);out(ex);}
         }
         return response;
     }

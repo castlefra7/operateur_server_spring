@@ -19,7 +19,7 @@ public class CDate {
     
     public static int numberSeconds(String hhMM) throws InvalidFormatException {
         String[] numb = hhMM.split(":");
-        if(numb.length < 3) throw new InvalidFormatException("Format de date invalide. Doit-être de type hh:mm");
+        if(numb.length < 3) throw new InvalidFormatException("Format de date invalide. Doit-être de type hh:mm:ss");
         int result = Integer.parseInt(numb[1]) * 60;
         result += Integer.parseInt(numb[0]) * 60 * 60;
         result += Integer.parseInt(numb[2]);

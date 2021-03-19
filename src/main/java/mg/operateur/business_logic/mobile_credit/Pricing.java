@@ -48,7 +48,7 @@ public class Pricing extends BaseClass {
     public Pricing getLastPricing(Date _date, Connection conn) throws SQLException, InstantiationException, NoSuchMethodException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
         String req = String.format("select * from %s order by created_at desc limit 1", tableName());
         Object ob = FctGen.find(this, req, columns(), conn);
-        if(ob ==null) throw new NullPointerException("Pas encore de prix pour cette opéraion");
+        if(ob ==null) throw new NullPointerException("Pas encore de prix pour cette opération");
         return (Pricing)ob;
     }
 

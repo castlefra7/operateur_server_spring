@@ -1,6 +1,6 @@
 - statistiques
 - nouvelle insertion tarification
-- solde crédit, solde mobile money
+- solde crédit, solde mobile money      DONE
 - automatic phone_number generation
 - clean up code: controllers should be short
 - URL string for mongodb

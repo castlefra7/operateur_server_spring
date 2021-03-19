@@ -15,12 +15,15 @@ import mg.operateur.conn.ConnGen;
 import mg.operateur.gen.CDate;
 import mg.operateur.gen.InvalidAmountException;
 import mg.operateur.web_services.ResponseBody;
+import mg.operateur.web_services.resources.commons.AskJSON;
+import mg.operateur.web_services.resources.commons.MessageJSON;
 import mg.operateur.web_services.resources.mobilemoney.DepositJSON;
 import mg.operateur.web_services.resources.commons.TransferJSON;
 import mg.operateur.web_services.resources.credit.CreditMobileJSON;
 import mg.operateur.web_services.resources.mobilemoney.FeeJSON;
 import mg.operateur.web_services.resources.mobilemoney.WithdrawJSON;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -38,6 +41,24 @@ public class MobileMoneyController {
             response.getStatus().setCode(500);
             response.getStatus().setMessage(ex.getMessage());
         }
+        
+    @GetMapping(prefix+"/balance")
+    public ResponseBody balance( @RequestBody AskJSON _ask) {
+        ResponseBody response = new ResponseBody();
+        Connection conn = null;
+        try {
+            conn = ConnGen.getConn();
+            double balance = new Customer(_ask.getCustomer_id()).mobileBalance(CDate.getDate().parse(_ask.getDate()), conn);
+            response.getData().add(new MessageJSON("Solde de votre crédit est de " + balance));
+        } catch(Exception ex) {
+            setError(response, ex);
+            out(ex);
+        } finally {
+            try {if(conn!=null) conn.close();}catch(SQLException ex) {setError(response, ex);out(ex);}
+        }
+        
+        return response;
+    }
         
         @PostMapping(prefix+"/buycredit")
         public ResponseBody buyCredit(@RequestBody CreditMobileJSON _credit) {

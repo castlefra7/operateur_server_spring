@@ -47,7 +47,6 @@ public class Customer extends Person {
         int nUnitICanAfford = Math.min((int)Math.floor(creditBalance / lastPricing.getAmount_interior()), numberSecond);
         if(nUnitICanAfford <= 0) throw new InvalidAmountException("Votre crédit est insuffisant");
         double priceToPay = (double)nUnitICanAfford * lastPricing.getAmount_interior();
-
         
         try {
             MessageCallConsumption consumption = new MessageCallConsumption();
@@ -84,7 +83,7 @@ public class Customer extends Person {
                 // messageconsumption.amount = min(remaing, messageLength)
                 //  remaing - messageLength >= 0 break
                 // else go to the next offer and apply same algorithm
-                // if there is no more offer with t_type == 'm' then apply credit algorithm
+                // if there is no more offer with t_type == 'm' then apply credit algorithm.
         
         return result;
     }
