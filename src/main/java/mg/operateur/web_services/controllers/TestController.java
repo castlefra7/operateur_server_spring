@@ -11,6 +11,7 @@ import mg.operateur.business_logic.mobile_credit.Customer;
 import mg.operateur.conn.ConnGen;
 import mg.operateur.web_services.ResponseBody;
 import mg.operateur.web_services.resources.consumptions.CallJSON;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -21,6 +22,9 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 public class TestController {
+    @Autowired
+    PurchaseRepository purchaseRepository;
+    
     private static final String prefix = "/test";
     private void out(Exception ex) {
             ex.printStackTrace();
@@ -45,15 +49,6 @@ public class TestController {
             ResponseBody response = new ResponseBody();
             Connection conn = null;
             try {
-                conn = ConnGen.getConn();
-                CallJSON _message = new CallJSON();
-                _message.setDate("2021-03-19");
-                _message.setPhone_number_source("+261331125636");
-                _message.setPhone_number_destination("+261331525636");
-                _message.setDuration("0:41:30");
-                
-                Customer c = new Customer();
-                c.makeCall(_message, conn);
                 response.getStatus().setMessage("Succés");
             } catch(Exception ex) {
                 this.setError(response, ex);

@@ -19,7 +19,8 @@ create table mg.customers (
     email varchar(255),
     phone_number char(13) not null,
     password VARCHAR(255),
-    unique (phone_number)
+    unique (phone_number),
+    unique (email)
 );
 
 create table mg.fees (
@@ -85,8 +86,6 @@ create table mg.offer_purchases (
     offer_id int not null,
     foreign key (customer_id) references mg.customers (id)
 );
-
-create sequence mg.offerSeq;
 
 create table mg.messages_calls_consumptions (
     id serial primary key,
@@ -161,10 +160,10 @@ create view mg.customers_credit_balances as select mg.customers.id, (coalesce(su
 select max(((select created_at from mg.deposits where customer_id = customer_source_id and customer_id = 2  order by created_at desc limit 1) union (select created_at from mg.withdraws where customer_id = 2 order by created_at desc limit 1)));
 
 /* DATA */
-insert into mg.customers (created_at, name, email, phone_number, password) values ('2021-03-16 08:00', 'rakoto manou', 'rak@gmail.com', '+261331125636', '2811');
+/*insert into mg.customers (created_at, name, email, phone_number, password) values ('2021-03-16 08:00', 'rakoto manou', 'rak@gmail.com', '+261331125636', '2811');
 insert into mg.customers (created_at, name, email, phone_number, password) values ('2021-03-16 08:00', 'razaka rivo', 'rivo@gmail.com', '+261331525636', '0108');
 insert into mg.customers (created_at, name, email, phone_number, password) values ('2021-03-16 08:00', 'ramanajaka rabe', 'rabe@gmail.com', '+261335125636', '2202');
-
+*/
 insert into mg.fees (created_at, amount_min, amount_max, amount_fee) values ('2000-01-01 00:00', 100, 1000, 50);
 insert into mg.fees (created_at, amount_min, amount_max, amount_fee) values ('2000-01-01 00:00', 1001, 5000, 50);
 insert into mg.fees (created_at, amount_min, amount_max, amount_fee) values ('2000-01-01 00:00', 5001, 10000, 100);

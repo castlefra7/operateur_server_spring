@@ -18,6 +18,7 @@ import mg.operateur.gen.NotFoundException;
 import mg.operateur.web_services.ResponseBody;
 import mg.operateur.web_services.resources.consumptions.CallJSON;
 import mg.operateur.web_services.resources.consumptions.MessageJSON;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -31,6 +32,9 @@ import org.springframework.web.bind.annotation.RestController;
 @CrossOrigin(origins = "*")
 @RestController
 public class ConsumptionController {
+    @Autowired
+    PurchaseRepository purchaseRepository;
+    
     private static final String prefix = "/consume";
     
     private void out(Exception ex) {
@@ -73,7 +77,7 @@ public class ConsumptionController {
             Connection conn = null;
             try {
                 conn = ConnGen.getConn();                
-                new Customer().sendMessage(_message, conn);
+                new Customer().sendMessage(_message, purchaseRepository, conn);
                 response.getStatus().setMessage("Succés");
             } catch(IllegalAccessException | IllegalArgumentException | InstantiationException | NoSuchMethodException | InvocationTargetException | SQLException | ParseException | InvalidAmountException | InvalidDateException | NotFoundException ex) {
                 this.setError(response, ex);

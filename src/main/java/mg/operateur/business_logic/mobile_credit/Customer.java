@@ -16,6 +16,7 @@ import java.util.List;
 import mg.operateur.business_logic.offer.Amount;
 import mg.operateur.business_logic.offer.Application;
 import mg.operateur.business_logic.offer.Offer;
+import mg.operateur.business_logic.offer.PasswordHelper;
 import mg.operateur.business_logic.offer.Purchase;
 import mg.operateur.gen.CDate;
 import mg.operateur.gen.InvalidAmountException;
@@ -33,9 +34,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 public class Customer extends Person {
     
-    @Autowired
-    PurchaseRepository purchaseRepository;
-    
+   
     public Customer(){}
     public Customer(int _id) {
         setId(_id);
@@ -51,7 +50,7 @@ public class Customer extends Person {
         if(numberSecond <= 0) throw new InvalidAmountException("Veuillez entrer une durée d'appel valide");
 
         // TODO CHECK IF EXTERIOR
-        // TODO check last operation of message, calls, internet, deposits, withdraws, transfers, buy credit, buy offer and So date should be >= lastDate
+        // TODO check last operation of message, calls, internet, deposits, withdraws, transfers, buy credit, buy offer, purchase offer and So date should be >= lastDate
         double creditBalance = source.creditBalance(date, conn);
         int nUnitICanAfford = Math.min((int)Math.floor(creditBalance / lastPricing.getAmount_interior()), numberSecond);
         if(nUnitICanAfford <= 0) throw new InvalidAmountException("Votre crédit est insuffisant");
@@ -97,7 +96,10 @@ public class Customer extends Person {
         return result;
     }
     
-    public void sendMessage(MessageJSON _message, Connection conn) throws SQLException, InstantiationException, NoSuchMethodException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NotFoundException, ParseException, InvalidAmountException, InvalidDateException, Exception {
+    public void sendMessage(MessageJSON _message, PurchaseRepository purchaseRepository, Connection conn) throws SQLException, InstantiationException, NoSuchMethodException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NotFoundException, ParseException, InvalidAmountException, InvalidDateException, Exception {
+        Customer source = this.find(_message.getPhone_number_source(), conn);
+        Customer dest = this.find(_message.getPhone_number_destination(), conn); // TODO create external customer
+        
         Date date = CDate.getDate().parse(_message.getDate());
         int lengthMessage=  _message.getText().length();
         MessagePricing lastPricing = (MessagePricing) new MessagePricing().getLastPricing(date, conn);
@@ -107,7 +109,7 @@ public class Customer extends Person {
         boolean shouldUseCredit = false;
         
         /**** Begin Send message message using offers *****/
-        List<Purchase> validPurchases = findAllValidPurchases(date, conn);
+        List<Purchase> validPurchases = findAllValidPurchases(source.getId(), date, purchaseRepository, conn);
         if(validPurchases.size() > 0) {
             for(Purchase purchase: validPurchases) {
                 List<Amount> allAmounts = purchase.getOffer().getAmounts();
@@ -123,17 +125,15 @@ public class Customer extends Person {
                         lengthUnit = Math.abs(((int)amount.getValue() - lengthUnit));
                     }
                 }
-                // purchase.save(conn);
+                purchaseRepository.save(purchase);
             }
         }
+        
         
         if(lengthUnit > 0) {
             shouldUseCredit = true;
         }
         
-        /***** Begin Send message With credit *****/
-        Customer source = this.find(_message.getPhone_number_source(), conn);
-        Customer dest = this.find(_message.getPhone_number_destination(), conn);
         
         if(shouldUseCredit) {
             // TODO CHECK IF EXTERIOR
@@ -143,8 +143,6 @@ public class Customer extends Person {
             int nUnitICanAfford = Math.min(howManyUnit, lengthUnit);
             if(nUnitICanAfford <= 0) throw new InvalidAmountException("Votre crédit est insuffisant");
             double priceToPay = (double)nUnitICanAfford * lastPricing.getAmount_interior();
-            /***** End Send message With credit *****/
-
             this.insertMessageCreditConsumption(shouldUseCredit, nUnitICanAfford, date, source.getId(), dest.getId(), priceToPay, conn);
         } else {
             this.insertMessageCreditConsumption(false, orgLengthUnit, date, source.getId(), dest.getId(), 0.0, conn);
@@ -152,9 +150,9 @@ public class Customer extends Person {
       
     }
     
-    public List<Purchase> findAllValidPurchases(Date _date, Connection conn) throws Exception {
+    public List<Purchase> findAllValidPurchases(int customer_id, Date _date, PurchaseRepository purchaseRepository, Connection conn) throws Exception {
         List<Purchase> result = new ArrayList();
-        List<Purchase> allPurchases = Purchase.findByCustomerId(getId(), purchaseRepository);
+        List<Purchase> allPurchases = Purchase.findByCustomerId(1, purchaseRepository);
         // TODO sort by Offer priority
         for(Purchase purchase: allPurchases) {
             Offer offer = purchase.getOffer();
@@ -208,7 +206,7 @@ public class Customer extends Person {
         if(lastOp!=null) if(date.compareTo(lastOp) <0) throw new Exception("Veuillez vérifier la date de l'opération");
         
         Customer currCust = find(getId(), conn);
-        if(!currCust.getPassword().equals(pwd)) throw new Exception("Mot de passe incorrect");
+        if(!currCust.getPassword().equals(PasswordHelper.md5(pwd))) throw new Exception("Mot de passe incorrect");
         if(amount > this.creditBalance(date, conn)) throw new Exception("Votre crédit est insuffisant");
         
         Credit credit = new Credit();
@@ -314,7 +312,7 @@ public class Customer extends Person {
         if(lastOp != null)if(withdraw.getCreated_at().compareTo(lastOp) < 0) throw new Exception("Veuillez vérifier la date de l'opération");
 
         Customer currCust = find(getId(), conn);
-        if(!currCust.getPassword().equals(pwd)) throw new Exception("Mot de passe incorrect");
+        if(!currCust.getPassword().equals(PasswordHelper.md5(pwd))) throw new Exception("Mot de passe incorrect");
 
         if(isFree == false)withdraw.setFee(getFeeAmount(withdraw.getAmount(), conn));
         if((withdraw.getAmount() + withdraw.getFee()) > mobileBalance(withdraw.getCreated_at(), conn)) throw new Exception("Votre solde est insuffisant pour effectuer cette opération");
