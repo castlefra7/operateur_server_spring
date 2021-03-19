@@ -77,29 +77,67 @@ create table mg.offer_purchases (
     foreign key (customer_id) references mg.customers (id)
 );
 
-create table mg.applications (
+
+create table mg.offer_purchases (
     id serial primary key,
-    name varchar(255)
+    customer_id int not null,
+    date date not null,
+    offer_id int not null,
+    foreign key (customer_id) references mg.customers (id)
 );
 
-create table mg.pricings (
+create sequence mg.offerSeq;
+
+create table mg.messages_calls_consumptions (
     id serial primary key,
-    created_at date not null,
-    application_id int,
+    created_at timestamp not null,
+    customer_id int,
+    customer_destination_id int,
+    amount int,
+    t_type char(1) not null,
+    foreign key (customer_id) references mg.customers(id),
+    foreign key (customer_destination_id) references mg.customers(id)
+);
+
+/*TODO: Store message to MONGODB */
+create table mg.messages_pricings (
+    id serial primary key,
+    created_at timestamp not null,
     amount_interior decimal check(amount_interior > 0),
     amount_exterior decimal check(amount_exterior > 0),
-    foreign key (application_id) references mg.applications(id),
-    unique (application_id)
+    unit int default 160
 );
-create sequence mg.offerSeq;
---drop table mg.pricings;
---drop table mg.applications;
 
+create table mg.calls_pricings (
+    id serial primary key,
+    created_at timestamp not null,
+    amount_interior decimal check(amount_interior > 0),
+    amount_exterior decimal check(amount_exterior > 0)
+);
 
--- create table mg.consumptions (
---     id serial primary key,
+create table mg.internet_pricings (
+    id serial primary key,
+    created_at timestamp not null,
+    amount decimal check(amount > 0)
+);
 
--- )
+create table mg.internet_applications (
+    id serial primary key,
+    created_at timestamp not null
+);
+
+create table mg.internet_consumptions (
+    id serial primary key,
+    created_at timestamp not null,
+    customer_id int,
+    amount decimal,
+    internet_application_id int,
+    foreign key (customer_id) references mg.customers(id),
+    foreign key (internet_application_id) references mg.internet_applications(id)
+);
+
+insert into mg.messages_pricings (created_at, amount_interior, amount_exterior, unit) values ('2000-01-01', 100,100, 10);
+insert into mg.calls_pricings (created_at, amount_interior, amount_exterior) values ('2000-01-01', 2,2);
 
 /* ALL NON VALIDATED DEPOSITS */
 create view mg.all_customers_deposits as select mg.deposits.*, mg.customers.phone_number, mg.customers.name from mg.deposits join mg.customers 
@@ -134,9 +172,6 @@ insert into mg.fees (created_at, amount_min, amount_max, amount_fee) values ('20
 insert into mg.fees (created_at, amount_min, amount_max, amount_fee) values ('2000-01-01 00:00', 25001, 50000, 400);
 insert into mg.fees (created_at, amount_min, amount_max, amount_fee) values ('2000-01-01 00:00', 50001, 100000, 800);
 
-insert into mg.applications (name) values ('internet');
-insert into mg.applications (name) values ('message');
-insert into mg.applications (name) values ('call');
 
 select * from mg.deposits;
 select * from mg.withdraws;
