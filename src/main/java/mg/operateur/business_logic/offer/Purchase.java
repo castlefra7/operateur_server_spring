@@ -10,6 +10,7 @@ import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
 import mg.operateur.gen.FctGen;
+import mg.operateur.gen.RequiredException;
 import mg.operateur.web_services.controllers.PurchaseRepository;
 import org.springframework.data.annotation.Id;
 
@@ -29,7 +30,7 @@ public final class Purchase {
     
     public Purchase() {}
 
-    public Purchase(int id, int customerId, Offer purchasedOffer, Date purchaseDate, int offer_id) throws Exception {
+    public Purchase(int id, int customerId, Offer purchasedOffer, Date purchaseDate, int offer_id) throws RequiredException {
         setId(id);
         setCustomer_id(customerId);
         setOffer(purchasedOffer);
@@ -53,9 +54,9 @@ public final class Purchase {
         this.offer_id = offer_id;
     }
     
-    public void setDate(Date date) throws Exception {
+    public void setDate(Date date) throws RequiredException {
         if (date == null)
-            throw new Exception("purchase date is required");
+            throw new RequiredException("purchase date is required");
         this.date = date;
     }
     
@@ -67,9 +68,9 @@ public final class Purchase {
         this.customer_id = customer_id;
     }
     
-    public void setOffer(Offer offer) throws Exception {
+    public void setOffer(Offer offer) throws RequiredException {
         if (offer == null)
-            throw new Exception("purchased offer is required");
+            throw new RequiredException("purchased offer is required");
         this.offer = offer;
     }
 

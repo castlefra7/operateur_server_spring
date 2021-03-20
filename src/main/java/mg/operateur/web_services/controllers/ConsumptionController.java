@@ -17,6 +17,7 @@ import mg.operateur.gen.InvalidFormatException;
 import mg.operateur.gen.NotFoundException;
 import mg.operateur.web_services.ResponseBody;
 import mg.operateur.web_services.resources.consumptions.CallJSON;
+import mg.operateur.web_services.resources.consumptions.InternetJSON;
 import mg.operateur.web_services.resources.consumptions.MessageJSON;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -60,9 +61,9 @@ public class ConsumptionController {
             Connection conn = null;
             try {
                 conn = ConnGen.getConn();                
-                new Customer().makeCall(_call, conn);
+                new Customer().makeCall(_call, purchaseRepository, conn);
                 response.getStatus().setMessage("Succés");
-            } catch(IllegalAccessException | IllegalArgumentException | InstantiationException | NoSuchMethodException | InvocationTargetException | SQLException | ParseException | InvalidAmountException | InvalidDateException | InvalidFormatException | NotFoundException ex) {
+            } catch(Exception ex) {
                 this.setError(response, ex);
                 out(ex);
             } finally {
@@ -72,26 +73,34 @@ public class ConsumptionController {
     }
     
     @PostMapping(prefix+"/messages")
-    public ResponseBody consumeMessages(@RequestBody MessageJSON _message) throws Exception {
+    public ResponseBody consumeMessages(@RequestBody MessageJSON _message) {
          ResponseBody response = new ResponseBody();
-            Connection conn = null;
-            try {
-                conn = ConnGen.getConn();                
-                new Customer().sendMessage(_message, purchaseRepository, conn);
-                response.getStatus().setMessage("Succés");
-            } catch(IllegalAccessException | IllegalArgumentException | InstantiationException | NoSuchMethodException | InvocationTargetException | SQLException | ParseException | InvalidAmountException | InvalidDateException | NotFoundException ex) {
-                this.setError(response, ex);
-                out(ex);
-            } finally {
-                try { if(conn!=null)conn.close();} catch(SQLException ex) {out(ex);}
-            }
-            return response;
+        Connection conn = null;
+        try {
+            conn = ConnGen.getConn();                
+            new Customer().sendMessage(_message, purchaseRepository, conn);
+            response.getStatus().setMessage("Succés");
+        } catch(IllegalAccessException | IllegalArgumentException | InstantiationException | NoSuchMethodException | InvocationTargetException | SQLException | ParseException | InvalidAmountException | InvalidDateException | NotFoundException ex) {
+            this.setError(response, ex);
+            out(ex);
+        } finally {
+            try { if(conn!=null)conn.close();} catch(SQLException ex) {out(ex);}
+        }
+        return response;
     }
     
     @PostMapping(prefix+"/internet")
-    public ResponseBody consumeInternet(@RequestBody String _req) {
+    public ResponseBody consumeInternet(@RequestBody InternetJSON _internet) {
         ResponseBody response = new ResponseBody();
-        // TODO
+        Connection conn = null;
+        try {
+            conn = ConnGen.getConn();
+            new Customer().useInternet(_internet, purchaseRepository, conn);
+            response.getStatus().setMessage("Succés");
+        } catch(Exception ex) {
+            setError(response, ex);
+            out(ex);
+        }
         return response;
     }
 }

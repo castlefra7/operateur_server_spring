@@ -3,11 +3,9 @@
 - solde crédit, solde mobile money      DONE
 - automatic phone_number generation
 - clean up code: controllers should be short
-- URL string for mongodb
 - deploy spring to heroku
 - deploy angular back office to heroku
 - maquette
-- in CDATE class, make dateformat as "yyyy-MM-dd hh:mm"
 - add specific link to access back office
 - add specific link to access front office
 - create a operator table (id, name, phone_prefix)
@@ -17,11 +15,23 @@
 
 
 - buy offer from credit DONE
+
+## today ##
+- use internet
+- find the routes that need to be protected
+- implement authentification
+- in CDATE class, make dateformat as "yyyy-MM-dd hh:mm"
+- URL string for mongodb
 - buy offer from mobile money
 
 
 
+## today ##
+- purchase offer credit  DONE
+- offer appel    DONE
+- jwt authentification DONE
 
+- Only Offer de type "et"
 - offer algorithm for message and calls with interior and exterior price
 
 

@@ -5,6 +5,9 @@
  */
 package mg.operateur.web_services.controllers;
 
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
+import io.jsonwebtoken.JwtException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import mg.operateur.business_logic.mobile_credit.Customer;
@@ -15,6 +18,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
+import java.nio.charset.StandardCharsets;
+import java.security.Key;
+import javax.crypto.SecretKey;
 
 /**
  *
@@ -22,20 +31,22 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 public class TestController {
+
     @Autowired
     PurchaseRepository purchaseRepository;
-    
+
     private static final String prefix = "/test";
+
     private void out(Exception ex) {
-            ex.printStackTrace();
-            System.out.println(ex.getMessage());
-        }
-        
-        private void setError(ResponseBody response, Exception ex) {
-            response.getStatus().setCode(500);
-            response.getStatus().setMessage(ex.getMessage());
-        }
-        
+        ex.printStackTrace();
+        System.out.println(ex.getMessage());
+    }
+
+    private void setError(ResponseBody response, Exception ex) {
+        response.getStatus().setCode(500);
+        response.getStatus().setMessage(ex.getMessage());
+    }
+
     @GetMapping("/error")
     public ResponseBody error() {
         ResponseBody response = new ResponseBody();
@@ -43,27 +54,55 @@ public class TestController {
         response.getStatus().setMessage("Ressource introuvable");
         return response;
     }
-    
+
     @RequestMapping("/test")
-	public ResponseBody index() {
-            ResponseBody response = new ResponseBody();
-            Connection conn = null;
+    public ResponseBody index() {
+        ResponseBody response = new ResponseBody();
+        Connection conn = null;
+        String secretString = "123123123112312312311231231231222";
+        SecretKey key;
+        key = Keys.hmacShaKeyFor(secretString.getBytes(StandardCharsets.UTF_8));
+        
+        try {
+            String jws = Jwts.builder().setHeaderParam("kid", "you").setAudience("you").setIssuer("me").setSubject("Jean").signWith(key).compact();
+            response.getData().add(jws);
+        } catch (Exception ex) {
+            this.setError(response, ex);
+            out(ex);
+        } finally {
             try {
-                response.getStatus().setMessage("Succés");
-            } catch(Exception ex) {
-                this.setError(response, ex);
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException ex) {
                 out(ex);
-            } finally {
-                try { if(conn!=null)conn.close();} catch(SQLException ex) {out(ex);}
             }
-            return response;
-	}
+        }
+
+        Jws<Claims> jws;
+        try {
+            jws = Jwts.parserBuilder() // (1)
+                    .setSigningKey(key) // (2)
+                    .build() // (3)
+                    .parseClaimsJws("eyJraWQiOiJ5b3UiLCJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJ5b3UiLCJpc3MiOiJtZSIsInN1YiI6IkplYW4ifQ.kW7_ApJXKEiEhvGmf7DiclRKgbn3gL6EYU5hzcKiT70"); // (4)
+
+            System.out.println(jws.getBody().getSubject());
+            System.out.println(jws.getBody().getAudience());
+            System.out.println(jws.getBody().getIssuer());
+
+            // we can safely trust the JWT
+        } catch (JwtException ex) {       // (5)
+            this.setError(response, ex);
+            out(ex);
+        }
+        return response;
+    }
 }
 
-
 class AA {
+
     private double montant;
-    
+
     public AA(double _montant) {
         this.setMontant(_montant);
     }
@@ -75,5 +114,5 @@ class AA {
     public void setMontant(double montant) {
         this.montant = montant;
     }
-    
+
 }

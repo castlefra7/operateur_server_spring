@@ -5,6 +5,8 @@
  */
 package mg.operateur.business_logic.offer;
 
+import mg.operateur.gen.RequiredException;
+
 /**
  *
  * @author dodaa
@@ -33,9 +35,9 @@ public class Unit {
         return suffix;
     }
 
-    public void setSuffix(String suffix) throws Exception {
+    public void setSuffix(String suffix) throws RequiredException {
         if (suffix == null)
-            throw new Exception("Unit suffix is required");
+            throw new RequiredException("Unit suffix is required");
         this.suffix = suffix;
     }
 

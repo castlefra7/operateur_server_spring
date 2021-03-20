@@ -4,6 +4,9 @@
  * and open the template in the editor.
  */
 package mg.operateur.business_logic.offer;
+
+import mg.operateur.gen.InvalidAmountException;
+
 /**
  *
  * @author dodaa
@@ -41,9 +44,9 @@ public class Amount {
         return value;
     }
 
-    public void setValue(double value) throws Exception {
+    public void setValue(double value) throws InvalidAmountException {
         if (value < 0)
-            throw new Exception("value must not be negative");
+            throw new InvalidAmountException("value must not be negative");
         this.value = value;
     }
     
