@@ -41,8 +41,6 @@ public class Customer extends Person {
     public Customer(int _id) {
         setId(_id);
     }
-    
-    
 
     public void useInternet(InternetJSON _internet, PurchaseRepository purchaseRepository, Connection conn) throws ParseException, InvalidDateException, SQLException, InstantiationException, NoSuchMethodException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NotFoundException, InvalidAmountException, RequiredException {
         checkLastOperation(CDate.getDate().parse(_internet.getCreated_at()), conn);
@@ -51,6 +49,7 @@ public class Customer extends Person {
         Customer customer = this.find(_internet.getPhone_number(), conn);
         InternetPricing lastPricing = (InternetPricing) new InternetPricing().getLastPricing(date, conn);
         int amountKo = lastPricing.convertToKo(_internet.getAmount());
+        int orgAmount= amountKo;
 
         boolean shouldUseCredit = false;
 
@@ -79,35 +78,41 @@ public class Customer extends Person {
                 purchaseRepository.save(purchase);
             }
         }
-        
+
         if (amountKo > 0 || validPurchases.isEmpty()) {
             shouldUseCredit = true;
         }
-        
-        // TODO check internet application id exists
-        double creditBalance = customer.creditBalance(date, conn);
-
-        int howManyUnit = (int) Math.ceil(creditBalance / lastPricing.getAmount());
-        int nUnitICanAfford = Math.min(amountKo, howManyUnit);
-        if (nUnitICanAfford <= 0) {
-            throw new InvalidAmountException(String.format("Votre crédit est insuffisant"));
-        }
-        double priceToPay = (double) nUnitICanAfford * lastPricing.getAmount();
 
         try {
-            InternetConsumption internetCons = new InternetConsumption();
-            internetCons.setAmount(nUnitICanAfford);
-            internetCons.setCreated_at(date);
-            internetCons.setCustomer_id(customer.getId());
-            internetCons.setInternet_application_id(_internet.getInternet_application_id());
-            internetCons.insert(conn);
-            if(shouldUseCredit) {
+
+            // TODO check internet application id exists
+            
+            // 
+            // 12 000
+
+            if (shouldUseCredit) {
+                double creditBalance = customer.creditBalance(date, conn);
+                int howManyUnit = (int) Math.ceil(creditBalance / lastPricing.getAmount());
+                int nUnitICanAfford = Math.min(amountKo, howManyUnit);
+                if (nUnitICanAfford <= 0) {
+                    throw new InvalidAmountException(String.format("Votre crédit est insuffisant"));
+                }
+                double priceToPay = (double) nUnitICanAfford * lastPricing.getAmount();
                 CreditConsumption creditCons = new CreditConsumption();
                 creditCons.setCreated_at(date);
                 creditCons.setCons_amount(priceToPay);
                 creditCons.setCustomer_id(customer.getId());
                 creditCons.insert(conn);
+                orgAmount = nUnitICanAfford; // TODO why not orgAmount - amountKo + nUnitICanAfford
             }
+
+            InternetConsumption internetCons = new InternetConsumption();
+            internetCons.setAmount(orgAmount);
+            internetCons.setCreated_at(date);
+            internetCons.setCustomer_id(customer.getId());
+            internetCons.setInternet_application_id(_internet.getInternet_application_id());
+            internetCons.insert(conn);
+
             conn.commit();
         } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | SQLException ex) {
             conn.rollback();
@@ -173,7 +178,7 @@ public class Customer extends Person {
                 throw new InvalidAmountException("Votre crédit est insuffisant");
             }
             double priceToPay = (double) nUnitICanAfford * lastPricing.getAmount_interior();
-            this.insertMessageOrCallConsumption(true, false, orgLengthUnit, date, source.getId(), dest.getId(), priceToPay, conn);
+            this.insertMessageOrCallConsumption(true, false, nUnitICanAfford, date, source.getId(), dest.getId(), priceToPay, conn);
         } else {
             this.insertMessageOrCallConsumption(false, false, orgLengthUnit, date, source.getId(), dest.getId(), 0.0, conn);
         }
