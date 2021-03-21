@@ -10,6 +10,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import mg.operateur.gen.RequiredException;
 
 /**
  *
@@ -21,7 +22,7 @@ public class Account {
     private List<Purchase> purchases;
     private List<Consumption> consumptions;
 
-    public Account(int customerId, List<Purchase> purchases, List<Consumption> consumptions) throws Exception {
+    public Account(int customerId, List<Purchase> purchases, List<Consumption> consumptions) throws RequiredException {
         setCustomerId(customerId);
         setPurchases(purchases);
         setConsumptions(consumptions);
@@ -31,9 +32,9 @@ public class Account {
         return consumptions;
     }
 
-    public void setConsumptions(List<Consumption> consumptions) throws Exception {
+    public void setConsumptions(List<Consumption> consumptions) throws RequiredException {
         if (consumptions == null)
-            throw new Exception("consumptions are required");
+            throw new RequiredException("consumptions are required");
         this.consumptions = consumptions;
     }
     
@@ -49,9 +50,9 @@ public class Account {
         return purchases;
     }
 
-    public void setPurchases(List<Purchase> purchases) throws Exception {
+    public void setPurchases(List<Purchase> purchases) throws RequiredException {
         if (purchases == null)
-            throw new Exception("purchases are required");
+            throw new RequiredException("purchases are required");
         this.purchases = purchases;
     }
     

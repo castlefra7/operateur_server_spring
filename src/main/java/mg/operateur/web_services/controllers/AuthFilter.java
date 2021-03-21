@@ -25,6 +25,7 @@ public class AuthFilter extends OncePerRequestFilter  {
       // System.out.println("Remote Address:"+httpServletRequest.getRemoteAddr());
         System.out.println("======Security Filtering=====");
         //System.out.println(authLogic.resolveToken(httpServletRequest));
+        System.out.println(httpServletRequest.getRequestURI());
         System.out.println("=============================");
         filterChain.doFilter(httpServletRequest, httpServletResponse);
    }

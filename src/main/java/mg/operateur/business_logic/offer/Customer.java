@@ -13,12 +13,14 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import mg.operateur.gen.FctGen;
+import mg.operateur.gen.LimitReachedException;
+import mg.operateur.gen.RequiredException;
 import mg.operateur.web_services.controllers.PurchaseRepository;
 /**
  *
  * @author dodaa
  */
-public class Customer {
+public final class Customer {
     
     private int id;
     private String name;
@@ -39,7 +41,7 @@ public class Customer {
     public Customer() {
     }
 
-    public Customer(int id, String name, String email, String phoneNumber) throws Exception {
+    public Customer(int id, String name, String email, String phoneNumber) throws RequiredException {
         setId(id);
         setName(name);
         setEmail(email);
@@ -47,14 +49,14 @@ public class Customer {
         account = new Account(id, new ArrayList<>(), new ArrayList<>());
     }
     
-    public Customer(String name, String email, String phoneNumber) throws Exception {
+    public Customer(String name, String email, String phoneNumber) throws RequiredException {
         setName(name);
         setEmail(email);
         setPhone_number(phoneNumber);
         account = new Account(id, new ArrayList<>(), new ArrayList<>());
     }
     
-    public Customer(String name, String email, String password, Date createdAt, String phoneNumber) throws Exception {
+    public Customer(String name, String email, String password, Date createdAt, String phoneNumber) throws RequiredException, NoSuchAlgorithmException {
         setName(name);
         setEmail(email);
         setPhone_number(phoneNumber);
@@ -83,20 +85,20 @@ public class Customer {
         this.id = id;
     }
 
-    public void setName(String name) throws Exception { 
+    public void setName(String name) throws RequiredException { 
         if (name == null)
-            throw new Exception("customer name required");
+            throw new RequiredException("customer name required");
         this.name = name;
     }
     
-    public void setEmail(String email) throws Exception { 
+    public void setEmail(String email) throws RequiredException { 
         if (email == null)
-            throw new Exception("email is required");
+            throw new RequiredException("email is required");
         this.email = email; 
     }
-    public void setPhone_number(String phone_number) throws Exception { 
+    public void setPhone_number(String phone_number) throws RequiredException { 
         if (phone_number == null)
-            throw new Exception("phonenumber is required");
+            throw new RequiredException("phonenumber is required");
         this.phone_number = phone_number; 
     }
    
@@ -121,22 +123,21 @@ public class Customer {
 //        account.getPurchases().add(new Purchase(id, offer, newPurchaseDate, offer.getId()));
 //    }
     
-    public void purchase (Offer offer, Date newPurchaseDate, Connection conn, PurchaseRepository repo) throws Exception {
+    public void purchase (Offer offer, Date newPurchaseDate, Connection conn, PurchaseRepository repo) throws LimitReachedException, SQLException, RequiredException {
         
         int buyingLimit = offer.getLimitation().getBuyingLimit();
         int buys = 1;
         
-        List<Purchase> validPurchase = account.getValidPurchasesAtDate(newPurchaseDate);
+        List<Purchase> validPurchase = getAccount().getValidPurchasesAtDate(newPurchaseDate);
         for (Purchase purchase : validPurchase) {
             if (purchase.getOffer().equals(offer)) {
                 buys ++;
                 if (buys > buyingLimit) 
-                    throw new Exception("La limite d'achat du forfait " + offer.getName() + " est atteinte");
+                    throw new LimitReachedException("La limite d'achat du forfait " + offer.getName() + " est atteinte");
             }
         }
         int nextId = Purchase.getNextId(conn);
-        Purchase newPurchase = new Purchase(nextId, id, offer, newPurchaseDate, offer.getId());
-//        newPurchase.save(conn);
+        Purchase newPurchase = new Purchase(nextId, getId(), offer, newPurchaseDate, offer.getId());
         repo.save(newPurchase);
     }
     

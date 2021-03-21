@@ -10,6 +10,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Date;
 import mg.operateur.gen.FctGen;
+import mg.operateur.gen.InvalidAmountException;
 
 /**
  *
@@ -18,6 +19,25 @@ import mg.operateur.gen.FctGen;
 public class InternetPricing {
     private Date created_at;
     private double amount;
+    
+    
+    public int convertToKo(String amount) throws InvalidAmountException {
+        amount = amount.toLowerCase();
+        if(amount.length() < 3) throw new InvalidAmountException("Vérifier la consommation entrée");
+        System.out.println(amount);
+        double r = Double.valueOf(amount.substring(0, amount.length()-2));
+        int result = (int)r;
+        if(amount.endsWith("mo")) {
+            result *= 1000;
+        } else if (amount.endsWith("ko")) {
+        } else if(amount.endsWith("go")) {
+            result *= 1000000 ;
+        } else {
+            throw new InvalidAmountException("Vérifier la consommation entrée");
+        }
+        System.out.println(result);
+        return result;
+    }
 
     public Date getCreated_at() {
         return created_at;
@@ -48,5 +68,12 @@ public class InternetPricing {
     
     public String[] columns() {
         return new String[]{"created_at", "amount"};
+    }
+    
+    public InternetPricing getLastPricing(Date _date, Connection conn) throws SQLException, InstantiationException, NoSuchMethodException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+        String req = String.format("select * from %s order by created_at desc limit 1", tableName());
+        Object ob = FctGen.find(this, req, columns(), conn);
+        if(ob ==null) throw new NullPointerException("Pas encore de prix pour cette opération");
+        return (InternetPricing)ob;
     }
 }

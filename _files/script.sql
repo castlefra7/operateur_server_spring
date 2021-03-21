@@ -78,15 +78,6 @@ create table mg.offer_purchases (
     foreign key (customer_id) references mg.customers (id)
 );
 
-
-create table mg.offer_purchases (
-    id serial primary key,
-    customer_id int not null,
-    date date not null,
-    offer_id int not null,
-    foreign key (customer_id) references mg.customers (id)
-);
-
 create sequence mg.offerSeq;
 create sequence mg.purhaseSeq;
 
@@ -139,15 +130,20 @@ create table mg.internet_consumptions (
     foreign key (internet_application_id) references mg.internet_applications(id)
 );
 
-insert into mg.messages_pricings (created_at, amount_interior, amount_exterior, unit) values ('2000-01-01', 100,100, 10);
-insert into mg.calls_pricings (created_at, amount_interior, amount_exterior) values ('2000-01-01', 2,2);
-
 /* ALL NON VALIDATED DEPOSITS */
 create view mg.all_customers_deposits as select mg.deposits.*, mg.customers.phone_number, mg.customers.name from mg.deposits join mg.customers 
 on mg.customers.id = mg.deposits.customer_id;
 
 /* MAX DATE OPERATION */
-create view mg.all_customer_operations as (select mg.deposits.created_at, mg.deposits.customer_id from mg.deposits union all select mg.withdraws.created_at, mg.withdraws.customer_id from mg.withdraws);
+create view mg.all_customer_operations as 
+(select created_at, customer_id from mg.deposits union all 
+select created_at, customer_id from mg.withdraws union all
+select created_at, customer_id from mg.buyed_credits union all
+select created_at, customer_id from mg.credit_consumptions union all
+select date, customer_id from mg.offer_purchases union all
+select created_at, customer_id from mg.messages_calls_consumptions union all
+select created_at, customer_id from mg.internet_consumptions
+);
 
 /* MOBILE MONEY */
 create view mg.deposits_sums as select customer_id, sum(amount) as sum_deposits from mg.deposits where isValidated = true group by customer_id;
@@ -159,9 +155,6 @@ create view mg.customers_balances as select mg.customers.id, (coalesce(sum_depos
 create view mg.buyed_credit_sums as select customer_id, sum(amount) as sum_buyed_credit from mg.buyed_credits group by customer_id;
 create view mg.credit_consumption_sums as select customer_id, sum(cons_amount) as sum_cons_amount from mg.credit_consumptions group by customer_id;
 create view mg.customers_credit_balances as select mg.customers.id, (coalesce(sum_buyed_credit,0) - coalesce(sum_cons_amount,0)) as balance from mg.customers left join mg.buyed_credit_sums on mg.buyed_credit_sums.customer_id = mg.customers.id left join mg.credit_consumption_sums on mg.credit_consumption_sums.customer_id = mg.customers.id;
-
-/* LAST OPERATION */
-select max(((select created_at from mg.deposits where customer_id = customer_source_id and customer_id = 2  order by created_at desc limit 1) union (select created_at from mg.withdraws where customer_id = 2 order by created_at desc limit 1)));
 
 /* DATA */
 /*insert into mg.customers (created_at, name, email, phone_number, password) values ('2021-03-16 08:00', 'rakoto manou', 'rak@gmail.com', '+261331125636', '2811');
@@ -179,6 +172,11 @@ insert into mg.internet_applications (name, created_at) values ('Facebook', '202
 insert into mg.internet_applications (name, created_at) values ('Instagram', '2021-03-19');
 insert into mg.internet_applications (name, created_at) values ('Tiktok', '2021-03-19');
 insert into mg.internet_applications (name, created_at) values ('Internet', '2021-03-19');
+
+
+insert into mg.messages_pricings (created_at, amount_interior, amount_exterior, unit) values ('2000-01-01', 100,100, 10);
+insert into mg.calls_pricings (created_at, amount_interior, amount_exterior) values ('2000-01-01', 2,2);
+insert into mg.internet_pricings (created_at, amount) values ('2000-01-01', 2);
 
 select * from mg.deposits;
 select * from mg.withdraws;

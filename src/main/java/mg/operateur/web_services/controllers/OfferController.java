@@ -5,8 +5,10 @@
  */
 package mg.operateur.web_services.controllers;
 
+import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 import mg.operateur.business_logic.offer.Amount;
@@ -15,12 +17,19 @@ import mg.operateur.business_logic.offer.Limitation;
 import mg.operateur.business_logic.offer.Offer;
 import mg.operateur.business_logic.offer.Unit;
 import mg.operateur.conn.ConnGen;
+import mg.operateur.gen.InvalidAmountException;
+import mg.operateur.gen.InvalidDateException;
+import mg.operateur.gen.LimitReachedException;
+import mg.operateur.gen.NotFoundException;
+import mg.operateur.gen.RequiredException;
 import mg.operateur.web_services.ResponseBody;
+import mg.operateur.web_services.resources.commons.TransacJSON;
 import mg.operateur.web_services.resources.commons.offer.AmountJSON;
 import mg.operateur.web_services.resources.commons.offer.OfferJSON;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -35,7 +44,9 @@ public class OfferController {
     private static final String prefix = "/offers";
 
     @Autowired
-    private OfferRepository repository;
+    private OfferRepository offerRepository;
+     @Autowired
+    private PurchaseRepository purchaseRepository;
     
     private void out(Exception ex) {
         ex.printStackTrace();
@@ -51,6 +62,27 @@ public class OfferController {
     public ResponseBody index() {
         ResponseBody response = new ResponseBody();
        response.getStatus().setMessage("Offer endpoint");
+        return response;
+    }
+    
+        
+    @PostMapping(value = prefix+"/{offer_id}/buy")
+    public ResponseBody create(
+            @PathVariable("offer_id") int _offerId, 
+            @RequestBody TransacJSON _purchase
+    ) {
+        ResponseBody response = new ResponseBody();
+        Connection conn = null;
+        try {
+            conn = ConnGen.getConn();
+            new Offer().buy(_offerId, _purchase, offerRepository, purchaseRepository, conn);
+            response.getStatus().setMessage("Succés");
+        } catch(IllegalAccessException | IllegalArgumentException | InstantiationException | NoSuchMethodException | InvocationTargetException | SQLException | ParseException | InvalidAmountException | InvalidDateException | LimitReachedException | NotFoundException | RequiredException ex) {
+            setError(response, ex);
+            out(ex);
+        } finally {
+            try {if(conn!=null) conn.close();}catch(SQLException ex) {setError(response, ex);out(ex);}
+        }
         return response;
     }
     
@@ -72,7 +104,7 @@ public class OfferController {
             
             int lastId = Offer.getLastId(conn);
             Offer offer = new Offer(lastId, _offer.getName(), _offer.getCreatedAt(), _offer.getPrice(), _offer.getValidityDay(), limitation, amounts, _offer.getPriority());
-            repository.save(offer);
+            offerRepository.save(offer);
             response.getStatus().setMessage("Offer Created");
                 response.getData().add(offer);
         } catch(Exception ex) {
@@ -93,7 +125,7 @@ public class OfferController {
     public ResponseBody read() {
         ResponseBody response = new ResponseBody();
         try {
-            List<Offer> allOffers = repository.findAll();
+            List<Offer> allOffers = offerRepository.findAll();
             ArrayList<Object> list = new ArrayList<Object>();
             allOffers.forEach(o -> list.add(o));
             response.setData(list);
