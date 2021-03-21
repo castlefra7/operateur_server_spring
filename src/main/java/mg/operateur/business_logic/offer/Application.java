@@ -5,7 +5,13 @@
  */
 package mg.operateur.business_logic.offer;
 
+import java.lang.reflect.InvocationTargetException;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
+import mg.operateur.gen.FctGen;
 
 /**
  *
@@ -77,6 +83,25 @@ public class Application {
         if (unit == null)
             throw new Exception("unit is required");
         this.unit = unit;
+    }
+    
+    public List<Application> findAll(Connection conn) 
+            throws SQLException, InstantiationException, IllegalAccessException, InstantiationException, InvocationTargetException, NoSuchMethodException, Exception {
+        List<Object> objects = FctGen.findAll(new Application(), "SELECT * FROM mg.internet_applications", columns(), conn);
+        ArrayList<Application> val = new ArrayList<Application>();
+        objects.forEach(o -> {
+            Application app = (Application) o;
+            app.setInternet_application_id(app.getId());
+            app.setT_type('i');
+            val.add(app);
+        });
+        val.add(new Application(-1, "message", 'm', -1, new Unit()));
+        val.add(new Application(-1, "appel", 'c', -1, new Unit()));
+        return val;
+    }
+    
+    public String[] columns() {
+        return new String[] {"id", "name"};
     }
 
     @Override
