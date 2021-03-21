@@ -32,16 +32,17 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
  *
  * @author lacha
  */
+@RequestMapping("/offers")
 @CrossOrigin(origins = "*")
 @RestController
 public class OfferController {
-    private static final String prefix = "/offers";
 
     @Autowired
     private OfferRepository offerRepository;
@@ -58,7 +59,7 @@ public class OfferController {
         response.getStatus().setMessage(ex.getMessage());
     }
     
-    @GetMapping(prefix + "/ping")
+    @GetMapping("/ping")
     public ResponseBody index() {
         ResponseBody response = new ResponseBody();
        response.getStatus().setMessage("Offer endpoint");
@@ -66,7 +67,7 @@ public class OfferController {
     }
     
         
-    @PostMapping(value = prefix+"/{offer_id}/buy")
+    @PostMapping(value = "/{offer_id}/buy")
     public ResponseBody create(
             @PathVariable("offer_id") int _offerId, 
             @RequestBody TransacJSON _purchase
@@ -86,7 +87,7 @@ public class OfferController {
         return response;
     }
     
-    @PostMapping(prefix)
+    @PostMapping()
     public ResponseBody create(@RequestBody OfferJSON _offer) {
         ResponseBody response = new ResponseBody();
         Connection conn = null;
@@ -121,7 +122,7 @@ public class OfferController {
         return response;
     }
     
-    @GetMapping(prefix)
+    @GetMapping()
     public ResponseBody read() {
         ResponseBody response = new ResponseBody();
         try {

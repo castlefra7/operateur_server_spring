@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /*
@@ -28,10 +29,10 @@ import org.springframework.web.bind.annotation.RestController;
  *
  * @author lacha
  */
+@RequestMapping("/pricings")
 @CrossOrigin(origins = "*")
 @RestController
 public class PricingController {
-    private static final String prefix = "/pricings";
     
     private void out(Exception ex) {
         ex.printStackTrace();
@@ -43,14 +44,14 @@ public class PricingController {
         response.getStatus().setMessage(ex.getMessage());
     }
     
-    @GetMapping(prefix)
+    @GetMapping()
     public ResponseBody index() {
         ResponseBody response = new ResponseBody();
         response.getStatus().setMessage("Tarifs EndPoint");
         return response;
     }
     
-    @PostMapping(prefix + "/messages")
+    @PostMapping("/messages")
     public ResponseBody messageCallPricing(@RequestBody MessagePricingJSON _message) {
         ResponseBody response = new ResponseBody();
         Connection conn = null;
@@ -76,7 +77,7 @@ public class PricingController {
         return response;
     }
     
-    @PostMapping(prefix + "/calls")
+    @PostMapping("/calls")
     public ResponseBody messagePricing(@RequestBody PricingJSON _message) {
         ResponseBody response = new ResponseBody();
         Connection conn = null;
@@ -102,7 +103,7 @@ public class PricingController {
     }
     
     
-    @PostMapping(prefix + "/internet")
+    @PostMapping("/internet")
     public ResponseBody internetPricing(@RequestBody InternetPricingJSON _internet) {
         ResponseBody response = new ResponseBody();
         Connection conn = null;

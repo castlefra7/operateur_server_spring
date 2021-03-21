@@ -9,6 +9,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import mg.operateur.business_logic.offer.Operator;
 import mg.operateur.conn.ConnGen;
+import mg.operateur.gen.CDate;
 import mg.operateur.web_services.ResponseBody;
 import mg.operateur.web_services.resources.commons.offer.CustomerJSON;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,11 +23,11 @@ import org.springframework.web.bind.annotation.RestController;
  *
  * @author lacha
  */
+@RequestMapping("/signup")
 @CrossOrigin(origins = "*")
 @RestController
 public class SignupController {
     
-    private static final String PREFIX = "signup";
     
     @Autowired
     private OfferRepository offerRepository;
@@ -41,14 +42,14 @@ public class SignupController {
         response.getStatus().setMessage(ex.getMessage());
     }
     
-    @RequestMapping(PREFIX + "/ping")
+    @RequestMapping("/ping")
     public ResponseBody index() {
         ResponseBody response = new ResponseBody();
        response.getStatus().setMessage("Signup endpoint");
         return response;
     }
     
-    @PostMapping(PREFIX)
+    @PostMapping()
     public ResponseBody signup(
             @RequestBody CustomerJSON _customer
     ) {
@@ -58,7 +59,7 @@ public class SignupController {
             conn = ConnGen.getConn();
             Operator orange = new mg.operateur.business_logic.offer.Operator("Orange", "+26133");
             mg.operateur.business_logic.offer.Customer customer = new mg.operateur.business_logic.offer.
-                    Customer(_customer.getName(), _customer.getEmail(), _customer.getPassword(), _customer.getCreatedAt(), orange.issueNewPhoneNumber());
+                    Customer(_customer.getName(), _customer.getEmail(), _customer.getPassword(), CDate.getDate().parse(_customer.getCreatedAt()), orange.issueNewPhoneNumber());
             customer.save(conn);
             response.getData().add(customer);
         } catch(Exception ex) {

@@ -15,6 +15,17 @@ import java.sql.SQLException;
  * @author lacha
  */
 public class Deposit extends Transaction{
+    
+    private boolean isValidated;
+
+    public boolean getIsValidated() {
+        return isValidated;
+    }
+
+    public void setIsValidated(boolean isValidated) {
+        this.isValidated = isValidated;
+    }
+    
 
     public Deposit(int _id) {
         this.setId(_id);
@@ -41,7 +52,7 @@ public class Deposit extends Transaction{
 
     @Override
     public String[] columns() {
-        return new String[]{"created_at", "customer_id", "amount", "customer_source_id"};
+        return new String[]{"created_at", "customer_id", "amount", "customer_source_id", "isvalidated"};
     }
     
 

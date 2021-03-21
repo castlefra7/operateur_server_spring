@@ -10,16 +10,18 @@ package mg.operateur.web_services.resources.commons;
  * @author lacha
  */
 public class AskJSON {
-    private int customer_id;
+    private String phone_number;
     private String date;
 
-    public int getCustomer_id() {
-        return customer_id;
+    public String getPhone_number() {
+        return phone_number;
     }
 
-    public void setCustomer_id(int customer_id) {
-        this.customer_id = customer_id;
+    public void setPhone_number(String phone_number) {
+        this.phone_number = phone_number;
     }
+
+ 
 
     public String getDate() {
         return date;

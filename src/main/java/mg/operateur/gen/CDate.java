@@ -14,8 +14,8 @@ import java.util.Date;
  * @author lacha
  */
 public class CDate {
-    public static SimpleDateFormat getDate() {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd"); // TODO ADD HOURS AND MINUTES
+    public static CustomDateFormat getDate() {
+        CustomDateFormat sdf = new CustomDateFormat("yyyy-MM-dd HH:mm");
         return sdf;
     }
     

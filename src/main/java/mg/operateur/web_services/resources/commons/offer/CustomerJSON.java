@@ -15,7 +15,7 @@ public class CustomerJSON {
     private String name;
     private String email;
     private String password;
-    private Date createdAt;
+    private String createdAt;
 
     public String getName() {
         return name;
@@ -41,11 +41,11 @@ public class CustomerJSON {
         this.password = password;
     }
 
-    public Date getCreatedAt() {
+    public String getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(Date createdAt) {
+    public void setCreatedAt(String createdAt) {
         this.createdAt = createdAt;
     }
 }

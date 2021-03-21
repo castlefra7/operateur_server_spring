@@ -24,19 +24,20 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
  *
  * @author lacha
  */
+@RequestMapping("/consume")
 @CrossOrigin(origins = "*")
 @RestController
 public class ConsumptionController {
     @Autowired
     PurchaseRepository purchaseRepository;
     
-    private static final String prefix = "/consume";
     
     private void out(Exception ex) {
         ex.printStackTrace();
@@ -48,14 +49,14 @@ public class ConsumptionController {
         response.getStatus().setMessage(ex.getMessage());
     }
     
-    @GetMapping(prefix)
+    @GetMapping()
     public ResponseBody index() {
         ResponseBody response = new ResponseBody();
         response.getStatus().setMessage("Consumption EndPoints");
         return response;
     }
     
-    @PostMapping(prefix+"/calls")
+    @PostMapping("/calls")
     public ResponseBody consumeCalls(@RequestBody CallJSON _call) {
         ResponseBody response = new ResponseBody();
             Connection conn = null;
@@ -72,7 +73,7 @@ public class ConsumptionController {
             return response;
     }
     
-    @PostMapping(prefix+"/messages")
+    @PostMapping("/messages")
     public ResponseBody consumeMessages(@RequestBody MessageJSON _message) {
          ResponseBody response = new ResponseBody();
         Connection conn = null;
@@ -89,7 +90,7 @@ public class ConsumptionController {
         return response;
     }
     
-    @PostMapping(prefix+"/internet")
+    @PostMapping("/internet")
     public ResponseBody consumeInternet(@RequestBody InternetJSON _internet) {
         ResponseBody response = new ResponseBody();
         Connection conn = null;

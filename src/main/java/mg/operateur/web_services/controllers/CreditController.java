@@ -27,10 +27,10 @@ import org.springframework.web.bind.annotation.RestController;
  *
  * @author lacha
  */
+@RequestMapping("/credits")
 @CrossOrigin(origins = "*")
 @RestController
 public class CreditController {
-    private static final String prefix = "/credit";
     
     private void out(Exception ex) {
         ex.printStackTrace();
@@ -42,20 +42,21 @@ public class CreditController {
         response.getStatus().setMessage(ex.getMessage());
     }
     
-    @RequestMapping(prefix)
+    @RequestMapping()
     public ResponseBody index() {
         ResponseBody response = new ResponseBody();
        response.getStatus().setMessage("Crédit endpoint");
         return response;
     }
     
-    @GetMapping(prefix+"/balance")
+    @GetMapping("/balance")
     public ResponseBody balance( @RequestBody AskJSON _ask) {
         ResponseBody response = new ResponseBody();
         Connection conn = null;
         try {
             conn = ConnGen.getConn();
-            double balance = new Customer(_ask.getCustomer_id()).creditBalance(CDate.getDate().parse(_ask.getDate()), conn);
+            
+            double balance = new Customer().creditBalance(_ask, conn);
             response.getData().add(new MessageJSON("Solde de votre crédit est de " + balance));
         } catch(Exception ex) {
             setError(response, ex);
@@ -67,7 +68,7 @@ public class CreditController {
         return response;
     }
     
-    @PostMapping(prefix+"/buy")
+    @PostMapping("/buy")
     public ResponseBody buy(@RequestBody CreditJSON _credit) {
         ResponseBody response = new ResponseBody();
         Connection conn = null;
@@ -91,7 +92,7 @@ public class CreditController {
         return response;
     }
     
-    @PostMapping(prefix+"/transfer")
+    @PostMapping("/transfer")
     public ResponseBody transfer(@RequestBody TransferJSON _transfer) {
         ResponseBody response = new ResponseBody();
         Connection conn = null;

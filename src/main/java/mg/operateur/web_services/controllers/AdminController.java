@@ -8,18 +8,19 @@ package mg.operateur.web_services.controllers;
 import mg.operateur.web_services.ResponseBody;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
  *
  * @author lacha
  */
+@RequestMapping("/admin")
 @CrossOrigin(origins = "*")
 @RestController
 public class AdminController {
-    private static final String prefix = "/admin";
     
-    @GetMapping(prefix)
+    @GetMapping()
     public ResponseBody index() {
         ResponseBody response = new ResponseBody();
         response.getStatus().setMessage("Admin endpoints");

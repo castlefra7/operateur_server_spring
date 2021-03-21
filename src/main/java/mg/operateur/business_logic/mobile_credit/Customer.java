@@ -25,6 +25,7 @@ import mg.operateur.gen.InvalidFormatException;
 import mg.operateur.gen.NotFoundException;
 import mg.operateur.gen.RequiredException;
 import mg.operateur.web_services.controllers.PurchaseRepository;
+import mg.operateur.web_services.resources.commons.AskJSON;
 import mg.operateur.web_services.resources.consumptions.CallJSON;
 import mg.operateur.web_services.resources.consumptions.InternetJSON;
 import mg.operateur.web_services.resources.consumptions.MessageJSON;
@@ -85,10 +86,7 @@ public class Customer extends Person {
 
         try {
 
-            // TODO check internet application id exists
-            
-            // 
-            // 12 000
+            new InternetApplication().find(_internet.getInternet_application_id(), conn);
 
             if (shouldUseCredit) {
                 double creditBalance = customer.creditBalance(date, conn);
@@ -128,6 +126,8 @@ public class Customer extends Person {
 
         Customer source = this.find(_call.getPhone_number_source(), conn);
         Customer dest = this.find(_call.getPhone_number_destination(), conn);
+        
+        if(source == dest) throw new InvalidFormatException("Vérifier le numéro de destination");
 
         Date date = CDate.getDate().parse(_call.getDate());
         CallPricing lastPricing = (CallPricing) new CallPricing().getLastPricing(date, conn);
@@ -143,6 +143,8 @@ public class Customer extends Person {
         /**
          * ** Begin use call using offers ****
          */
+        
+        
         List<Purchase> validPurchases = findAllValidPurchases(source.getId(), date, purchaseRepository, conn);
         if (validPurchases.size() > 0) {
             for (Purchase purchase : validPurchases) {
@@ -217,7 +219,7 @@ public class Customer extends Person {
                             lengthUnit = 0;
                             break;
                         } else {
-                            lengthUnit = Math.abs(((int) amount.getValue() - lengthUnit));
+                            lengthUnit = Math.abs(((int) orgValue - lengthUnit));
                         }
 
                     }
@@ -229,6 +231,7 @@ public class Customer extends Person {
         if (lengthUnit > 0 || validPurchases.isEmpty()) {
             shouldUseCredit = true;
         }
+        
 
         if (shouldUseCredit) {
             // TODO CHECK IF EXTERIOR
@@ -240,6 +243,7 @@ public class Customer extends Person {
                 throw new InvalidAmountException(String.format("Votre crédit est insuffisant. %d messages n'a pas été envoyé", lengthUnit));
             }
             double priceToPay = (double) nUnitICanAfford * lastPricing.getAmount_interior();
+            System.out.println(priceToPay);
             this.insertMessageOrCallConsumption(shouldUseCredit, true, nUnitICanAfford, date, source.getId(), dest.getId(), priceToPay, conn);
         } else {
             this.insertMessageOrCallConsumption(false, true, orgLengthUnit, date, source.getId(), dest.getId(), 0.0, conn);
@@ -252,8 +256,9 @@ public class Customer extends Person {
         List<Purchase> allPurchases = Purchase.findByCustomerId(1, purchaseRepository);
         // TODO sort by Offer priority
         for (Purchase purchase : allPurchases) {
+            System.out.println(purchase.getDate());
             Offer offer = purchase.getOffer();
-            Date endValidity = CDate.addDay(offer.getCreatedAt(), offer.getValidityDay());
+            Date endValidity = CDate.addDay(purchase.getDate(), offer.getValidityDay());
             if (endValidity.after(_date)) {
                 result.add(purchase);
             }
@@ -294,8 +299,22 @@ public class Customer extends Person {
         }
     }
 
+    public double mobileBalance(AskJSON _ask, Connection conn)  throws SQLException, InstantiationException, NoSuchMethodException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NotFoundException, ParseException {
+        double result = 0;
+        Customer source = this.find(_ask.getPhone_number(), conn);
+        result = source.mobileBalance(CDate.getDate().parse(_ask.getDate()), conn);
+        return result;
+    }
+    
     public double mobileBalance(Date date, Connection conn) throws SQLException {
         return FctGen.getAmount(String.format("select balance from mg.customers_balances where id = %d", getId()), "balance", conn);
+    }
+    
+    public double creditBalance(AskJSON _ask,Connection conn) throws SQLException, InstantiationException, NoSuchMethodException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NotFoundException, ParseException {
+        double result = 0;
+        Customer source = this.find(_ask.getPhone_number(), conn);
+        result = source.creditBalance(CDate.getDate().parse(_ask.getDate()), conn);;
+        return result;
     }
 
     public double creditBalance(Date date, Connection conn) throws SQLException {
@@ -309,6 +328,7 @@ public class Customer extends Person {
         if (!currCust.getPassword().equals(PasswordHelper.md5(pwd))) {
             throw new Exception("Mot de passe incorrect");
         }
+        
         if (amount > this.creditBalance(date, conn)) {
             throw new Exception("Votre crédit est insuffisant");
         }
@@ -387,17 +407,17 @@ public class Customer extends Person {
         _withdraw.setCreated_at(date);
         _withdraw.setCustomer_id(getId());
         _withdraw.setAmount(amount);
-        _withdraw.setFee(getFeeAmount(amount, conn));
 
         Deposit _deposit = new Deposit();
         _deposit.setCreated_at(date);
         _deposit.setCustomer_id(_customer_dest_id);
         _deposit.setCustomer_source_id(getId());
-        double amountToDeposit = _withdraw.getAmount() - _withdraw.getFee();
+        _deposit.setIsValidated(true);
+        double amountToDeposit = _withdraw.getAmount() - getFeeAmount(amount, conn);
         _deposit.setAmount(amountToDeposit);
 
         try {
-            withdraw(_withdraw, pwd, false, conn);
+            withdraw(_withdraw, pwd, true, conn);
             Customer newCust = new Customer(_customer_dest_id);
             newCust.deposit(_deposit, conn);
 
@@ -422,7 +442,7 @@ public class Customer extends Person {
         if (isFree == false) {
             withdraw.setFee(getFeeAmount(withdraw.getAmount(), conn));
         }
-        if ((withdraw.getAmount() + withdraw.getFee()) > mobileBalance(withdraw.getCreated_at(), conn)) {
+        if ((withdraw.getAmount()) > mobileBalance(withdraw.getCreated_at(), conn)) {
             throw new Exception("Votre solde est insuffisant pour effectuer cette opération");
         }
 
@@ -460,8 +480,9 @@ public class Customer extends Person {
     }
 
     private Date lastOperationDate(Connection conn) throws SQLException {
-        String req = String.format("select *  from mg.all_customer_operations where customer_id= %d", getId());
-        return FctGen.getDate(req, "created_at", conn);
+        // TODO: also get Purchases operation date in mongodb
+        String req = String.format("select max(created_at) as max  from mg.all_customer_operations where customer_id= %d", getId());
+        return FctGen.getDate(req, "max", conn);
     }
 
     public void deposit(Deposit deposit, Connection conn) throws SQLException, IllegalAccessException, InvocationTargetException, Exception {

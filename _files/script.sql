@@ -142,13 +142,16 @@ select created_at, customer_id from mg.buyed_credits union all
 select created_at, customer_id from mg.credit_consumptions union all
 select date, customer_id from mg.offer_purchases union all
 select created_at, customer_id from mg.messages_calls_consumptions union all
-select created_at, customer_id from mg.internet_consumptions
+select created_at, customer_id from mg.internet_consumptions union all
+select created_at, id from mg.customers
 );
 
 /* MOBILE MONEY */
 create view mg.deposits_sums as select customer_id, sum(amount) as sum_deposits from mg.deposits where isValidated = true group by customer_id;
 create view mg.withdraws_sums as select customer_id, sum(amount + fee) as sum_withdraws from mg.withdraws group by customer_id;
-create view mg.customers_balances as select mg.customers.id, (coalesce(sum_deposits, 0) - coalesce(sum_withdraws, 0)) as balance from mg.customers left join mg.deposits_sums on mg.deposits_sums.customer_id = mg.customers.id left join mg.withdraws_sums on mg.withdraws_sums.customer_id = mg.customers.id;
+create view mg.customers_balances as select mg.customers.id, (coalesce(sum_deposits, 0) - coalesce(sum_withdraws, 0)) as balance 
+from mg.customers left join mg.deposits_sums on mg.deposits_sums.customer_id = mg.customers.id 
+left join mg.withdraws_sums on mg.withdraws_sums.customer_id = mg.customers.id;
 
 
 /* CREDIT */
@@ -183,3 +186,4 @@ select * from mg.withdraws;
 select * from mg.customers_balances order by id;
 select * from mg.customers_credit_balances order by id;
 select * from mg.buyed_credits;
+select * from mg.customers;

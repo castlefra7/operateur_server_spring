@@ -29,6 +29,7 @@ import javax.crypto.SecretKey;
  *
  * @author lacha
  */
+@RequestMapping("/test")
 @RestController
 public class TestController {
 
@@ -55,7 +56,7 @@ public class TestController {
         return response;
     }
 
-    @RequestMapping("/test")
+    @RequestMapping()
     public ResponseBody index() {
         ResponseBody response = new ResponseBody();
         Connection conn = null;

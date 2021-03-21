@@ -27,10 +27,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
+@RequestMapping("/mobilemoney")
 @CrossOrigin(origins = "*")
 @RestController
 public class MobileMoneyController {
-        private static final String prefix = "/mobilemoney";
         
         private void out(Exception ex) {
             ex.printStackTrace();
@@ -42,14 +42,14 @@ public class MobileMoneyController {
             response.getStatus().setMessage(ex.getMessage());
         }
         
-    @GetMapping(prefix+"/balance")
+    @GetMapping("/balance")
     public ResponseBody balance( @RequestBody AskJSON _ask) {
         ResponseBody response = new ResponseBody();
         Connection conn = null;
         try {
             conn = ConnGen.getConn();
-            double balance = new Customer(_ask.getCustomer_id()).mobileBalance(CDate.getDate().parse(_ask.getDate()), conn);
-            response.getData().add(new MessageJSON("Solde de votre crédit est de " + balance));
+            double balance = new Customer().mobileBalance(_ask, conn);
+            response.getData().add(new MessageJSON("Solde de votre mobile money est de " + balance));
         } catch(Exception ex) {
             setError(response, ex);
             out(ex);
@@ -60,7 +60,7 @@ public class MobileMoneyController {
         return response;
     }
         
-        @PostMapping(prefix+"/buycredit")
+        @PostMapping("/buycredit")
         public ResponseBody buyCredit(@RequestBody CreditMobileJSON _credit) {
             ResponseBody response = new ResponseBody();
             Connection conn = null;
@@ -84,7 +84,7 @@ public class MobileMoneyController {
             return response;
         }
         
-        @PostMapping(prefix+"/fees")
+        @PostMapping("/fees")
         public ResponseBody fees(@RequestBody FeeJSON _fee) {
             ResponseBody response = new ResponseBody();
             Connection conn = null;
@@ -107,14 +107,14 @@ public class MobileMoneyController {
             return response;
         }
         
-	@RequestMapping(prefix)
+	@RequestMapping()
 	public ResponseBody index() {
             ResponseBody response = new ResponseBody();
             response.getStatus().setMessage("Mobile money");
             return response;
 	}
         
-        @PostMapping(prefix+"/deposit")
+        @PostMapping("/deposit")
         public ResponseBody deposit(@RequestBody DepositJSON _deposit) {
             ResponseBody response = new ResponseBody();
             
@@ -141,7 +141,7 @@ public class MobileMoneyController {
             return response;
         }
         
-        @PostMapping(prefix+"/withdraw")
+        @PostMapping("/withdraw")
         public ResponseBody withdraw(@RequestBody WithdrawJSON _withdraw) {
             ResponseBody response = new ResponseBody();
             Connection conn = null;
@@ -150,6 +150,7 @@ public class MobileMoneyController {
                 Customer customer;
                 customer = new Customer().find(_withdraw.getPhone_number(), conn);
                 
+                System.out.println(_withdraw.getDate());
                 Withdraw withdraw = new Withdraw();
                 withdraw.setCreated_at(CDate.getDate().parse(_withdraw.getDate()));
                 
@@ -168,7 +169,7 @@ public class MobileMoneyController {
             return response;
         }
         
-        @PostMapping(prefix+"/transfer")
+        @PostMapping("/transfer")
         public ResponseBody transfer(@RequestBody TransferJSON _transfer) {
             ResponseBody response = new ResponseBody();
             Connection conn = null;

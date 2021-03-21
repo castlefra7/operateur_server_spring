@@ -184,7 +184,10 @@ public class FctGen {
                 args[0] = rs.getDouble(colName);
             } else if (returnClass.getSimpleName().equals("float")) {
                 args[0] = rs.getFloat(colName);
-            } else {
+            } else if (returnClass.getSimpleName().equals("boolean")) {
+                args[0] = rs.getBoolean(colName);
+            } 
+            else {
                 throw new IllegalArgumentException("Type de données non gérer");
             }
         } else if (returnClass.getSimpleName().toLowerCase().equals("string")) {
@@ -220,6 +223,8 @@ public class FctGen {
             if (value != null) result = "'" + value.toString() + "'";
         } else if (returnClass.getSimpleName().toLowerCase().equals("char")) {
             if(value!=null) result = "'" + value.toString() + "'";
+        } else if(returnClass.getSimpleName().toLowerCase().equals("boolean")) {
+            if(value != null) result = value.toString();
         }
         return result;
     }

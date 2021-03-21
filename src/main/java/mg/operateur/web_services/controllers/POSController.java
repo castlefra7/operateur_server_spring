@@ -15,16 +15,17 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
  *
  * @author lacha
  */
+@RequestMapping("/pos")
 @CrossOrigin(origins = "*")
 @RestController
 public class POSController {
-    private static final String prefix =  "/pos";
     
     private void out(Exception ex) {
         ex.printStackTrace();
@@ -37,14 +38,14 @@ public class POSController {
     }
     
     
-    @GetMapping(prefix)
+    @GetMapping()
     public ResponseBody index() {
         ResponseBody response = new ResponseBody();
         response.getStatus().setMessage("POS endpoint");
         return response;
     }
     
-    @PutMapping(prefix+"/validate/{id}")
+    @PutMapping("/validate/{id}")
     public ResponseBody validateDeposit(@PathVariable(value="id")int id) {
         ResponseBody response = new ResponseBody();
         Connection conn= null;
@@ -62,7 +63,7 @@ public class POSController {
         return response;
     }
     
-    @GetMapping(prefix+"/deposits")
+    @GetMapping("/deposits")
     public ResponseBody allNonValidatedDeposits() {
         ResponseBody response = new ResponseBody();
         Connection conn= null;

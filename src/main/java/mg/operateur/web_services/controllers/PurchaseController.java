@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
  *
  * @author lacha
  */
+@RequestMapping("/purchases")
 @CrossOrigin(origins = "*")
 @RestController
 public class PurchaseController {
@@ -39,7 +40,7 @@ public class PurchaseController {
         response.getStatus().setMessage(ex.getMessage());
     }
     
-    @RequestMapping("purchases/ping")
+    @RequestMapping("/ping")
     public ResponseBody index() {
         ResponseBody response = new ResponseBody();
        response.getStatus().setMessage("Purchase endpoint");
