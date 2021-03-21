@@ -31,7 +31,9 @@ public class InternetPricing {
         return amount;
     }
 
-    public void setAmount(double amount) {
+    public void setAmount(double amount) throws Exception {
+        if (amount < 0)
+            throw new Exception("Veuillez entrer un prix d'internet Positif");
         this.amount = amount;
     }
     

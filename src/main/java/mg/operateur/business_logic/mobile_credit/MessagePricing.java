@@ -22,7 +22,9 @@ public class MessagePricing extends Pricing {
         return unit;
     }
 
-    public void setUnit(int unit) {
+    public void setUnit(int unit) throws Exception {
+        if (unit < 0)
+            throw new Exception("Veuillez entrer une unité de message positive");
         this.unit = unit;
     }
     
