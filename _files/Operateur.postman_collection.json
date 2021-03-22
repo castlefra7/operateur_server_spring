@@ -8,6 +8,16 @@
 		{
 			"name": "Testing New Funtionnality",
 			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJraWQiOiJ5b3UiLCJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI5IiwiaXNzIjoibWUiLCJzdWIiOiJKZWFuIn0.LGH1zISNy_VtN7NT-0UHxGeWjdiOC9AVVSS-Eb7UFhY",
+							"type": "string"
+						}
+					]
+				},
 				"method": "GET",
 				"header": [],
 				"url": {
@@ -466,11 +476,21 @@
 		{
 			"name": "Insert call pricing",
 			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJraWQiOiJ5b3UiLCJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIxIiwiaXNzIjoibWUiLCJzdWIiOiJKZWFuIn0.1UcuqQVhhY02WzY-rvIOflY4RyC09UlX0XQ1h7sDsvc",
+							"type": "string"
+						}
+					]
+				},
 				"method": "POST",
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\"date\": \"2021-02-01 15:00\", \"application_id\": \"3\", \"amount_interior\": \"50\", \"amount_exterior\": \"100\"}",
+					"raw": "{\"date\": \"2021-02-01 15:00\", \"application_id\": \"-1\", \"amount_interior\": \"50\", \"amount_exterior\": \"100\"}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -478,12 +498,13 @@
 					}
 				},
 				"url": {
-					"raw": "{{URL}}/pricings",
+					"raw": "{{URL}}/pricings/calls",
 					"host": [
 						"{{URL}}"
 					],
 					"path": [
-						"pricings"
+						"pricings",
+						"calls"
 					]
 				}
 			},
@@ -504,12 +525,13 @@
 					}
 				},
 				"url": {
-					"raw": "{{URL}}/pricings",
+					"raw": "{{URL}}/pricings/messages",
 					"host": [
 						"{{URL}}"
 					],
 					"path": [
-						"pricings"
+						"pricings",
+						"messages"
 					]
 				}
 			},
@@ -564,6 +586,73 @@
 					"path": [
 						"mobilemoney",
 						"fees"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Sign in",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"phoneNumber\": \"+261330938572\", \"password\": \"2811\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL}}/auth/signin",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"auth",
+						"signin"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Statistics",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJraWQiOiJ5b3UiLCJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIxIiwiaXNzIjoibWUiLCJzdWIiOiJKZWFuIn0.1UcuqQVhhY02WzY-rvIOflY4RyC09UlX0XQ1h7sDsvc",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"date\": \"2021-03-22\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL}}/stats/",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"stats",
+						""
 					]
 				}
 			},
