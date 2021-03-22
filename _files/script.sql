@@ -9,7 +9,9 @@ create schema mg;
 create table mg.users (
     id serial primary key,
     created_at timestamp not null,
-    name varchar(255) not null
+    name varchar(255) not null,
+    pwd varchar(255) not null,
+    unique(name)
 );
 
 create table mg.customers (

@@ -29,10 +29,6 @@ public class Customer {
     private String password;
     private Date created_at;
 
-
-    
-    
-
     public Account getAccount() {
         return account;
     }

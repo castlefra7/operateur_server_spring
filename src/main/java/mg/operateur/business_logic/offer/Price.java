@@ -20,7 +20,6 @@ public class Price {
         setPrice(price);
         setPer(per);
     }
-    
 
     public double getPrice() {
         return price;

@@ -9,6 +9,7 @@ import io.jsonwebtoken.Jwts;
 import java.sql.Connection;
 import java.sql.SQLException;
 import mg.operateur.business_logic.mobile_credit.Customer;
+import mg.operateur.business_logic.offer.Admin;
 import mg.operateur.business_logic.offer.Operator;
 import mg.operateur.business_logic.offer.PasswordHelper;
 import mg.operateur.conn.Auth;
@@ -17,7 +18,6 @@ import mg.operateur.gen.CDate;
 import mg.operateur.web_services.AuthResponseBody;
 import mg.operateur.web_services.ResponseBody;
 import mg.operateur.web_services.resources.commons.offer.CustomerJSON;
-import static org.springframework.data.mongodb.core.mapreduce.GroupBy.key;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -80,6 +80,37 @@ public class AuthController {
         return response;
     }
     
+    @PostMapping("/signin/admin")
+    public ResponseBody signinAdmin(
+            @RequestBody CustomerJSON _customer
+    ) {    
+        AuthResponseBody response = new AuthResponseBody();
+        Connection conn = null;
+        try {
+            conn = ConnGen.getConn();
+            Admin found = new Admin().FindByName(_customer.getName(), conn);
+            
+            if (!found.getPwd().equals(PasswordHelper.md5(_customer.getPassword())))
+                throw new Exception("Mot de passe ou numero incorrect");
+            
+            String jws = Jwts.builder().setHeaderParam("kid", "you").setAudience(String.valueOf(found.getName())).setIssuer("me").setSubject("Admin").signWith(Auth.getKey()).compact();
+            response.setToken(jws);
+            response.getData().add(found);
+            response.getStatus().setMessage("okay");
+        } catch(Exception ex) {
+            setError(response, ex);
+            out(ex);
+        } finally {
+            try {
+                if(conn!=null) conn.close();
+            }  catch(SQLException ex) {
+                setError(response, ex);
+                out(ex);
+            }
+        }
+        return response;
+    }
+    
     @PostMapping("/signup")
     public AuthResponseBody signup(
             @RequestBody CustomerJSON _customer
@@ -98,6 +129,36 @@ public class AuthController {
             String jws = Jwts.builder().setHeaderParam("kid", "you").setAudience(String.valueOf(id)).setIssuer("me").setSubject("Jean").signWith(Auth.getKey()).compact();
             response.setToken(jws);
             response.getData().add(customer);
+        } catch(Exception ex) {
+            setError(response, ex);
+            out(ex);
+        } finally {
+            try {
+                if(conn!=null) conn.close();
+            }  catch(SQLException ex) {
+                setError(response, ex);
+                out(ex);
+            }
+        }
+        return response;
+    }
+    
+    @PostMapping("/signup/admin")
+    public AuthResponseBody signupAdmin(
+            @RequestBody CustomerJSON _customer
+    ) {
+        AuthResponseBody response = new AuthResponseBody();
+        Connection conn = null;
+        try {
+            conn = ConnGen.getConn();
+            Admin admin = new Admin();
+            admin.setName(_customer.getName());
+            admin.setPwd(PasswordHelper.md5(_customer.getPassword()));
+            admin.setCreated_at(CDate.getDate().parse(_customer.getCreatedAt()));
+            admin.insert(conn);
+           
+            response.getData().add(admin);
+            response.getStatus().setMessage("okay");
         } catch(Exception ex) {
             setError(response, ex);
             out(ex);
