@@ -53,7 +53,7 @@ public class AuthController {
     @PostMapping("/signin")
     public ResponseBody signin(
             @RequestBody CustomerJSON _customer
-    ) { 
+    ) {    
         AuthResponseBody response = new AuthResponseBody();
         Connection conn = null;
         try {
@@ -63,7 +63,8 @@ public class AuthController {
             if (!found.getPassword().equals(PasswordHelper.md5(_customer.getPassword())))
                 throw new Exception("Mot de passe ou numero incorrect");
             
-            response.setToken("Bearer token");
+            String jws = Jwts.builder().setHeaderParam("kid", "you").setAudience(String.valueOf(found.getId())).setIssuer("me").setSubject("Jean").signWith(Auth.getKey()).compact();
+            response.setToken(jws);
             response.getData().add(found);
         } catch(Exception ex) {
             setError(response, ex);
@@ -80,10 +81,10 @@ public class AuthController {
     }
     
     @PostMapping("/signup")
-    public ResponseBody signup(
+    public AuthResponseBody signup(
             @RequestBody CustomerJSON _customer
     ) {
-        ResponseBody response = new ResponseBody();
+        AuthResponseBody response = new AuthResponseBody();
         Connection conn = null;
         try {
             conn = ConnGen.getConn();
@@ -95,8 +96,7 @@ public class AuthController {
             int id = createdCust.getId();
             
             String jws = Jwts.builder().setHeaderParam("kid", "you").setAudience(String.valueOf(id)).setIssuer("me").setSubject("Jean").signWith(Auth.getKey()).compact();
-            
-            customer.setToken(jws);
+            response.setToken(jws);
             response.getData().add(customer);
         } catch(Exception ex) {
             setError(response, ex);

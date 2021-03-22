@@ -4,10 +4,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.security.Keys;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import javax.crypto.SecretKey;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -35,35 +32,32 @@ public class AuthFilter extends OncePerRequestFilter {
         System.out.println("======Security Filtering=====");
         String uri = httpServletRequest.getRequestURI();
         String[] splited = uri.split("/");
-        
+
         if (splited.length >= 1) {
             String controller = splited[1];
-            if (controller.equals("test")) {
+            if (controller.equals("pricings")) {
 
                 String token = authLogic.resolveToken(httpServletRequest);
-                if(token == null) {
-                    httpServletResponse.sendError(0, "Votre token est invalide");
+                if (token == null) {
+                    httpServletResponse.sendError(0, "Veuillez spécifier un token");
                     return;
+                } else {
+                    // validate the token
+                    Jws<Claims> jws;
+                    try {
+                        jws = Jwts.parserBuilder()
+                                .setSigningKey(Auth.getKey())
+                                .build()
+                                .parseClaimsJws(token);
+                        System.out.println(jws.getBody().getSubject() + " " + jws.getBody().getAudience()+ " " + jws.getBody().getIssuer());
+                    } catch (JwtException ex) {
+                        httpServletResponse.sendError(0, "Votre token est invalide");
+                        return;
+                    }
                 }
-                Jws<Claims> jws;
-                try {
-                    jws = Jwts.parserBuilder() // (1)
-                            .setSigningKey(Auth.getKey()) // (2)
-                            .build() // (3)
-                            .parseClaimsJws(token); // (4)
 
-                    System.out.println(jws.getBody().getSubject());
-                    System.out.println(jws.getBody().getAudience());
-                    System.out.println(jws.getBody().getIssuer());
-
-                    // we can safely trust the JWT
-                } catch (JwtException ex) {       // (5)
-                    httpServletResponse.sendError(0, "Votre token est invalide");
-                    return;
-                }
             }
         }
-        System.out.println();
         System.out.println("=============================");
         filterChain.doFilter(httpServletRequest, httpServletResponse);
     }
