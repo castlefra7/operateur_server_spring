@@ -1,10 +1,138 @@
 {
 	"info": {
-		"_postman_id": "fdae777a-fb5f-4b4d-bfdf-a20fab8fffdf",
-		"name": "Operateur Copy",
+		"_postman_id": "bf6227fe-5397-4f21-af44-72bd96091f44",
+		"name": "Operateur",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
+		{
+			"name": "Testing New Funtionnality",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{URL}}/test",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"test"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "SignUp",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"name\": \"rakotovao rabe\", \"email\": \"brze@gmail.com\", \"password\": \"2811\", \"createdAt\": \"2021-03-01 15:00\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL}}/auth/signup",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"auth",
+						"signup"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Buy credit",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"amount\": \"5000\", \"phone_number\": \"+261330938572\", \"date\": \"2021-03-01 15:00\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL}}/credits/buy",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"credits",
+						"buy"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Credit Balance",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"phone_number\": \"+261330938572\", \"date\": \"2021-12-31\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL}}/credits/balance",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"credits",
+						"balance"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Transfer credit",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"amount\": \"1000\", \"phone_number\": \"+261330688754\", \"date\": \"2021-03-01 15:30\", \"password\": \"2811\", \"phone_number_destination\": \"+261331496230\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL}}/credits/transfer",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"credits",
+						"transfer"
+					]
+				}
+			},
+			"response": []
+		},
 		{
 			"name": "Deposit mobile money",
 			"request": {
@@ -15,7 +143,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\"amount\": \"10000\", \"phone_number\": \"+261331125636\", \"date\": \"2021-03-19\"}",
+					"raw": "{\"amount\": \"10000\", \"phone_number\": \"+261330938572\", \"date\": \"2021-03-25 08:00\"}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -36,13 +164,107 @@
 			"response": []
 		},
 		{
+			"name": "Non validated deposits",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{URL}}/pos/deposits",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"pos",
+						"deposits"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Validate Deposit",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"url": {
+					"raw": "{{URL}}/pos/validate/1",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"pos",
+						"validate",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Mobile money balance",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"phone_number\": \"+261331529573\", \"date\": \"2021-12-31\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL}}/mobilemoney/balance",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"mobilemoney",
+						"balance"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Buy credit from mobile money",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"amount\": \"950\", \"phone_number\": \"+261331529573\", \"date\": \"2021-03-02 10:00\", \"password\": \"2811\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL}}/mobilemoney/buycredit",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"mobilemoney",
+						"buycredit"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "Withdraw mobile money",
 			"request": {
 				"method": "POST",
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\"amount\": \"1000\", \"phone_number\": \"+261331125636\", \"date\": \"2021-03-18\", \"password\": \"2811\"}",
+					"raw": "{\"amount\": \"5000\", \"phone_number\": \"+261331529573\", \"date\": \"2021-03-02 08:30\", \"password\": \"2811\"}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -69,7 +291,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\"amount\": \"10000\", \"phone_number\": \"+261331125636\", \"date\": \"2021-03-17\", \"password\": \"2811\", \"phone_number_destination\": \"+261331525636\"}",
+					"raw": "{\"amount\": \"4000\", \"phone_number\": \"+261331529573\", \"date\": \"2021-03-02 09:00\", \"password\": \"2811\", \"phone_number_destination\": \"+261331765467\"}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -90,84 +312,13 @@
 			"response": []
 		},
 		{
-			"name": "Buy credit",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\"amount\": \"-1\", \"phone_number\": \"+261331125636\", \"date\": \"2021-03-17\"}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "{{URL}}/credit/buy",
-					"host": [
-						"{{URL}}"
-					],
-					"path": [
-						"credit",
-						"buy"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "credit transfer",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\"amount\": \"15700\", \"phone_number\": \"+261331125636\", \"date\": \"2021-03-17\", \"password\": \"2811\", \"phone_number_destination\": \"+261331525636\"}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "{{URL}}/credit/transfer",
-					"host": [
-						"{{URL}}"
-					],
-					"path": [
-						"credit",
-						"transfer"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Testing New Funtionnality",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "{{URL}}/test",
-					"host": [
-						"{{URL}}"
-					],
-					"path": [
-						"test"
-					]
-				}
-			},
-			"response": []
-		},
-		{
 			"name": "Create Offer",
 			"request": {
 				"method": "POST",
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"id\" : 12,\r\n    \"name\": \"iTA AMZAY\",\r\n    \"price\" : 1000,\r\n    \"createdAt\": \"2021-03-17\",\r\n    \"validityDay\": 7,\r\n    \"limitation\": {\r\n        \"buyingLimit\": 2,\r\n        \"durationInDays\": 7\r\n    },\r\n    \"priority\" : 2,\r\n    \"amounts\": [\r\n        {\r\n            \"application\": {\r\n                \"id\" : 1,\r\n                \"name\": \"Facebook\",\r\n                \"t_type\": \"i\",\r\n                \"internet_application_id\": 1,\r\n                \"unit\": {\r\n                    \"id\": 1,\r\n                    \"suffix\": \"Mo\"\r\n                }\r\n            },\r\n            \"value\": 1000\r\n        }\r\n    ]\r\n}",
+					"raw": "\r\n{\r\n    \"name\": \"Message 20\",\r\n    \"createdAt\": \"2021-01-01\",\r\n    \"validityDay\": 2,\r\n    \"limitation\": {\r\n        \"buyingLimit\": 2,\r\n        \"durationInDays\": 1\r\n    },\r\n    \"price\": 200,\r\n    \"amounts\": [\r\n        {\r\n            \"application\": {\r\n                \"id\": 1,\r\n                \"name\": \"message\",\r\n                \"internet_application_id\": -1,\r\n                \"t_type\": \"m\",\r\n                \"unit\": {\r\n                    \"id\": 1,\r\n                    \"suffix\": \"N\"\r\n                }\r\n            },\r\n            \"value\": 20\r\n        }\r\n    ]\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -192,12 +343,10 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:8080/offers",
-					"protocol": "http",
+					"raw": "{{URL}}/offers",
 					"host": [
-						"localhost"
+						"{{URL}}"
 					],
-					"port": "8080",
 					"path": [
 						"offers"
 					]
@@ -212,7 +361,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"phone_number\" : \"+261330869341\",\r\n    \"date\" : \"2021-07-02\"\r\n}",
+					"raw": "{\r\n    \"phone_number\" : \"+261330938572\",\r\n    \"date\" : \"2021-03-03 08:00\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -234,13 +383,13 @@
 			"response": []
 		},
 		{
-			"name": "Insert message pricing",
+			"name": "Make a call",
 			"request": {
 				"method": "POST",
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\"date\": \"2021-02-01 15:00\", \"amount_interior\": \"50\", \"amount_exterior\": \"100\", \"unit\": 160}",
+					"raw": "{\"date\": \"2021-03-03 12:00\", \"phone_number_source\": \"+261330938572\",  \"phone_number_destination\": \"+261330938572\", \"duration\": \"00:00:60\"}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -248,13 +397,67 @@
 					}
 				},
 				"url": {
-					"raw": "{{URL}}/pricings/messages",
+					"raw": "{{URL}}/consume/calls",
 					"host": [
 						"{{URL}}"
 					],
 					"path": [
-						"pricings",
+						"consume",
+						"calls"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Send message",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"date\": \"2021-03-03 13:00\", \"phone_number_source\": \"+261330938572\",  \"phone_number_destination\": \"+261330938572\", \"text\": \"aaaaaaaaaaaaaaaaaaaaaa\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL}}/consume/messages",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"consume",
 						"messages"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Use Internet",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"created_at\": \"2021-03-20\", \"amount\": \"1ko\", \"phone_number\": \"+261330938572\", \"internet_application_id\": \"4\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL}}/consume/internet",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"consume",
+						"internet"
 					]
 				}
 			},
@@ -267,7 +470,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\"date\": \"2021-02-01 15:00\", \"amount_interior\": \"50\", \"amount_exterior\": \"100\"}",
+					"raw": "{\"date\": \"2021-02-01 15:00\", \"application_id\": \"3\", \"amount_interior\": \"50\", \"amount_exterior\": \"100\"}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -275,13 +478,38 @@
 					}
 				},
 				"url": {
-					"raw": "{{URL}}/pricings/calls",
+					"raw": "{{URL}}/pricings",
 					"host": [
 						"{{URL}}"
 					],
 					"path": [
-						"pricings",
-						"calls"
+						"pricings"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Insert message pricing",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"date\": \"2021-02-01 15:00\", \"application_id\": \"2\", \"amount_interior\": \"50\", \"amount_exterior\": \"100\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL}}/pricings",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"pricings"
 					]
 				}
 			},
@@ -294,7 +522,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\"date\": \"2021-02-01 15:00\", \"amount\": \"50\"}",
+					"raw": "{\"date\": \"2021-02-01 15:00\", \"application_id\": \"1\", \"amount_interior\": \"50\"}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -336,126 +564,6 @@
 					"path": [
 						"mobilemoney",
 						"fees"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Buy credit from mobile money",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\"amount\": \"5000\", \"phone_number\": \"+261331125636\", \"date\": \"2021-03-19\", \"password\": \"2811\"}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "{{URL}}/mobilemoney/buycredit",
-					"host": [
-						"{{URL}}"
-					],
-					"path": [
-						"mobilemoney",
-						"buycredit"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Validate Deposit",
-			"request": {
-				"method": "PUT",
-				"header": [],
-				"url": {
-					"raw": "{{URL}}/pos/validate/1",
-					"host": [
-						"{{URL}}"
-					],
-					"path": [
-						"pos",
-						"validate",
-						"1"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Non validated deposits",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "{{URL}}/pos/deposits",
-					"host": [
-						"{{URL}}"
-					],
-					"path": [
-						"pos",
-						"deposits"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Send message",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\"date\": \"2021-03-19\", \"phone_number_source\": \"+261331125636\",  \"phone_number_destination\": \"+261331525636\", \"text\": \"12\"}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "{{URL}}/consume/messages",
-					"host": [
-						"{{URL}}"
-					],
-					"path": [
-						"consume",
-						"messages"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Signup",
-			"protocolProfileBehavior": {
-				"disableBodyPruning": true
-			},
-			"request": {
-				"method": "GET",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"name\": \"Baks\",\r\n    \"email\" : \"baks@gmail.com\",\r\n    \"password\" : \"tainalika\",\r\n    \"createdAt\" : \"2021-03-18\"\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "{{URL}}/signup",
-					"host": [
-						"{{URL}}"
-					],
-					"path": [
-						"signup"
 					]
 				}
 			},

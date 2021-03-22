@@ -11,6 +11,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import mg.operateur.business_logic.offer.Amount;
@@ -173,7 +174,6 @@ public class Customer extends Person {
 
         if (shouldUseCredit) {
             // TODO CHECK IF EXTERIOR
-            // TODO check last operation of message, calls, internet, deposits, withdraws, transfers, buy credit, buy offer, purchase offer and So date should be >= lastDate
             double creditBalance = source.creditBalance(date, conn);
             int nUnitICanAfford = Math.min((int) Math.floor(creditBalance / lastPricing.getAmount_interior()), numberSecond);
             if (nUnitICanAfford <= 0) {
@@ -235,7 +235,6 @@ public class Customer extends Person {
 
         if (shouldUseCredit) {
             // TODO CHECK IF EXTERIOR
-            // TODO check last operation of message, calls, internet, deposits, withdraws, transfers, buy credit, buy offer and So date should be >= lastDate
             double creditBalance = source.creditBalance(date, conn);
             int howManyUnit = (int) Math.ceil(creditBalance / lastPricing.getAmount_interior());
             int nUnitICanAfford = Math.min(howManyUnit, lengthUnit);
@@ -254,15 +253,14 @@ public class Customer extends Person {
     public List<Purchase> findAllValidPurchases(int customer_id, Date _date, PurchaseRepository purchaseRepository, Connection conn) {
         List<Purchase> result = new ArrayList();
         List<Purchase> allPurchases = Purchase.findByCustomerId(1, purchaseRepository);
-        // TODO sort by Offer priority
         for (Purchase purchase : allPurchases) {
-            System.out.println(purchase.getDate());
             Offer offer = purchase.getOffer();
             Date endValidity = CDate.addDay(purchase.getDate(), offer.getValidityDay());
             if (endValidity.after(_date)) {
                 result.add(purchase);
             }
         }
+        Collections.sort(result);
 
         return result;
     }

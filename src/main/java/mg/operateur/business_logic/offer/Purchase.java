@@ -18,7 +18,7 @@ import org.springframework.data.annotation.Id;
  *
  * @author dodaa
  */
-public final class Purchase {
+public final class Purchase implements Comparable {
     
     @Id
     private int id;
@@ -121,7 +121,6 @@ public final class Purchase {
 //        }
 //    }
     
-    // TODO Limit averina mandeha
     public static List<Purchase> findByCustomerId(int customerId, PurchaseRepository repo) {
         return repo.findByCustomer_id(customerId);
     }
@@ -129,5 +128,17 @@ public final class Purchase {
     @Override
     public String toString() {
         return "OfferPurchase{" + "\t\nid=" + id + ", \t\ncustomerId=" + customer_id + ", \t\npurchaseDate=" + date + ", \t\noffer=" + offer + '}';
+    }
+
+    @Override
+    public int compareTo(Object o) {
+        Purchase purchase = (Purchase)o;
+        if(this.getOffer().getPriority() > purchase.getOffer().getPriority()) {
+            return 1;
+        } else if (this.getOffer().getPriority() < purchase.getOffer().getPriority()) {
+            return -1;
+        } else {
+            return 0;
+        }
     }
 }

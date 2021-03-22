@@ -23,7 +23,13 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
 import javax.crypto.SecretKey;
+import mg.operateur.business_logic.offer.Offer;
+import mg.operateur.business_logic.offer.Purchase;
 
 /**
  *
@@ -59,8 +65,12 @@ public class TestController {
     @RequestMapping()
     public ResponseBody index() {
         ResponseBody response = new ResponseBody();
-        
-        /*Connection conn = null;
+       
+        return response;
+    }
+}
+
+  /*Connection conn = null;
         String secretString = "123123123112312312311231231231222";
         SecretKey key;
         key = Keys.hmacShaKeyFor(secretString.getBytes(StandardCharsets.UTF_8));
@@ -99,24 +109,28 @@ public class TestController {
             this.setError(response, ex);
             out(ex);
         }*/
-        return response;
-    }
-}
 
-class AA {
 
-    private double montant;
+/*
 
-    public AA(double _montant) {
-        this.setMontant(_montant);
-    }
 
-    public double getMontant() {
-        return montant;
-    }
+ try {
+            List<Purchase> all = new ArrayList();
+            Offer o1 = new Offer();
+            o1.setPriority(15);
+            Offer o2 = new Offer();
+            o2.setPriority(3);
 
-    public void setMontant(double montant) {
-        this.montant = montant;
-    }
+            all.add(new Purchase(1, 1, o1, new Date(), 1));
+            all.add(new Purchase(2, 1, o2, new Date(), 1));
 
-}
+            Collections.sort(all);
+            
+            for(Purchase p: all) {
+                System.out.println(p.getId());
+            }
+        } catch (Exception ex) {
+            out(ex);
+        }
+
+*/
