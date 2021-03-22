@@ -187,3 +187,6 @@ select * from mg.customers_balances order by id;
 select * from mg.customers_credit_balances order by id;
 select * from mg.buyed_credits;
 select * from mg.customers;
+
+insert into mg.internet_applications (name, created_at) values ('Facebook', '2021-03-22');
+insert into mg.internet_applications (name, created_at) values ('Internet', '2021-03-22');
