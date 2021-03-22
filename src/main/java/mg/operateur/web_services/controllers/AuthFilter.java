@@ -35,7 +35,7 @@ public class AuthFilter extends OncePerRequestFilter {
 
         if (splited.length >= 1) {
             String controller = splited[1];
-            if (controller.equals("pricings")) {
+            if (controller.equals("pricings") || controller.equals("stats")) {
 
                 String token = authLogic.resolveToken(httpServletRequest);
                 if (token == null) {
