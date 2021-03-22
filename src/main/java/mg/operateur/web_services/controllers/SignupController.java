@@ -15,7 +15,6 @@ import mg.operateur.web_services.resources.commons.offer.CustomerJSON;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -48,31 +47,5 @@ public class SignupController {
        response.getStatus().setMessage("Signup endpoint");
         return response;
     }
-    
-    @PostMapping()
-    public ResponseBody signup(
-            @RequestBody CustomerJSON _customer
-    ) {
-        ResponseBody response = new ResponseBody();
-        Connection conn = null;
-        try {
-            conn = ConnGen.getConn();
-            Operator orange = new mg.operateur.business_logic.offer.Operator("Orange", "+26133");
-            mg.operateur.business_logic.offer.Customer customer = new mg.operateur.business_logic.offer.
-                    Customer(_customer.getName(), _customer.getEmail(), _customer.getPassword(), CDate.getDate().parse(_customer.getCreatedAt()), orange.issueNewPhoneNumber());
-            customer.save(conn);
-            response.getData().add(customer);
-        } catch(Exception ex) {
-            setError(response, ex);
-            out(ex);
-        } finally {
-            try {
-                if(conn!=null) conn.close();
-            }  catch(SQLException ex) {
-                setError(response, ex);
-                out(ex);
-            }
-        }
-        return response;
-    }
+
 }

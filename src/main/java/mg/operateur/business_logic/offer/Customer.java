@@ -20,8 +20,8 @@ import mg.operateur.web_services.controllers.PurchaseRepository;
  *
  * @author dodaa
  */
-public final class Customer {
-    
+public class Customer {
+    private String token;
     private int id;
     private String name;
     private String email;
@@ -29,6 +29,17 @@ public final class Customer {
     private Account account;
     private String password;
     private Date created_at;
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
+    
+    
+    
 
     public Account getAccount() {
         return account;

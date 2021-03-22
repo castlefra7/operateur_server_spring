@@ -1,32 +1,70 @@
 package mg.operateur.web_services.controllers;
 
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
+import io.jsonwebtoken.JwtException;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.security.Keys;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import javax.crypto.SecretKey;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import mg.operateur.conn.Auth;
 import org.springframework.web.filter.OncePerRequestFilter;
-
 
 import org.springframework.stereotype.Component;
 
 @Component
-public class AuthFilter extends OncePerRequestFilter  {
-   private AuthLogic authLogic = new AuthLogic();
+public class AuthFilter extends OncePerRequestFilter {
 
-   @Override
-   public void destroy() {}
+    private AuthLogic authLogic = new AuthLogic();
 
-   @Override
-   protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, FilterChain filterChain) throws ServletException, IOException {
-      
-      // System.out.println("Remote Host:"+request.getRemoteHost());
-      // System.out.println("Remote Address:"+httpServletRequest.getRemoteAddr());
+    @Override
+    public void destroy() {
+    }
+
+    @Override
+    protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, FilterChain filterChain) throws ServletException, IOException {
+
+        // System.out.println("Remote Host:"+request.getRemoteHost());
+        // System.out.println("Remote Address:"+httpServletRequest.getRemoteAddr());
         System.out.println("======Security Filtering=====");
-        //System.out.println(authLogic.resolveToken(httpServletRequest));
-        System.out.println(httpServletRequest.getRequestURI());
+        String uri = httpServletRequest.getRequestURI();
+        String[] splited = uri.split("/");
+        
+        if (splited.length >= 1) {
+            String controller = splited[1];
+            if (controller.equals("test")) {
+
+                String token = authLogic.resolveToken(httpServletRequest);
+                if(token == null) {
+                    httpServletResponse.sendError(0, "Votre token est invalide");
+                    return;
+                }
+                Jws<Claims> jws;
+                try {
+                    jws = Jwts.parserBuilder() // (1)
+                            .setSigningKey(Auth.getKey()) // (2)
+                            .build() // (3)
+                            .parseClaimsJws(token); // (4)
+
+                    System.out.println(jws.getBody().getSubject());
+                    System.out.println(jws.getBody().getAudience());
+                    System.out.println(jws.getBody().getIssuer());
+
+                    // we can safely trust the JWT
+                } catch (JwtException ex) {       // (5)
+                    httpServletResponse.sendError(0, "Votre token est invalide");
+                    return;
+                }
+            }
+        }
+        System.out.println();
         System.out.println("=============================");
         filterChain.doFilter(httpServletRequest, httpServletResponse);
-   }
+    }
 }

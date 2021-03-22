@@ -15,7 +15,7 @@ public class CustomerJSON {
     private String name;
     private String email;
     private String password;
-    private Date createdAt;
+    private String createdAt;
     private String phoneNumber;
 
     public String getPhoneNumber() {

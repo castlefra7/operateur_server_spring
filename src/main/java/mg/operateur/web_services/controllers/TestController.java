@@ -59,10 +59,13 @@ public class TestController {
     @RequestMapping()
     public ResponseBody index() {
         ResponseBody response = new ResponseBody();
-        Connection conn = null;
+        
+        /*Connection conn = null;
         String secretString = "123123123112312312311231231231222";
         SecretKey key;
         key = Keys.hmacShaKeyFor(secretString.getBytes(StandardCharsets.UTF_8));
+        
+        System.out.println("/off".split("/")[1]);
         
         try {
             String jws = Jwts.builder().setHeaderParam("kid", "you").setAudience("you").setIssuer("me").setSubject("Jean").signWith(key).compact();
@@ -95,7 +98,7 @@ public class TestController {
         } catch (JwtException ex) {       // (5)
             this.setError(response, ex);
             out(ex);
-        }
+        }*/
         return response;
     }
 }
