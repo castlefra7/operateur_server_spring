@@ -16,13 +16,23 @@ import mg.operateur.gen.InvalidAmountException;
 public class Amount {
     private Application application;
     private double value;
+    private Utilization utilization;
+
+    public Utilization getUtilization() {
+        return utilization;
+    }
+
+    public void setUtilization(Utilization utilization) {
+        this.utilization = utilization;
+    }
 
     public Amount() {
     }
 
-    public Amount(Application application, double value) throws Exception {
+    public Amount(Application application, double value, Utilization utilization) throws Exception {
         setApplication(application);
         setValue(value);
+        setUtilization(utilization);
     }
     
     public Amount (Amount amount) throws Exception {
@@ -54,7 +64,7 @@ public class Amount {
         if (!amount.getApplication().equals(this.application))
             throw new Exception("Amounts of different applications cannot be added");
         double val = this.value + amount.getValue();
-        return new Amount(application, val);
+        return new Amount(application, val, amount.getUtilization());
     }
 
     @Override

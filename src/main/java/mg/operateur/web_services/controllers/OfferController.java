@@ -15,7 +15,9 @@ import mg.operateur.business_logic.offer.Amount;
 import mg.operateur.business_logic.offer.Application;
 import mg.operateur.business_logic.offer.Limitation;
 import mg.operateur.business_logic.offer.Offer;
+import mg.operateur.business_logic.offer.Price;
 import mg.operateur.business_logic.offer.Unit;
+import mg.operateur.business_logic.offer.Utilization;
 import mg.operateur.conn.ConnGen;
 import mg.operateur.gen.InvalidAmountException;
 import mg.operateur.gen.InvalidDateException;
@@ -100,7 +102,9 @@ public class OfferController {
                 AmountJSON amountJSON = _offer.getAmounts().get(i);
                 Unit unit = new Unit(amountJSON.getApplication().getUnit().getId(), amountJSON.getApplication().getUnit().getSuffix());
                 Application application = new Application(amountJSON.getApplication().getId(), amountJSON.getApplication().getName(), amountJSON.getApplication().getT_type(), amountJSON.getApplication().getInternet_application_id(), unit);
-                amounts.add(new Amount(application, amountJSON.getValue()));
+                Price intra = new Price(amountJSON.getUtilization().getIntra().getPrice(), amountJSON.getUtilization().getIntra().getPer());
+                Price extra = new Price(amountJSON.getUtilization().getExtra().getPrice(), amountJSON.getUtilization().getExtra().getPer());
+                amounts.add(new Amount(application, amountJSON.getValue(), new Utilization(intra, extra)));
             }
             
             int lastId = Offer.getLastId(conn);

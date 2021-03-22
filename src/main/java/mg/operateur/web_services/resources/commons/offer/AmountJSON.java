@@ -15,6 +15,15 @@ import mg.operateur.business_logic.offer.Application;
 public class AmountJSON {
     private ApplicationJSON application;
     private double value;
+    private UtilizationJSON utilization;
+
+    public UtilizationJSON getUtilization() {
+        return utilization;
+    }
+
+    public void setUtilization(UtilizationJSON utilization) {
+        this.utilization = utilization;
+    }
 
     public ApplicationJSON getApplication() {
         return application;
