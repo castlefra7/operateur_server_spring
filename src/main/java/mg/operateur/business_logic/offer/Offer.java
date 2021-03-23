@@ -227,6 +227,5 @@ public final class Offer {
     public String toString() {
         return "Offer{" + "\t\nid=" + id + ", \t\nname=" + name + ", \t\nprice=" + price + ", \t\ncreatedAt=" + createdAt + ", \t\nvalidityDay=" + validityDay + ", \t\nlimitation=" + limitation 
                 + ", \t\namounts=" + amounts + '}';
-    }
-    
+    }   
 }

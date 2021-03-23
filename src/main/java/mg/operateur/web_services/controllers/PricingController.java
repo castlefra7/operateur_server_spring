@@ -30,7 +30,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @author lacha
  */
 @RequestMapping("/pricings")
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
 public class PricingController {
     
