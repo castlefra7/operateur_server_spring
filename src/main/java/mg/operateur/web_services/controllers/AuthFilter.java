@@ -38,7 +38,7 @@ public class AuthFilter extends OncePerRequestFilter {
             if (controller.equals("pricings") || controller.equals("stats") || controller.equals("pos") ) {
 
                 String token = authLogic.resolveToken(httpServletRequest);
-               /* if (token == null) {
+                if (token == null) {
                     httpServletResponse.sendError(0, "Veuillez spécifier un token");
                     return;
                     
@@ -61,7 +61,7 @@ public class AuthFilter extends OncePerRequestFilter {
                         httpServletResponse.sendError(0, "Votre token est invalide");
                         return;
                     }
-                }*/
+                }
 
             }
         }
