@@ -94,6 +94,8 @@ create table mg.messages_calls_consumptions (
     foreign key (customer_destination_id) references mg.customers(id)
 );
 
+
+
 /*TODO: Store message to MONGODB */
 create table mg.messages_pricings (
     id serial primary key,
@@ -131,6 +133,12 @@ create table mg.internet_consumptions (
     foreign key (customer_id) references mg.customers(id),
     foreign key (internet_application_id) references mg.internet_applications(id)
 );
+    
+/* CALLS history */
+create view mg.calls_history as select mg.messages_calls_consumptions.created_at, mg.messages_calls_consumptions.amount, mg.customers.phone_number, 
+mg.messages_calls_consumptions.customer_id 
+from mg.messages_calls_consumptions join
+mg.customers on mg.customers.id = mg.messages_calls_consumptions.customer_destination_id where mg.messages_calls_consumptions.t_type = 'c';
 
 /* ALL NON VALIDATED DEPOSITS */
 create view mg.all_customers_deposits as select mg.deposits.*, mg.customers.phone_number, mg.customers.name from mg.deposits join mg.customers 

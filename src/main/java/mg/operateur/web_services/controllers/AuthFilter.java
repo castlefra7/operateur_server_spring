@@ -35,7 +35,7 @@ public class AuthFilter extends OncePerRequestFilter {
 
         if (splited.length >= 1) {
             String controller = splited[1];
-            if (controller.equals("pricings") || controller.equals("stats")) {
+            if (controller.equals("pricings") || controller.equals("stats") ) {
 
                 String token = authLogic.resolveToken(httpServletRequest);
                 if (token == null) {
@@ -49,7 +49,13 @@ public class AuthFilter extends OncePerRequestFilter {
                                 .setSigningKey(Auth.getKey())
                                 .build()
                                 .parseClaimsJws(token);
-                        System.out.println(jws.getBody().getSubject() + " " + jws.getBody().getAudience()+ " " + jws.getBody().getIssuer());
+                        //System.out.println(jws.getBody().getSubject() + " " + jws.getBody().getAudience()+ " " + jws.getBody().getIssuer());
+                        if(controller.equals("pricings")) {
+                            if(!jws.getBody().getSubject().equals("Admin")) {
+                                throw new JwtException("Vous n'avez pas l'autorisation");
+                            }
+                        }
+                        // TODO if it is /customers/callshistory, pass the  customer_id into the request
                     } catch (JwtException ex) {
                         httpServletResponse.sendError(0, "Votre token est invalide");
                         return;

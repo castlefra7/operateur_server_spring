@@ -153,7 +153,15 @@ public class Customer extends Person {
                 for (Amount amount : allAmounts) {
                     Application app = amount.getApplication();
                     if (app.getT_type() == 'c' && amount.getValue() > 0) {
-                        double orgValue = amount.getValue();
+                        double val = amount.getValue();
+                        if(amount.getApplication().getUnit().getSuffix().toLowerCase().equals("mn")) {
+                            val = val * 60;
+                        } else if (amount.getApplication().getUnit().getSuffix().toLowerCase().equals("hr")) {
+                            val = val * 3600; 
+                        }
+                        amount.getApplication().getUnit().setSuffix("sec");
+                        
+                        double orgValue = val;
                         int remainingValue = ((int) orgValue - numberSecond) > 0 ? ((int) orgValue - numberSecond) : 0;
                         amount.setValue(remainingValue);
                         if (((int) orgValue - numberSecond) >= 0) {

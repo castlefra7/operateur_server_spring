@@ -89,7 +89,6 @@ public class AuthController {
         try {
             conn = ConnGen.getConn();
             Admin found = new Admin().FindByName(_customer.getName(), conn);
-            
             if (!found.getPwd().equals(PasswordHelper.md5(_customer.getPassword())))
                 throw new Exception("Mot de passe ou numero incorrect");
             
