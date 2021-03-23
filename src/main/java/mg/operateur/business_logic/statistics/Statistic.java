@@ -38,13 +38,11 @@ public class Statistic {
     
     public List<OfferStat> getOffersStat(Date date, PurchaseRepository purchase, Connection conn) {
         List<OfferStat> result = new ArrayList();
-        // get all purchases
-        // create an hasmap
         List<Purchase> all = purchase.findAll();
         HashMap<Integer, Integer> counts = new HashMap<>();
         HashSet<OfferStat> offersName = new HashSet();
         for(Purchase p: all) {
-            if(p.getDate().compareTo(date) < 0 ){
+            if(p.getDate().compareTo(date) <= 0 ){
                 Integer newCount = counts.get(p.getOffer().getId());
                 if(newCount != null) {
                     newCount ++;
