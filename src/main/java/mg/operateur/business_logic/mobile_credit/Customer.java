@@ -13,12 +13,14 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import mg.operateur.business_logic.offer.Amount;
 import mg.operateur.business_logic.offer.Application;
 import mg.operateur.business_logic.offer.Offer;
 import mg.operateur.business_logic.offer.PasswordHelper;
 import mg.operateur.business_logic.offer.Purchase;
+import mg.operateur.conn.ConnGen;
 import mg.operateur.gen.CDate;
 import mg.operateur.gen.InvalidAmountException;
 import mg.operateur.gen.InvalidDateException;
@@ -35,13 +37,88 @@ import mg.operateur.web_services.resources.consumptions.MessageJSON;
  *
  * @author lacha
  */
-public class Customer extends Person {
+public final class Customer extends Person {
 
     public Customer() {
     }
 
     public Customer(int _id) {
         setId(_id);
+    }
+
+    private void out(Exception ex) {
+        ex.printStackTrace();
+        System.out.println(ex.getMessage());
+    }
+    // RemainingOffers:
+    // Message: 10
+    // Appel: 60 sec
+    // Internet: 100Mo
+    // Faceboobaka: 1Go
+
+    public HashMap<String, Double> getRemainings(AskJSON _ask, PurchaseRepository purchaseRepository) throws IllegalAccessException, IllegalArgumentException, InstantiationException, NoSuchMethodException, InvocationTargetException, SQLException, NotFoundException, ParseException, InvalidAmountException {
+        Connection conn = null;
+        List<RemainingOffer> result = new ArrayList();
+        HashMap<String, Double> remain = new HashMap();
+
+        try {
+            conn = ConnGen.getConn();
+            Customer customer = this.find(_ask.getPhone_number(), conn);
+            List<Purchase> validPurchases = findAllValidPurchases(customer.getId(), CDate.getDate().parse(_ask.getDate()), purchaseRepository, conn);
+            // All valid purchases
+
+            for (Purchase p : validPurchases) {
+                List<Amount> amounts = p.getOffer().getAmounts();
+                for (Amount amount : amounts) {
+                    Character type = amount.getApplication().getT_type();
+                    // TODO conver if type is Go, Mo, Mn, Hr
+                    if (type == 'i') {
+                        int val = new InternetPricing().convertToKo(String.valueOf(amount.getValue()).concat(amount.getApplication().getUnit().getSuffix()));
+                        amount.setValue(val);
+                    }
+
+                    if (type == 'c') {
+                        int val = 0;
+                        if (amount.getApplication().getUnit().getSuffix().toLowerCase().equals("mn")) {
+                            val = val * 60;
+                        } else if (amount.getApplication().getUnit().getSuffix().toLowerCase().equals("hr")) {
+                            val = val * 3600;
+                        }
+                        amount.setValue(val);
+                    }
+
+                    if (amount.getApplication().getInternet_application_id() == -1) {
+                        Double value = remain.get(type);
+                        if (value == null) {
+                            remain.put(String.valueOf(type), amount.getValue());
+                        } else {
+                            remain.put(String.valueOf(type), value + amount.getValue());
+                        }
+                    } else {
+                        String typeI = type + String.valueOf(amount.getApplication().getInternet_application_id());
+                        Double value = remain.get(typeI);
+                        if (value == null) {
+                            remain.put(typeI, amount.getValue());
+                        } else {
+                            remain.put(typeI, value + amount.getValue());
+                        }
+                    }
+                }
+
+            }
+        } catch (IllegalAccessException | IllegalArgumentException | InstantiationException | NoSuchMethodException | InvocationTargetException | SQLException | NotFoundException ex) {
+            throw ex;
+        } finally {
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException ex) {
+                out(ex);
+            }
+        }
+
+        return remain;
     }
 
     public void useInternet(InternetJSON _internet, PurchaseRepository purchaseRepository, Connection conn) throws ParseException, InvalidDateException, SQLException, InstantiationException, NoSuchMethodException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NotFoundException, InvalidAmountException, RequiredException {
@@ -51,7 +128,7 @@ public class Customer extends Person {
         Customer customer = this.find(_internet.getPhone_number(), conn);
         InternetPricing lastPricing = (InternetPricing) new InternetPricing().getLastPricing(date, conn);
         int amountKo = lastPricing.convertToKo(_internet.getAmount());
-        int orgAmount= amountKo;
+        int orgAmount = amountKo;
 
         boolean shouldUseCredit = false;
 
@@ -127,8 +204,10 @@ public class Customer extends Person {
 
         Customer source = this.find(_call.getPhone_number_source(), conn);
         Customer dest = this.find(_call.getPhone_number_destination(), conn);
-        
-        if(source == dest) throw new InvalidFormatException("Vérifier le numéro de destination");
+
+        if (source == dest) {
+            throw new InvalidFormatException("Vérifier le numéro de destination");
+        }
 
         Date date = CDate.getDate().parse(_call.getDate());
         CallPricing lastPricing = (CallPricing) new CallPricing().getLastPricing(date, conn);
@@ -144,8 +223,6 @@ public class Customer extends Person {
         /**
          * ** Begin use call using offers ****
          */
-        
-        
         List<Purchase> validPurchases = findAllValidPurchases(source.getId(), date, purchaseRepository, conn);
         if (validPurchases.size() > 0) {
             for (Purchase purchase : validPurchases) {
@@ -154,13 +231,13 @@ public class Customer extends Person {
                     Application app = amount.getApplication();
                     if (app.getT_type() == 'c' && amount.getValue() > 0) {
                         double val = amount.getValue();
-                        if(amount.getApplication().getUnit().getSuffix().toLowerCase().equals("mn")) {
+                        if (amount.getApplication().getUnit().getSuffix().toLowerCase().equals("mn")) {
                             val = val * 60;
                         } else if (amount.getApplication().getUnit().getSuffix().toLowerCase().equals("hr")) {
-                            val = val * 3600; 
+                            val = val * 3600;
                         }
                         amount.getApplication().getUnit().setSuffix("sec");
-                        
+
                         double orgValue = val;
                         int remainingValue = ((int) orgValue - numberSecond) > 0 ? ((int) orgValue - numberSecond) : 0;
                         amount.setValue(remainingValue);
@@ -239,7 +316,6 @@ public class Customer extends Person {
         if (lengthUnit > 0 || validPurchases.isEmpty()) {
             shouldUseCredit = true;
         }
-        
 
         if (shouldUseCredit) {
             // TODO CHECK IF EXTERIOR
@@ -255,7 +331,6 @@ public class Customer extends Person {
         } else {
             this.insertMessageOrCallConsumption(false, true, orgLengthUnit, date, source.getId(), dest.getId(), 0.0, conn);
         }
-
     }
 
     public List<Purchase> findAllValidPurchases(int customer_id, Date _date, PurchaseRepository purchaseRepository, Connection conn) {
@@ -305,18 +380,18 @@ public class Customer extends Person {
         }
     }
 
-    public double mobileBalance(AskJSON _ask, Connection conn)  throws SQLException, InstantiationException, NoSuchMethodException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NotFoundException, ParseException {
+    public double mobileBalance(AskJSON _ask, Connection conn) throws SQLException, InstantiationException, NoSuchMethodException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NotFoundException, ParseException {
         double result = 0;
         Customer source = this.find(_ask.getPhone_number(), conn);
         result = source.mobileBalance(CDate.getDate().parse(_ask.getDate()), conn);
         return result;
     }
-    
+
     public double mobileBalance(Date date, Connection conn) throws SQLException {
         return FctGen.getAmount(String.format("select balance from mg.customers_balances where id = %d", getId()), "balance", conn);
     }
-    
-    public double creditBalance(AskJSON _ask,Connection conn) throws SQLException, InstantiationException, NoSuchMethodException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NotFoundException, ParseException {
+
+    public double creditBalance(AskJSON _ask, Connection conn) throws SQLException, InstantiationException, NoSuchMethodException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NotFoundException, ParseException {
         double result = 0;
         Customer source = this.find(_ask.getPhone_number(), conn);
         result = source.creditBalance(CDate.getDate().parse(_ask.getDate()), conn);;
@@ -334,7 +409,7 @@ public class Customer extends Person {
         if (!currCust.getPassword().equals(PasswordHelper.md5(pwd))) {
             throw new Exception("Mot de passe incorrect");
         }
-        
+
         if (amount > this.creditBalance(date, conn)) {
             throw new Exception("Votre crédit est insuffisant");
         }

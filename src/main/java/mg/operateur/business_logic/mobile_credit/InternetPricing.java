@@ -35,7 +35,6 @@ public class InternetPricing {
         } else {
             throw new InvalidAmountException("Vérifier la consommation entrée");
         }
-        System.out.println(result);
         return result;
     }
 

@@ -65,12 +65,17 @@ public class TestController {
     @RequestMapping()
     public ResponseBody index() {
         ResponseBody response = new ResponseBody();
-       
+
+        try {
+            
+        } catch (Exception ex) {
+            out(ex);
+        }
         return response;
     }
 }
 
-  /*Connection conn = null;
+/*Connection conn = null;
         String secretString = "123123123112312312311231231231222";
         SecretKey key;
         key = Keys.hmacShaKeyFor(secretString.getBytes(StandardCharsets.UTF_8));
@@ -113,24 +118,19 @@ public class TestController {
 
 /*
 
+    List<Purchase> all = new ArrayList();
+    Offer o1 = new Offer();
+    o1.setPriority(15);
+    Offer o2 = new Offer();
+    o2.setPriority(3);
 
- try {
-            List<Purchase> all = new ArrayList();
-            Offer o1 = new Offer();
-            o1.setPriority(15);
-            Offer o2 = new Offer();
-            o2.setPriority(3);
+    all.add(new Purchase(1, 1, o1, new Date(), 1));
+    all.add(new Purchase(2, 1, o2, new Date(), 1));
 
-            all.add(new Purchase(1, 1, o1, new Date(), 1));
-            all.add(new Purchase(2, 1, o2, new Date(), 1));
+    Collections.sort(all);
 
-            Collections.sort(all);
-            
-            for(Purchase p: all) {
-                System.out.println(p.getId());
-            }
-        } catch (Exception ex) {
-            out(ex);
-        }
+    for (Purchase p : all) {
+        System.out.println(p.getId());
+    }
 
 */

@@ -35,7 +35,7 @@ public class AuthFilter extends OncePerRequestFilter {
 
         if (splited.length >= 1) {
             String controller = splited[1];
-            if (controller.equals("pricings") || controller.equals("stats") ) {
+            if (controller.equals("pricings") || controller.equals("stats") || controller.equals("pos") ) {
 
                 String token = authLogic.resolveToken(httpServletRequest);
                /* if (token == null) {
@@ -51,7 +51,7 @@ public class AuthFilter extends OncePerRequestFilter {
                                 .build()
                                 .parseClaimsJws(token);
                         //System.out.println(jws.getBody().getSubject() + " " + jws.getBody().getAudience()+ " " + jws.getBody().getIssuer());
-                        if(controller.equals("pricings")) {
+                        if(controller.equals("pricings") || controller.equals("pos")) {
                             if(!jws.getBody().getSubject().equals("Admin")) {
                                 throw new JwtException("Vous n'avez pas l'autorisation");
                             }
