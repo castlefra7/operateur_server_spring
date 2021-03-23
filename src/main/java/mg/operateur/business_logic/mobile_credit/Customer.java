@@ -56,51 +56,56 @@ public final class Customer extends Person {
     // Internet: 100Mo
     // Faceboobaka: 1Go
 
-    public HashMap<Character, Double>  getRemainings(AskJSON _ask, PurchaseRepository purchaseRepository) throws IllegalAccessException, IllegalArgumentException, InstantiationException, NoSuchMethodException, InvocationTargetException, SQLException, NotFoundException, ParseException, InvalidAmountException {
+    public HashMap<String, Double> getRemainings(AskJSON _ask, PurchaseRepository purchaseRepository) throws IllegalAccessException, IllegalArgumentException, InstantiationException, NoSuchMethodException, InvocationTargetException, SQLException, NotFoundException, ParseException, InvalidAmountException {
         Connection conn = null;
         List<RemainingOffer> result = new ArrayList();
-            HashMap<Character, Double> remain = new HashMap();
+        HashMap<String, Double> remain = new HashMap();
 
         try {
             conn = ConnGen.getConn();
             Customer customer = this.find(_ask.getPhone_number(), conn);
             List<Purchase> validPurchases = findAllValidPurchases(customer.getId(), CDate.getDate().parse(_ask.getDate()), purchaseRepository, conn);
             // All valid purchases
-            
-            for(Purchase p: validPurchases) {
-                List<Amount> amounts  = p.getOffer().getAmounts();
-                for(Amount amount: amounts) {
+
+            for (Purchase p : validPurchases) {
+                List<Amount> amounts = p.getOffer().getAmounts();
+                for (Amount amount : amounts) {
                     Character type = amount.getApplication().getT_type();
                     // TODO conver if type is Go, Mo, Mn, Hr
-                    if(type == 'i') {
+                    if (type == 'i') {
                         int val = new InternetPricing().convertToKo(String.valueOf(amount.getValue()).concat(amount.getApplication().getUnit().getSuffix()));
                         amount.setValue(val);
                     }
-                    
-                    if(type == 'c') {
-                        
+
+                    if (type == 'c') {
+                        int val = 0;
+                        if (amount.getApplication().getUnit().getSuffix().toLowerCase().equals("mn")) {
+                            val = val * 60;
+                        } else if (amount.getApplication().getUnit().getSuffix().toLowerCase().equals("hr")) {
+                            val = val * 3600;
+                        }
+                        amount.setValue(val);
                     }
-                    
-                    if(amount.getApplication().getInternet_application_id() == -1) {
+
+                    if (amount.getApplication().getInternet_application_id() == -1) {
                         Double value = remain.get(type);
-                        if(value == null) {
-                            remain.put(type, amount.getValue());
+                        if (value == null) {
+                            remain.put(String.valueOf(type), amount.getValue());
                         } else {
-                            remain.put(type, value + amount.getValue());
+                            remain.put(String.valueOf(type), value + amount.getValue());
                         }
                     } else {
-                        Double value = remain.get(type + amount.getApplication().getInternet_application_id());
-                        if(value == null) {
-                            remain.put(type, amount.getValue());
+                        String typeI = type + String.valueOf(amount.getApplication().getInternet_application_id());
+                        Double value = remain.get(typeI);
+                        if (value == null) {
+                            remain.put(typeI, amount.getValue());
                         } else {
-                            remain.put(type, value + amount.getValue());
+                            remain.put(typeI, value + amount.getValue());
                         }
                     }
                 }
-                
+
             }
-            
-            
         } catch (IllegalAccessException | IllegalArgumentException | InstantiationException | NoSuchMethodException | InvocationTargetException | SQLException | NotFoundException ex) {
             throw ex;
         } finally {
