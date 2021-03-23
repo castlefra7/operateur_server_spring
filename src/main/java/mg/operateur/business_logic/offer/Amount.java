@@ -29,10 +29,9 @@ public class Amount {
     public Amount() {
     }
 
-    public Amount(Application application, double value, Utilization utilization) throws Exception {
+    public Amount(Application application, double value) throws Exception {
         setApplication(application);
         setValue(value);
-        setUtilization(utilization);
     }
     
     public Amount (Amount amount) throws Exception {
