@@ -11,6 +11,7 @@ import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
+import mg.operateur.business_logic.mobile_credit.Customer;
 import mg.operateur.business_logic.offer.Amount;
 import mg.operateur.business_logic.offer.Application;
 import mg.operateur.business_logic.offer.Limitation;
@@ -25,6 +26,7 @@ import mg.operateur.gen.LimitReachedException;
 import mg.operateur.gen.NotFoundException;
 import mg.operateur.gen.RequiredException;
 import mg.operateur.web_services.ResponseBody;
+import mg.operateur.web_services.resources.commons.AskJSON;
 import mg.operateur.web_services.resources.commons.TransacJSON;
 import mg.operateur.web_services.resources.commons.offer.AmountJSON;
 import mg.operateur.web_services.resources.commons.offer.OfferJSON;
@@ -147,6 +149,18 @@ public class OfferController {
             out(ex);
         } finally {
             
+        }
+        return response;
+    }
+    
+    @GetMapping("/remainings")
+    public ResponseBody response(@RequestBody AskJSON _ask) {
+        ResponseBody response = new ResponseBody();
+        try {
+            response.getData().add(new Customer().getRemainings(_ask, purchaseRepository));
+        } catch(Exception ex) {
+            setError(response, ex);
+            out(ex);
         }
         return response;
     }
