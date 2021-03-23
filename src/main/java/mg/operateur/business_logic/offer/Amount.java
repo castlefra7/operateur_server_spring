@@ -28,6 +28,12 @@ public class Amount {
 
     public Amount() {
     }
+    
+    public Amount(Application application, double value, Utilization utilization) throws Exception {
+        setApplication(application);
+        setValue(value);
+        setUtilization(utilization);
+    }
 
     public Amount(Application application, double value) throws Exception {
         setApplication(application);
