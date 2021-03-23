@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "bf6227fe-5397-4f21-af44-72bd96091f44",
+		"_postman_id": "f1642fb2-7b29-49cd-b881-a31923f780f8",
 		"name": "Operateur",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -328,7 +328,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "\r\n{\r\n    \"name\": \"Message 20\",\r\n    \"createdAt\": \"2021-01-01\",\r\n    \"validityDay\": 2,\r\n    \"limitation\": {\r\n        \"buyingLimit\": 2,\r\n        \"durationInDays\": 1\r\n    },\r\n    \"price\": 200,\r\n    \"amounts\": [\r\n        {\r\n            \"application\": {\r\n                \"id\": 1,\r\n                \"name\": \"message\",\r\n                \"internet_application_id\": -1,\r\n                \"t_type\": \"m\",\r\n                \"unit\": {\r\n                    \"id\": 1,\r\n                    \"suffix\": \"N\"\r\n                }\r\n            },\r\n            \"value\": 20\r\n        }\r\n    ]\r\n}",
+					"raw": "\r\n{\r\n    \"name\": \"Message 20\",\r\n    \"createdAt\": \"2021-01-01\",\r\n    \"validityDay\": 2,\r\n    \"limitation\": {\r\n        \"buyingLimit\": 2,\r\n        \"durationInDays\": 1\r\n    },\r\n    \"price\": 200,\r\n    \"amounts\": [\r\n        {\r\n            \"application\": {\r\n                \"id\": 1,\r\n                \"name\": \"message\",\r\n                \"internet_application_id\": -1,\r\n                \"t_type\": \"m\",\r\n                \"unit\": {\r\n                    \"id\": 1,\r\n                    \"suffix\": \"N\"\r\n                }\r\n            },\r\n            \"utilization\" : {\r\n                \"intra\" : {\r\n                    \"price\" : 1,\r\n                    \"per\" : \"sec\"\r\n                },\r\n                \"extra\" : {\r\n                    \"price\" : 3,\r\n                    \"per\" : \"sec\"\r\n                }\r\n            },\r\n            \"value\": 20\r\n        }\r\n    ]\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -399,7 +399,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\"date\": \"2021-03-03 12:00\", \"phone_number_source\": \"+261330938572\",  \"phone_number_destination\": \"+261330938572\", \"duration\": \"00:00:60\"}",
+					"raw": "{\"date\": \"2021-03-03 12:00\", \"phone_number_source\": \"+261331020641\",  \"phone_number_destination\": \"+261331705635\", \"duration\": \"00:00:60\"}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -653,6 +653,62 @@
 					"path": [
 						"stats",
 						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Signin Admin",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"name\": \"admin\", \"password\": \"2811\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL}}/auth/signin/admin",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"auth",
+						"signin",
+						"admin"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "SignUp Admin",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"name\": \"admin\", \"password\": \"root\", \"createdAt\": \"2021-03-01 15:00\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL}}/auth/signup/admin",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"auth",
+						"signup",
+						"admin"
 					]
 				}
 			},

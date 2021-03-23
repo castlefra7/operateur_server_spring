@@ -99,12 +99,19 @@ public class OfferController {
             ArrayList<Amount> amounts = new ArrayList<Amount>();
 //
             for (int i = 0; i < _offer.getAmounts().size(); i++) {
+                
                 AmountJSON amountJSON = _offer.getAmounts().get(i);
                 Unit unit = new Unit(amountJSON.getApplication().getUnit().getId(), amountJSON.getApplication().getUnit().getSuffix());
                 Application application = new Application(amountJSON.getApplication().getId(), amountJSON.getApplication().getName(), amountJSON.getApplication().getT_type(), amountJSON.getApplication().getInternet_application_id(), unit);
-                Price intra = new Price(amountJSON.getUtilization().getIntra().getPrice(), amountJSON.getUtilization().getIntra().getPer());
-                Price extra = new Price(amountJSON.getUtilization().getExtra().getPrice(), amountJSON.getUtilization().getExtra().getPer());
-                amounts.add(new Amount(application, amountJSON.getValue(), new Utilization(intra, extra)));
+                Amount amount = new Amount(application, amountJSON.getValue());
+                
+                if (amountJSON.getUtilization() != null) {
+                    Price intra = new Price(amountJSON.getUtilization().getIntra().getPrice(), amountJSON.getUtilization().getIntra().getPer());
+                    Price extra = new Price(amountJSON.getUtilization().getExtra().getPrice(), amountJSON.getUtilization().getExtra().getPer());
+                    amount.setUtilization(new Utilization(intra, extra));
+                }
+                
+                amounts.add(amount);
             }
             
             int lastId = Offer.getLastId(conn);
