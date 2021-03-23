@@ -71,7 +71,6 @@ public final class Customer extends Person {
                 List<Amount> amounts = p.getOffer().getAmounts();
                 for (Amount amount : amounts) {
                     Character type = amount.getApplication().getT_type();
-                    // TODO conver if type is Go, Mo, Mn, Hr
                     if (type == 'i') {
                         int val = new InternetPricing().convertToKo(String.valueOf(amount.getValue()).concat(amount.getApplication().getUnit().getSuffix()));
                         amount.setValue(val);
