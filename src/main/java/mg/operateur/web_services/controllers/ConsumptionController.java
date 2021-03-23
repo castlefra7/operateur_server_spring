@@ -74,14 +74,14 @@ public class ConsumptionController {
     }
     
     @PostMapping("/messages")
-    public ResponseBody consumeMessages(@RequestBody MessageJSON _message) {
+    public ResponseBody consumeMessages(@RequestBody MessageJSON _message) throws InvalidFormatException {
          ResponseBody response = new ResponseBody();
         Connection conn = null;
         try {
             conn = ConnGen.getConn();                
             new Customer().sendMessage(_message, purchaseRepository, conn);
             response.getStatus().setMessage("Succés");
-        } catch(IllegalAccessException | IllegalArgumentException | InstantiationException | NoSuchMethodException | InvocationTargetException | SQLException | ParseException | InvalidAmountException | InvalidDateException | NotFoundException ex) {
+        } catch(Exception ex) {
             this.setError(response, ex);
             out(ex);
         } finally {

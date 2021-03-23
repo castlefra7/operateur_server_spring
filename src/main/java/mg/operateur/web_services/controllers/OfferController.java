@@ -5,10 +5,8 @@
  */
 package mg.operateur.web_services.controllers;
 
-import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 import mg.operateur.business_logic.mobile_credit.Customer;
@@ -20,11 +18,6 @@ import mg.operateur.business_logic.offer.Price;
 import mg.operateur.business_logic.offer.Unit;
 import mg.operateur.business_logic.offer.Utilization;
 import mg.operateur.conn.ConnGen;
-import mg.operateur.gen.InvalidAmountException;
-import mg.operateur.gen.InvalidDateException;
-import mg.operateur.gen.LimitReachedException;
-import mg.operateur.gen.NotFoundException;
-import mg.operateur.gen.RequiredException;
 import mg.operateur.web_services.ResponseBody;
 import mg.operateur.web_services.resources.commons.AskJSON;
 import mg.operateur.web_services.resources.commons.TransacJSON;
@@ -44,7 +37,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @author lacha
  */
 @RequestMapping("/offers")
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
 public class OfferController {
 
@@ -82,7 +75,7 @@ public class OfferController {
             conn = ConnGen.getConn();
             new Offer().buy(_offerId, _purchase, offerRepository, purchaseRepository, conn);
             response.getStatus().setMessage("Succés");
-        } catch(IllegalAccessException | IllegalArgumentException | InstantiationException | NoSuchMethodException | InvocationTargetException | SQLException | ParseException | InvalidAmountException | InvalidDateException | LimitReachedException | NotFoundException | RequiredException ex) {
+        } catch(Exception ex) {
             setError(response, ex);
             out(ex);
         } finally {
@@ -99,7 +92,7 @@ public class OfferController {
             conn = ConnGen.getConn();
             Limitation limitation = new Limitation(_offer.getLimitation().getBuyingLimit(), _offer.getLimitation().getDurationInDays());
             ArrayList<Amount> amounts = new ArrayList<Amount>();
-//
+            System.out.println(_offer);
             for (int i = 0; i < _offer.getAmounts().size(); i++) {
                 
                 AmountJSON amountJSON = _offer.getAmounts().get(i);

@@ -133,9 +133,16 @@ public final class Purchase implements Comparable {
     @Override
     public int compareTo(Object o) {
         Purchase purchase = (Purchase)o;
-        if(this.getOffer().getPriority() < purchase.getOffer().getPriority()) {
+        /*if(this.getOffer().getPriority() < purchase.getOffer().getPriority()) {
             return 1;
         } else if (this.getOffer().getPriority() >  purchase.getOffer().getPriority()) {
+            return -1;
+        } else {
+            return 0;
+        }*/
+        if(this.getOffer().getValidityDay() > purchase.getOffer().getValidityDay()) {
+            return 1;
+        } else if (this.getOffer().getValidityDay() <  purchase.getOffer().getValidityDay()) {
             return -1;
         } else {
             return 0;

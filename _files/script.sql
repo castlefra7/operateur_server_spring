@@ -183,7 +183,7 @@ insert into mg.customers (created_at, name, email, phone_number, password) value
 insert into mg.customers (created_at, name, email, phone_number, password) values ('2021-03-16 08:00', 'ramanajaka rabe', 'rabe@gmail.com', '+261335125636', '2202');
 */
 
-/*insert into mg.customers (id, created_at, name, email, phone_number, password) values  (1,'2000-01-01', 'exterior user', 'exterior@gmail.com', '0', 'plosjsizosdpkjdn');*/
+insert into mg.customers (created_at, name, email, phone_number, password) values  ('2000-01-01', 'exterior user', 'exterior@gmail.com', '0', 'plosjsizosdpkjdn');
 
 insert into mg.conf_operator (created_at, prefix , name) values ('2000-01-01', '+26133', 'orange');
 

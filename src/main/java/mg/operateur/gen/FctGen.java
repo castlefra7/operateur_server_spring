@@ -256,7 +256,6 @@ public class FctGen {
         values = values.substring(0, values.length()-1) + ")";
         columnNames = columnNames.substring(0, columnNames.length()-1) + ")";
         String req = String.format("insert into %s %s values %s", tableName, columnNames, values);
-        System.out.println(req);
         PreparedStatement pstmt = null;
         try {
             conn.setAutoCommit(false);

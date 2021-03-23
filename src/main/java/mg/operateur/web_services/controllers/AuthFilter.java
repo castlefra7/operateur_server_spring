@@ -39,6 +39,7 @@ public class AuthFilter extends OncePerRequestFilter {
 
                 String token = authLogic.resolveToken(httpServletRequest);
                 if (token == null) {
+                    System.out.println("ato");
                     httpServletResponse.sendRedirect("/errors/tokens");
                     return;
                 } else {
@@ -48,6 +49,7 @@ public class AuthFilter extends OncePerRequestFilter {
                                 .setSigningKey(Auth.getKey())
                                 .build()
                                 .parseClaimsJws(token);
+
                         if (controller.equals("pricings") || controller.equals("pos")) {
                             if (!jws.getBody().getSubject().equals("Admin")) {
                                 throw new JwtException("admin");

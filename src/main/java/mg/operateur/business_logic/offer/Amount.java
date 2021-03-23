@@ -13,7 +13,7 @@ import mg.operateur.gen.InvalidAmountException;
  */
 
 // Facebook 1000Mo; Appel 20 min; etc
-public class Amount {
+public final class Amount {
     private Application application;
     private double value;
     private Utilization utilization;

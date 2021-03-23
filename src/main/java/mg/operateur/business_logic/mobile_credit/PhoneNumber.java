@@ -14,7 +14,12 @@ import mg.operateur.gen.InvalidFormatException;
 public class PhoneNumber {
     public static String getPrefix(String phone_number) throws InvalidFormatException {
         if(phone_number.length() < 9) throw new InvalidFormatException("Le numéro est incorrect");
-        return phone_number.startsWith("0") ? "0": "+261";
+        
+        if(phone_number.startsWith("0")) {
+            return "+261" + phone_number.substring(1, 3);
+        } else {
+            return "+261" + phone_number.substring(4, 6);
+        }
     }
     
     public static String getValidNumber(String phone_number) throws InvalidFormatException {

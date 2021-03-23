@@ -56,7 +56,7 @@ public final class Customer extends Person {
     // Internet: 100Mo
     // Faceboobaka: 1Go
 
-    public HashMap<String, Double> getRemainings(AskJSON _ask, PurchaseRepository purchaseRepository) throws IllegalAccessException, IllegalArgumentException, InstantiationException, NoSuchMethodException, InvocationTargetException, SQLException, NotFoundException, ParseException, InvalidAmountException {
+    public HashMap<String, Double> getRemainings(AskJSON _ask, PurchaseRepository purchaseRepository) throws IllegalAccessException, IllegalArgumentException, InstantiationException, NoSuchMethodException, InvocationTargetException, SQLException, NotFoundException, ParseException, InvalidAmountException, InvalidFormatException {
         Connection conn = null;
         List<RemainingOffer> result = new ArrayList();
         HashMap<String, Double> remain = new HashMap();
@@ -120,7 +120,7 @@ public final class Customer extends Person {
         return remain;
     }
 
-    public void useInternet(InternetJSON _internet, PurchaseRepository purchaseRepository, Connection conn) throws ParseException, InvalidDateException, SQLException, InstantiationException, NoSuchMethodException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NotFoundException, InvalidAmountException, RequiredException {
+    public void useInternet(InternetJSON _internet, PurchaseRepository purchaseRepository, Connection conn) throws ParseException, InvalidDateException, SQLException, InstantiationException, NoSuchMethodException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NotFoundException, InvalidAmountException, RequiredException, InvalidFormatException {
         checkLastOperation(CDate.getDate().parse(_internet.getCreated_at()), conn);
         conn.setAutoCommit(false);
         Date date = CDate.getDate().parse(_internet.getCreated_at());
@@ -204,10 +204,11 @@ public final class Customer extends Person {
         Customer source = this.find(_call.getPhone_number_source(), conn);
         Customer dest = this.find(_call.getPhone_number_destination(), conn);
 
-        if (source == dest) {
+        if (source.getId() == dest.getId()) {
             throw new InvalidFormatException("Vérifier le numéro de destination");
         }
 
+        ConfOperator conf = new ConfOperator().getLastConf(conn);
         Date date = CDate.getDate().parse(_call.getDate());
         CallPricing lastPricing = (CallPricing) new CallPricing().getLastPricing(date, conn);
         int numberSecond = CDate.numberSeconds(_call.getDuration());
@@ -236,7 +237,6 @@ public final class Customer extends Person {
                             val = val * 3600;
                         }
                         amount.getApplication().getUnit().setSuffix("sec");
-
                         double orgValue = val;
                         int remainingValue = ((int) orgValue - numberSecond) > 0 ? ((int) orgValue - numberSecond) : 0;
                         amount.setValue(remainingValue);
@@ -257,20 +257,24 @@ public final class Customer extends Person {
         }
 
         if (shouldUseCredit) {
-            // TODO CHECK IF EXTERIOR
+            double amount = lastPricing.getAmount_interior();
+            if (PhoneNumber.getPrefix(_call.getPhone_number_destination()).equals(conf.getPrefix()) == false) {
+                amount = lastPricing.getAmount_exterior();
+            }
+
             double creditBalance = source.creditBalance(date, conn);
-            int nUnitICanAfford = Math.min((int) Math.floor(creditBalance / lastPricing.getAmount_interior()), numberSecond);
+            int nUnitICanAfford = Math.min((int) Math.floor(creditBalance / amount), numberSecond);
             if (nUnitICanAfford <= 0) {
                 throw new InvalidAmountException("Votre crédit est insuffisant");
             }
-            double priceToPay = (double) nUnitICanAfford * lastPricing.getAmount_interior();
+            double priceToPay = (double) nUnitICanAfford * amount;
             this.insertMessageOrCallConsumption(true, false, nUnitICanAfford, date, source.getId(), dest.getId(), priceToPay, conn);
         } else {
             this.insertMessageOrCallConsumption(false, false, orgLengthUnit, date, source.getId(), dest.getId(), 0.0, conn);
         }
     }
 
-    public void sendMessage(MessageJSON _message, PurchaseRepository purchaseRepository, Connection conn) throws SQLException, InstantiationException, NoSuchMethodException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NotFoundException, ParseException, InvalidAmountException, InvalidDateException {
+    public void sendMessage(MessageJSON _message, PurchaseRepository purchaseRepository, Connection conn) throws SQLException, InstantiationException, NoSuchMethodException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NotFoundException, ParseException, InvalidAmountException, InvalidDateException, InvalidFormatException {
         checkLastOperation(CDate.getDate().parse(_message.getDate()), conn);
 
         Customer source = this.find(_message.getPhone_number_source(), conn);
@@ -317,7 +321,7 @@ public final class Customer extends Person {
         }
 
         if (shouldUseCredit) {
-            // TODO CHECK IF EXTERIOR
+            // TODO CHECK IF Phone_number is exterior
             double creditBalance = source.creditBalance(date, conn);
             int howManyUnit = (int) Math.ceil(creditBalance / lastPricing.getAmount_interior());
             int nUnitICanAfford = Math.min(howManyUnit, lengthUnit);
@@ -343,7 +347,6 @@ public final class Customer extends Person {
             }
         }
         Collections.sort(result);
-
         return result;
     }
 
@@ -379,7 +382,7 @@ public final class Customer extends Person {
         }
     }
 
-    public double mobileBalance(AskJSON _ask, Connection conn) throws SQLException, InstantiationException, NoSuchMethodException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NotFoundException, ParseException {
+    public double mobileBalance(AskJSON _ask, Connection conn) throws SQLException, InstantiationException, NoSuchMethodException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NotFoundException, ParseException, InvalidFormatException {
         double result = 0;
         Customer source = this.find(_ask.getPhone_number(), conn);
         result = source.mobileBalance(CDate.getDate().parse(_ask.getDate()), conn);
@@ -390,7 +393,7 @@ public final class Customer extends Person {
         return FctGen.getAmount(String.format("select balance from mg.customers_balances where id = %d", getId()), "balance", conn);
     }
 
-    public double creditBalance(AskJSON _ask, Connection conn) throws SQLException, InstantiationException, NoSuchMethodException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NotFoundException, ParseException {
+    public double creditBalance(AskJSON _ask, Connection conn) throws SQLException, InstantiationException, NoSuchMethodException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NotFoundException, ParseException, InvalidFormatException {
         double result = 0;
         Customer source = this.find(_ask.getPhone_number(), conn);
         result = source.creditBalance(CDate.getDate().parse(_ask.getDate()), conn);;
@@ -580,8 +583,16 @@ public final class Customer extends Person {
 
     }
 
-    public Customer find(String _phone_number, Connection conn) throws SQLException, InstantiationException, NoSuchMethodException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NotFoundException {
+    public Customer getExteriorCust(Connection conn) throws SQLException, InstantiationException, NoSuchMethodException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NotFoundException {
+        return (Customer) FctGen.find(this, "select * from mg.customers where phone_number = '0'", columnsWithID(), conn);
+    }
+
+    public Customer find(String _phone_number, Connection conn) throws SQLException, InstantiationException, NoSuchMethodException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NotFoundException, InvalidFormatException {
         Customer result = null;
+        ConfOperator conf = new ConfOperator().getLastConf(conn);
+        if (PhoneNumber.getPrefix(_phone_number).equals(conf.getPrefix()) == false) {
+            return getExteriorCust(conn);
+        }
         Object ob = FctGen.find(new Customer(), String.format("select * from %s where phone_number like '%s'", tableName(), _phone_number), columnsWithID(), conn);
         if (ob != null) {
             result = (Customer) ob;
