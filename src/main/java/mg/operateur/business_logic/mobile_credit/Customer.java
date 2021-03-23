@@ -229,26 +229,48 @@ public final class Customer extends Person {
                 List<Amount> allAmounts = purchase.getOffer().getAmounts();
                 for (Amount amount : allAmounts) {
                     Application app = amount.getApplication();
+
                     if (app.getT_type() == 'c' && amount.getValue() > 0) {
                         double val = amount.getValue();
-                        if (amount.getApplication().getUnit().getSuffix().toLowerCase().equals("mn")) {
-                            val = val * 60;
-                        } else if (amount.getApplication().getUnit().getSuffix().toLowerCase().equals("hr")) {
-                            val = val * 3600;
-                        }
-                        amount.getApplication().getUnit().setSuffix("sec");
-                        double orgValue = val;
-                        int remainingValue = ((int) orgValue - numberSecond) > 0 ? ((int) orgValue - numberSecond) : 0;
-                        amount.setValue(remainingValue);
-                        if (((int) orgValue - numberSecond) >= 0) {
-                            numberSecond = 0;
-                            break;
+
+                        if (amount.getUtilization() != null) {
+                            double price = amount.getUtilization().getIntra().getPrice();
+                            if (!PhoneNumber.getPrefix(_call.getPhone_number_destination()).equals(conf.getPrefix())) {
+                                price = amount.getUtilization().getExtra().getPrice();
+                            }
+                            double amountIShouldConsume = price * (double) numberSecond;
+                            double remainingValue = (val - amountIShouldConsume) > 0 ? (val - amountIShouldConsume): 0;
+                            amount.setValue(remainingValue);
+                            if((val - amountIShouldConsume) >= 0) {
+                                numberSecond = 0;
+                                break;
+                            } else {
+                                int nSecsConsumed = (int)Math.ceil(val / price);
+                                numberSecond -= nSecsConsumed;
+                            }
                         } else {
-                            numberSecond = Math.abs(((int) orgValue - numberSecond));
+                            if (amount.getApplication().getUnit().getSuffix().toLowerCase().equals("mn")) {
+                                val = val * 60;
+                            } else if (amount.getApplication().getUnit().getSuffix().toLowerCase().equals("hr")) {
+                                val = val * 3600;
+                            }
+                            double orgValue = val;
+                            amount.getApplication().getUnit().setSuffix("sec");
+
+                            int remainingValue = ((int) orgValue - numberSecond) > 0 ? ((int) orgValue - numberSecond) : 0;
+                            amount.setValue(remainingValue);
+                            if (((int) orgValue - numberSecond) >= 0) {
+                                numberSecond = 0;
+                                break;
+                            } else {
+                                numberSecond = Math.abs(((int) orgValue - numberSecond));
+                            }
                         }
+
                     }
+
                 }
-                purchaseRepository.save(purchase);
+                ///purchaseRepository.save(purchase);
             }
         }
 
@@ -268,9 +290,9 @@ public final class Customer extends Person {
                 throw new InvalidAmountException("Votre crédit est insuffisant");
             }
             double priceToPay = (double) nUnitICanAfford * amount;
-            this.insertMessageOrCallConsumption(true, false, nUnitICanAfford, date, source.getId(), dest.getId(), priceToPay, conn);
+            //this.insertMessageOrCallConsumption(true, false, nUnitICanAfford, date, source.getId(), dest.getId(), priceToPay, conn);
         } else {
-            this.insertMessageOrCallConsumption(false, false, orgLengthUnit, date, source.getId(), dest.getId(), 0.0, conn);
+            //this.insertMessageOrCallConsumption(false, false, orgLengthUnit, date, source.getId(), dest.getId(), 0.0, conn);
         }
     }
 
@@ -338,9 +360,10 @@ public final class Customer extends Person {
 
     public List<Purchase> findAllValidPurchases(int customer_id, Date _date, PurchaseRepository purchaseRepository, Connection conn) {
         List<Purchase> result = new ArrayList();
-        List<Purchase> allPurchases = Purchase.findByCustomerId(1, purchaseRepository);
+        List<Purchase> allPurchases = Purchase.findByCustomerId(customer_id, purchaseRepository);
         for (Purchase purchase : allPurchases) {
             Offer offer = purchase.getOffer();
+
             Date endValidity = CDate.addDay(purchase.getDate(), offer.getValidityDay());
             if (endValidity.after(_date)) {
                 result.add(purchase);

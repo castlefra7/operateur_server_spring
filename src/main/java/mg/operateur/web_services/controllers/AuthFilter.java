@@ -39,7 +39,6 @@ public class AuthFilter extends OncePerRequestFilter {
 
                 String token = authLogic.resolveToken(httpServletRequest);
                 if (token == null) {
-                    System.out.println("ato");
                     httpServletResponse.sendRedirect("/errors/tokens");
                     return;
                 } else {
