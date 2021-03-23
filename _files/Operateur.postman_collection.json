@@ -60,6 +60,33 @@
 			"response": []
 		},
 		{
+			"name": "Sign in",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"phoneNumber\": \"+261332023439\", \"password\": \"2811\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL}}/auth/signin",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"auth",
+						"signin"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "Buy credit",
 			"request": {
 				"method": "POST",
@@ -455,11 +482,21 @@
 				"disableBodyPruning": true
 			},
 			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJraWQiOiJ5b3UiLCJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIxIiwiaXNzIjoibWUiLCJzdWIiOiIxIn0.GYPj3gHHliB2RxDwJbpjfa1SHPx2zWPzt6ORQ7XhmW8",
+							"type": "string"
+						}
+					]
+				},
 				"method": "GET",
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "2\r\n",
+					"raw": "",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -646,33 +683,6 @@
 					"path": [
 						"mobilemoney",
 						"fees"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Sign in",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\"phoneNumber\": \"+261330938572\", \"password\": \"2811\"}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "{{URL}}/auth/signin",
-					"host": [
-						"{{URL}}"
-					],
-					"path": [
-						"auth",
-						"signin"
 					]
 				}
 			},

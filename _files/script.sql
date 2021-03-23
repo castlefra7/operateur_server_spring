@@ -6,6 +6,13 @@ drop schema mg cascade;
 
 create schema mg;
 
+create table mg.conf_operator (
+    id serial primary key,
+    created_at timestamp not null,
+    prefix varchar(6),
+    name varchar(25)
+);
+
 create table mg.users (
     id serial primary key,
     created_at timestamp not null,
@@ -18,12 +25,13 @@ create table mg.customers (
     id serial primary key,
     created_at timestamp not null,
     name varchar(255) not null,
-    email varchar(255),
+    email varchar(25),
     phone_number char(13) not null,
-    password VARCHAR(255),
+    password VARCHAR(255) not null,
     unique (phone_number),
     unique (email)
 );
+
 
 create table mg.fees (
     id serial primary key,
@@ -174,6 +182,11 @@ create view mg.customers_credit_balances as select mg.customers.id, (coalesce(su
 insert into mg.customers (created_at, name, email, phone_number, password) values ('2021-03-16 08:00', 'razaka rivo', 'rivo@gmail.com', '+261331525636', '0108');
 insert into mg.customers (created_at, name, email, phone_number, password) values ('2021-03-16 08:00', 'ramanajaka rabe', 'rabe@gmail.com', '+261335125636', '2202');
 */
+
+/*insert into mg.customers (id, created_at, name, email, phone_number, password) values  (1,'2000-01-01', 'exterior user', 'exterior@gmail.com', '0', 'plosjsizosdpkjdn');*/
+
+insert into mg.conf_operator (created_at, prefix , name) values ('2000-01-01', '+26133', 'orange');
+
 insert into mg.fees (created_at, amount_min, amount_max, amount_fee) values ('2000-01-01 00:00', 100, 1000, 50);
 insert into mg.fees (created_at, amount_min, amount_max, amount_fee) values ('2000-01-01 00:00', 1001, 5000, 50);
 insert into mg.fees (created_at, amount_min, amount_max, amount_fee) values ('2000-01-01 00:00', 5001, 10000, 100);

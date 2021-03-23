@@ -27,41 +27,43 @@ public class AuthFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, FilterChain filterChain) throws ServletException, IOException {
 
+        System.out.println("======Security Filtering=====");
         // System.out.println("Remote Host:"+request.getRemoteHost());
         // System.out.println("Remote Address:"+httpServletRequest.getRemoteAddr());
-        System.out.println("======Security Filtering=====");
         String uri = httpServletRequest.getRequestURI();
         String[] splited = uri.split("/");
 
         if (splited.length >= 1) {
             String controller = splited[1];
-            if (controller.equals("pricings") || controller.equals("stats") || controller.equals("pos") ) {
+            if (controller.equals("pricings") || controller.equals("stats") || controller.equals("pos") || controller.equals("customers")) {
 
                 String token = authLogic.resolveToken(httpServletRequest);
-               /* if (token == null) {
-                    httpServletResponse.sendError(0, "Veuillez spécifier un token");
+                if (token == null) {
+                    httpServletResponse.sendRedirect("/errors/tokens");
                     return;
-                    
                 } else {
-                    // validate the token
                     Jws<Claims> jws;
                     try {
                         jws = Jwts.parserBuilder()
                                 .setSigningKey(Auth.getKey())
                                 .build()
                                 .parseClaimsJws(token);
-                        //System.out.println(jws.getBody().getSubject() + " " + jws.getBody().getAudience()+ " " + jws.getBody().getIssuer());
-                        if(controller.equals("pricings") || controller.equals("pos")) {
-                            if(!jws.getBody().getSubject().equals("Admin")) {
-                                throw new JwtException("Vous n'avez pas l'autorisation");
+                        if (controller.equals("pricings") || controller.equals("pos")) {
+                            if (!jws.getBody().getSubject().equals("Admin")) {
+                                throw new JwtException("admin");
                             }
                         }
-                        // TODO if it is /customers/callshistory, pass the  customer_id into the request
+
+                        httpServletRequest.setAttribute("id", jws.getBody().getSubject());
                     } catch (JwtException ex) {
-                        httpServletResponse.sendError(0, "Votre token est invalide");
+                        if (ex.getMessage().contains("admin")) {
+                            httpServletResponse.sendRedirect("/errors/notadmin");
+                        } else {
+                            httpServletResponse.sendRedirect("/errors/invalidtokens");
+                        }
                         return;
                     }
-                }*/
+                }
 
             }
         }

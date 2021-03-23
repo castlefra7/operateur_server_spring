@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @author lacha
  */
 @RequestMapping("/pos")
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
 public class POSController {
     
