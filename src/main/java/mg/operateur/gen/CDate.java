@@ -8,6 +8,7 @@ package mg.operateur.gen;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 
 /**
  *
@@ -17,6 +18,16 @@ public class CDate {
     public static CustomDateFormat getDate() {
         CustomDateFormat sdf = new CustomDateFormat("yyyy-MM-dd HH:mm");
         return sdf;
+    }
+    
+    public static Date endOfDay(Date date) {
+        Calendar cal = new GregorianCalendar();
+        cal.setTime(date);
+        cal.set(Calendar.HOUR, 23);
+        cal.set(Calendar.MINUTE, 59);
+        cal.set(Calendar.SECOND, 59);
+        
+        return cal.getTime();
     }
     
     public static int numberSeconds(String hhMM) throws InvalidFormatException {

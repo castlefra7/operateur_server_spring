@@ -18,7 +18,7 @@ import mg.operateur.conn.ConnGen;
 import mg.operateur.gen.CDate;
 import mg.operateur.web_services.AuthResponseBody;
 import mg.operateur.web_services.ResponseBody;
-import mg.operateur.web_services.resources.commons.offer.CustomerJSON;
+import mg.operateur.web_services.resources.offer.CustomerJSON;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;

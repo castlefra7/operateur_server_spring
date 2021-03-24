@@ -48,6 +48,18 @@ public final class Offer {
     private Limitation limitation;
     private int priority;
     private List<Amount> amounts;
+    
+    private boolean isOneDay;
+
+    public boolean getIsOneDay() {
+        return isOneDay;
+    }
+
+    public void setIsOneDay(boolean isOneDay) {
+        this.isOneDay = isOneDay;
+    }
+    
+    
 
     public Offer() {
     }
@@ -123,8 +135,11 @@ public final class Offer {
     
     
     public void buy(int _offerId, TransacJSON _purchase, OfferRepository offerRepository, PurchaseRepository purchaseRepository, Connection conn) throws NotFoundException, RequiredException, SQLException, InstantiationException, NoSuchMethodException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, ParseException, LimitReachedException, InvalidAmountException, InvalidDateException, InvalidFormatException {
+        
         mg.operateur.business_logic.mobile_credit.Customer foundCustomer = new mg.operateur.business_logic.mobile_credit.Customer().find(_purchase.getPhone_number(), conn);        
         
+        foundCustomer.checkLastOperation(CDate.getDate().parse(_purchase.getDate()), conn);
+
         Offer offer = offerRepository.findById(_offerId);
         if (offer == null)
             throw new NotFoundException("L'offre specifié n'existe pas");  
@@ -148,8 +163,8 @@ public final class Offer {
         customer.setAccount(account);
         
         
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        Date date = sdf.parse(_purchase.getDate());
+        Date date = CDate.getDate().parse(_purchase.getDate());
+        
         customer.purchase(offer, date, conn, purchaseRepository);
         
         CreditConsumption creditCons = new CreditConsumption();

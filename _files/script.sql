@@ -80,6 +80,8 @@ create table mg.credit_consumptions (
     foreign key (customer_id) references mg.customers(id)
 );
 
+
+/* TODO: insert offer purchase into this table */
 create table mg.offer_purchases (
     id serial primary key,
     customer_id int not null,

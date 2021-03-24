@@ -21,8 +21,8 @@ import mg.operateur.conn.ConnGen;
 import mg.operateur.web_services.ResponseBody;
 import mg.operateur.web_services.resources.commons.AskJSON;
 import mg.operateur.web_services.resources.commons.TransacJSON;
-import mg.operateur.web_services.resources.commons.offer.AmountJSON;
-import mg.operateur.web_services.resources.commons.offer.OfferJSON;
+import mg.operateur.web_services.resources.offer.AmountJSON;
+import mg.operateur.web_services.resources.offer.OfferJSON;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -92,7 +92,6 @@ public class OfferController {
             conn = ConnGen.getConn();
             Limitation limitation = new Limitation(_offer.getLimitation().getBuyingLimit(), _offer.getLimitation().getDurationInDays());
             ArrayList<Amount> amounts = new ArrayList<Amount>();
-            System.out.println(_offer);
             for (int i = 0; i < _offer.getAmounts().size(); i++) {
                 
                 AmountJSON amountJSON = _offer.getAmounts().get(i);
@@ -111,6 +110,8 @@ public class OfferController {
             
             int lastId = Offer.getLastId(conn);
             Offer offer = new Offer(lastId, _offer.getName(), _offer.getCreatedAt(), _offer.getPrice(), _offer.getValidityDay(), limitation, amounts, _offer.getPriority());
+            offer.setIsOneDay(_offer.getIsOneDay());
+            
             offerRepository.save(offer);
             response.getStatus().setMessage("Offer Created");
                 response.getData().add(offer);
