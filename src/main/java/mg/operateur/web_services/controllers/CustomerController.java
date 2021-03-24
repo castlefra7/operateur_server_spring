@@ -21,8 +21,8 @@ import org.springframework.web.bind.annotation.RestController;
  *
  * @author lacha
  */
-@CrossOrigin(origins = "*", allowedHeaders = "*")
 @RequestMapping("/customers")
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
 public class CustomerController {
     private void out(Exception ex) {
@@ -34,7 +34,6 @@ public class CustomerController {
         response.getStatus().setCode(500);
         response.getStatus().setMessage(ex.getMessage());
     }
-    
     
     @GetMapping("/callshistory")
     public ResponseBody index(@RequestAttribute String id) {
