@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "f1642fb2-7b29-49cd-b881-a31923f780f8",
+		"_postman_id": "bf6227fe-5397-4f21-af44-72bd96091f44",
 		"name": "Operateur",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -33,13 +33,69 @@
 			"response": []
 		},
 		{
+			"name": "Create admin user",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"createdAt\": \"2021-03-23 08:00\", \"password\": \"2811\", \"name\": \"mavo\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL}}/auth/signup/admin",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"auth",
+						"signup",
+						"admin"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Sign in admin user",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"createdAt\": \"2021-03-23 08:00\", \"password\": \"2811\", \"name\": \"mavo\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL}}/auth/signin/admin",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"auth",
+						"signin",
+						"admin"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "SignUp",
 			"request": {
 				"method": "POST",
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\"name\": \"rakotovao rabe\", \"email\": \"brze@gmail.com\", \"password\": \"2811\", \"createdAt\": \"2021-03-01 15:00\"}",
+					"raw": "{\"name\": \"rakotovao a\", \"email\": \"a@gmail.com\", \"password\": \"2811\", \"createdAt\": \"2021-03-01 15:00\"}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -60,13 +116,40 @@
 			"response": []
 		},
 		{
+			"name": "Sign in",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"phoneNumber\": \"+261332023439\", \"password\": \"2811\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL}}/auth/signin",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"auth",
+						"signin"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "Buy credit",
 			"request": {
 				"method": "POST",
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\"amount\": \"5000\", \"phone_number\": \"+261330938572\", \"date\": \"2021-03-01 15:00\"}",
+					"raw": "{\"amount\": \"20000\", \"phone_number\": \"+261331820323\", \"date\": \"2021-04-01 08:00\"}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -96,7 +179,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\"phone_number\": \"+261330938572\", \"date\": \"2021-12-31\"}",
+					"raw": "{\"phone_number\": \"+261331820323\", \"date\": \"2021-12-31\"}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -328,7 +411,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "\r\n{\r\n    \"name\": \"Message 20\",\r\n    \"createdAt\": \"2021-01-01\",\r\n    \"validityDay\": 2,\r\n    \"limitation\": {\r\n        \"buyingLimit\": 2,\r\n        \"durationInDays\": 1\r\n    },\r\n    \"price\": 200,\r\n    \"amounts\": [\r\n        {\r\n            \"application\": {\r\n                \"id\": 1,\r\n                \"name\": \"message\",\r\n                \"internet_application_id\": -1,\r\n                \"t_type\": \"m\",\r\n                \"unit\": {\r\n                    \"id\": 1,\r\n                    \"suffix\": \"N\"\r\n                }\r\n            },\r\n            \"utilization\" : {\r\n                \"intra\" : {\r\n                    \"price\" : 1,\r\n                    \"per\" : \"sec\"\r\n                },\r\n                \"extra\" : {\r\n                    \"price\" : 3,\r\n                    \"per\" : \"sec\"\r\n                }\r\n            },\r\n            \"value\": 20\r\n        }\r\n    ]\r\n}",
+					"raw": "\r\n{\r\n    \"name\": \"Offre Mora 30 Jours\",\r\n    \"isOneDay\": \"true\",\r\n    \"createdAt\": \"2021-01-01\",\r\n    \"validityDay\": 10,\r\n    \"limitation\": {\r\n        \"buyingLimit\": 1,\r\n        \"durationInDays\": 1\r\n    },\r\n    \"price\": 1000,\r\n    \"amounts\": [\r\n        {\r\n            \"application\": {\r\n                \"id\": 1,\r\n                \"name\": \"Internet\",\r\n                \"internet_application_id\": \"4\",\r\n                \"t_type\": \"i\",\r\n                \"unit\": {\r\n                    \"id\": 1,\r\n                    \"suffix\": \"Mo\"\r\n                }\r\n            },\r\n            \"value\": \"100\"\r\n        },\r\n        {\r\n            \"application\": {\r\n                \"id\": 2,\r\n                \"name\": \"Appel\",\r\n                \"internet_application_id\": \"-1\",\r\n                \"t_type\": \"c\",\r\n                \"unit\": {\r\n                    \"id\": 1,\r\n                    \"suffix\": \"Ar\"\r\n                }\r\n            },\r\n            \"value\": \"250\",\r\n            \"utilization\": {\r\n                \"intra\": {\"price\": \"2\", \"per\": \"sec\"},\r\n                \"extra\": {\"price\": \"3\", \"per\": \"sec\"}\r\n            }\r\n        },\r\n        {\r\n            \"application\": {\r\n                \"id\": 2,\r\n                \"name\": \"Message\",\r\n                \"internet_application_id\": \"-1\",\r\n                \"t_type\": \"m\",\r\n                \"unit\": {\r\n                    \"id\": 1,\r\n                    \"suffix\": \"Ar\"\r\n                }\r\n            },\r\n            \"value\": \"10\"\r\n        }\r\n    ]\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -371,7 +454,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"phone_number\" : \"+261330938572\",\r\n    \"date\" : \"2021-03-03 08:00\"\r\n}",
+					"raw": "{\r\n    \"phone_number\" : \"+261331820323\",\r\n    \"date\" : \"2021-04-01 10:00\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -379,14 +462,44 @@
 					}
 				},
 				"url": {
-					"raw": "{{URL}}/offers/2/buy",
+					"raw": "{{URL}}/offers/3/buy",
 					"host": [
 						"{{URL}}"
 					],
 					"path": [
 						"offers",
-						"2",
+						"3",
 						"buy"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Customer remaining offers",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"phone_number\": \"+261331820323\", \"date\": \"2021-04-01 10:01\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL}}/offers/remainings",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"offers",
+						"remainings"
 					]
 				}
 			},
@@ -399,7 +512,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\"date\": \"2021-03-03 12:00\", \"phone_number_source\": \"+261331020641\",  \"phone_number_destination\": \"+261331705635\", \"duration\": \"00:00:60\"}",
+					"raw": "{\"date\": \"2021-03-03 12:00\", \"phone_number_source\": \"+261330822362\",  \"phone_number_destination\": \"+261330235073\", \"duration\": \"00:2:00\"}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -420,13 +533,53 @@
 			"response": []
 		},
 		{
+			"name": "Calls history",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJraWQiOiJ5b3UiLCJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIxIiwiaXNzIjoibWUiLCJzdWIiOiIxIn0.GYPj3gHHliB2RxDwJbpjfa1SHPx2zWPzt6ORQ7XhmW8",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL}}/customers/callshistory",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"customers",
+						"callshistory"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "Send message",
 			"request": {
 				"method": "POST",
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\"date\": \"2021-03-03 13:00\", \"phone_number_source\": \"+261330938572\",  \"phone_number_destination\": \"+261330938572\", \"text\": \"aaaaaaaaaaaaaaaaaaaaaa\"}",
+					"raw": "{\"date\": \"2021-03-23 19:00\", \"phone_number_source\": \"+261330822362\",  \"phone_number_destination\": \"+261330235073\", \"text\": \"aaaaaaaaaaa\"}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -453,7 +606,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\"created_at\": \"2021-03-20\", \"amount\": \"1ko\", \"phone_number\": \"+261330938572\", \"internet_application_id\": \"4\"}",
+					"raw": "{\"created_at\": \"2021-04-01 10:05\", \"amount\": \"10Mo\", \"phone_number\": \"+261331820323\", \"internet_application_id\": \"4\"}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -477,14 +630,7 @@
 			"name": "Insert call pricing",
 			"request": {
 				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "eyJraWQiOiJ5b3UiLCJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIxIiwiaXNzIjoibWUiLCJzdWIiOiJKZWFuIn0.1UcuqQVhhY02WzY-rvIOflY4RyC09UlX0XQ1h7sDsvc",
-							"type": "string"
-						}
-					]
+					"type": "noauth"
 				},
 				"method": "POST",
 				"header": [],
@@ -592,33 +738,6 @@
 			"response": []
 		},
 		{
-			"name": "Sign in",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\"phoneNumber\": \"+261330938572\", \"password\": \"2811\"}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "{{URL}}/auth/signin",
-					"host": [
-						"{{URL}}"
-					],
-					"path": [
-						"auth",
-						"signin"
-					]
-				}
-			},
-			"response": []
-		},
-		{
 			"name": "Statistics",
 			"protocolProfileBehavior": {
 				"disableBodyPruning": true
@@ -638,7 +757,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\"date\": \"2021-03-22\"}",
+					"raw": "{\"date\": \"2021-12-12\"}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -653,62 +772,6 @@
 					"path": [
 						"stats",
 						""
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Signin Admin",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\"name\": \"admin\", \"password\": \"2811\"}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "{{URL}}/auth/signin/admin",
-					"host": [
-						"{{URL}}"
-					],
-					"path": [
-						"auth",
-						"signin",
-						"admin"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "SignUp Admin",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\"name\": \"admin\", \"password\": \"root\", \"createdAt\": \"2021-03-01 15:00\"}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "{{URL}}/auth/signup/admin",
-					"host": [
-						"{{URL}}"
-					],
-					"path": [
-						"auth",
-						"signup",
-						"admin"
 					]
 				}
 			},

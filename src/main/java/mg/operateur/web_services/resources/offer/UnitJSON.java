@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package mg.operateur.web_services.resources.commons.offer;
+package mg.operateur.web_services.resources.offer;
 
 /**
  *

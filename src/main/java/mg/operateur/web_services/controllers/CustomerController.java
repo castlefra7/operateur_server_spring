@@ -10,7 +10,9 @@ import java.sql.SQLException;
 import mg.operateur.business_logic.mobile_credit.CallsHistory;
 import mg.operateur.conn.ConnGen;
 import mg.operateur.web_services.ResponseBody;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -19,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
  *
  * @author lacha
  */
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 @RequestMapping("/customers")
 @RestController
 public class CustomerController {
@@ -34,12 +37,12 @@ public class CustomerController {
     
     
     @GetMapping("/callshistory")
-    public ResponseBody index(@RequestBody int _customer_id) {
+    public ResponseBody index(@RequestAttribute String id) {
         ResponseBody response = new ResponseBody();
         Connection conn = null;
         try {
             conn = ConnGen.getConn();
-            response.getData().add(new CallsHistory().findAll(_customer_id, conn));
+            response.getData().add(new CallsHistory().findAll(Integer.valueOf(id), conn));
             response.getStatus().setMessage("Succés");
         } catch(Exception ex) {
             setError(response, ex);

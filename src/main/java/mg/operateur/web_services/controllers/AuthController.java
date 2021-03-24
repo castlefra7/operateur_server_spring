@@ -8,6 +8,7 @@ package mg.operateur.web_services.controllers;
 import io.jsonwebtoken.Jwts;
 import java.sql.Connection;
 import java.sql.SQLException;
+import mg.operateur.business_logic.mobile_credit.ConfOperator;
 import mg.operateur.business_logic.mobile_credit.Customer;
 import mg.operateur.business_logic.offer.Admin;
 import mg.operateur.business_logic.offer.Operator;
@@ -17,7 +18,7 @@ import mg.operateur.conn.ConnGen;
 import mg.operateur.gen.CDate;
 import mg.operateur.web_services.AuthResponseBody;
 import mg.operateur.web_services.ResponseBody;
-import mg.operateur.web_services.resources.commons.offer.CustomerJSON;
+import mg.operateur.web_services.resources.offer.CustomerJSON;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -63,7 +64,7 @@ public class AuthController {
             if (!found.getPassword().equals(PasswordHelper.md5(_customer.getPassword())))
                 throw new Exception("Mot de passe ou numero incorrect");
             
-            String jws = Jwts.builder().setHeaderParam("kid", "you").setAudience(String.valueOf(found.getId())).setIssuer("me").setSubject("Jean").signWith(Auth.getKey()).compact();
+            String jws = Jwts.builder().setHeaderParam("kid", "you").setAudience(String.valueOf(found.getId())).setIssuer("me").setSubject(String.valueOf(found.getId())).signWith(Auth.getKey()).compact();
             response.setToken(jws);
             response.getData().add(found);
         } catch(Exception ex) {
@@ -118,14 +119,15 @@ public class AuthController {
         Connection conn = null;
         try {
             conn = ConnGen.getConn();
-            Operator orange = new mg.operateur.business_logic.offer.Operator("Orange", "+26133");
+            ConfOperator confOp = new ConfOperator().getLastConf(conn);
+            Operator orange = new mg.operateur.business_logic.offer.Operator(confOp.getName(), confOp.getPrefix());
             mg.operateur.business_logic.offer.Customer customer = new mg.operateur.business_logic.offer.
                     Customer(_customer.getName(), _customer.getEmail(), _customer.getPassword(), CDate.getDate().parse(_customer.getCreatedAt()), orange.issueNewPhoneNumber());
             customer.save(conn);
             Customer createdCust = new Customer().find(customer.getPhone_number(), conn);
             int id = createdCust.getId();
             
-            String jws = Jwts.builder().setHeaderParam("kid", "you").setAudience(String.valueOf(id)).setIssuer("me").setSubject("Jean").signWith(Auth.getKey()).compact();
+            String jws = Jwts.builder().setHeaderParam("kid", "you").setAudience(String.valueOf(id)).setIssuer("me").setSubject(String.valueOf(id)).signWith(Auth.getKey()).compact();
             response.setToken(jws);
             response.getData().add(customer);
         } catch(Exception ex) {

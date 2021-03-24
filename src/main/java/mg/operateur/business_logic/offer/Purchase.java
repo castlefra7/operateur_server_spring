@@ -28,6 +28,9 @@ public final class Purchase implements Comparable {
     private Offer offer;
     private int offer_id;
     
+    private Date endDate;
+
+
     public Purchase() {}
 
     public Purchase(int id, int customerId, Offer purchasedOffer, Date purchaseDate, int offer_id) throws RequiredException {
@@ -36,6 +39,14 @@ public final class Purchase implements Comparable {
         setOffer(purchasedOffer);
         setDate(purchaseDate);
         setOffer_id(offer_id);
+    }
+    
+    public Date getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(Date endDate) {
+        this.endDate = endDate;
     }
 
     public Customer getCustomer() {
@@ -90,37 +101,6 @@ public final class Purchase implements Comparable {
         return FctGen.getInt("seq", "SELECT nextval('mg.purhaseSeq') as seq", conn);
     }
     
-//    public void save(Connection conn) 
-//            throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, SQLException {
-//        FctGen.insert(this, new String[] {"customer_id", "date", "offer_id"} , "mg.offer_purchases", conn);
-//    }
-    
-//    public static List<Purchase> findByCustomerId(int customerId, Connection conn) throws SQLException, Exception {
-//        PreparedStatement pst = null;
-//        List<Purchase> list = new ArrayList<>();
-//        try{
-//            pst = conn.prepareStatement("SELECT * FROM mg.offer_purchases WHERE customer_id = ?");
-//            pst.setInt(1, customerId);
-//            ResultSet res = pst.executeQuery();
-//            
-//            while (res.next()) {
-//                
-//                list.add(new Purchase(
-//                        res.getInt("customer_id"),
-//                        new Offer(),
-//                        res.getDate("date"),
-//                        res.getInt("offer_id")
-//                    )
-//                );
-//            }
-//            return list;
-//        }catch(Exception ex){   
-//            throw ex;
-//        }finally{
-//            if(pst!=null)pst.close();
-//        }
-//    }
-    
     public static List<Purchase> findByCustomerId(int customerId, PurchaseRepository repo) {
         return repo.findByCustomer_id(customerId);
     }
@@ -133,12 +113,13 @@ public final class Purchase implements Comparable {
     @Override
     public int compareTo(Object o) {
         Purchase purchase = (Purchase)o;
-        if(this.getOffer().getPriority() < purchase.getOffer().getPriority()) {
+        /*if(this.getOffer().getPriority() < purchase.getOffer().getPriority()) {
             return 1;
         } else if (this.getOffer().getPriority() >  purchase.getOffer().getPriority()) {
             return -1;
         } else {
             return 0;
-        }
+        }*/
+        return this.getEndDate().compareTo(purchase.getEndDate());
     }
 }

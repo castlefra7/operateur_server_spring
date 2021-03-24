@@ -16,6 +16,12 @@ import mg.operateur.gen.FctGen;
  */
 public class CallPricing extends Pricing {
     
+    public int convertToSec(String amount) {
+        amount = amount.toLowerCase();
+        int val = 0;
+        return val;
+    }
+    
     public void insert(Connection conn) 
             throws IllegalAccessException, IllegalAccessException, InvocationTargetException, SQLException {
         FctGen.insert(this, columns(), tableName(), conn);

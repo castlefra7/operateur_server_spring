@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package mg.operateur.web_services.resources.commons.offer;
+package mg.operateur.web_services.resources.offer;
 
 import java.util.Date;
 import java.util.List;
@@ -22,6 +22,16 @@ public class OfferJSON {
     private LimitationJSON limitation;
     private int priority;
     private List<AmountJSON> amounts;
+    
+    private boolean isOneDay;
+
+    public boolean getIsOneDay() {
+        return isOneDay;
+    }
+
+    public void setIsOneDay(boolean isOneDay) {
+        this.isOneDay = isOneDay;
+    }
 
     public OfferJSON() {
     }
