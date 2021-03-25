@@ -49,6 +49,7 @@ public final class Offer {
     private int priority;
     private List<Amount> amounts;
     
+    
     private boolean isOneDay;
 
     public boolean getIsOneDay() {
