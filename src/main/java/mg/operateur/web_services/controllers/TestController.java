@@ -24,6 +24,7 @@ import io.jsonwebtoken.security.Keys;
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -31,6 +32,7 @@ import javax.crypto.SecretKey;
 import mg.operateur.business_logic.offer.Offer;
 import mg.operateur.business_logic.offer.Purchase;
 import mg.operateur.business_logic.statistics.Statistic;
+import mg.operateur.gen.CDate;
 
 /**
  *
@@ -42,6 +44,7 @@ public class TestController {
 
     @Autowired
     PurchaseRepository purchaseRepository;
+    
 
     private static final String prefix = "/test";
 
@@ -69,7 +72,10 @@ public class TestController {
 Connection conn = null;
         try {
             conn = ConnGen.getConn();
-            response.getData().add(new Statistic().getDeposits(conn));
+            Calendar res = javax.xml.bind.DatatypeConverter.parseDateTime("2021-04-01T07:00:02Z");
+            System.out.println(res.getTime().toString());
+            response.getData().add(purchaseRepository.findByDateGreaterThan(2, res.getTime()));
+            
         } catch (Exception ex) {
             out(ex);
         } finally {

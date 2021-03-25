@@ -5,19 +5,39 @@
  */
 package mg.operateur.web_services.controllers;
 
+import java.util.Date;
 import java.util.List;
 import mg.operateur.business_logic.offer.Offer;
 import mg.operateur.business_logic.offer.Purchase;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.repository.MongoRepository;
-import org.springframework.data.mongodb.repository.Query;
 
+
+import org.springframework.data.mongodb.core.query.Query;
 /**
  *
  * @author dodaa
  */
+
 public interface PurchaseRepository extends MongoRepository<Purchase, String> {
-    
-    @Query("{ 'customer_id' : ?0 }")
+
+    /**
+     *
+     * @param customer_id
+     */
+
+    @org.springframework.data.mongodb.repository.Query("{ 'customer_id' : ?0 }")
     public List<Purchase> findByCustomer_id(int customer_id);
     public Purchase findById(int id);
+    @org.springframework.data.mongodb.repository.Query("{ 'customer_id' : ?0 }")
+    public List findByDateGreaterThan( int customer_id, Date date);
+    
+    /**
+     *
+     * @param date
+     * @return
+     */
+
 }
