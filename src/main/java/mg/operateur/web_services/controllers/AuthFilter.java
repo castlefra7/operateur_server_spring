@@ -39,7 +39,8 @@ public class AuthFilter extends OncePerRequestFilter {
 
                 String token = authLogic.resolveToken(httpServletRequest);
                 if (token == null) {
-                    httpServletResponse.sendRedirect("/errors/tokens");
+                    httpServletResponse.setHeader("Access-Control-Allow-Origin", "*");
+                    httpServletResponse.sendError(-1, "Vous devez spécifié un token");
                     return;
                 } else {
                     Jws<Claims> jws;
@@ -57,10 +58,11 @@ public class AuthFilter extends OncePerRequestFilter {
 
                         httpServletRequest.setAttribute("id", jws.getBody().getSubject());
                     } catch (JwtException ex) {
+                        httpServletResponse.setHeader("Access-Control-Allow-Origin", "*");
                         if (ex.getMessage().contains("admin")) {
-                            httpServletResponse.sendRedirect("/errors/notadmin");
+                            httpServletResponse.sendError(-1, "Vous devez vous connectez en tant que admin");
                         } else {
-                            httpServletResponse.sendRedirect("/errors/invalidtokens");
+                            httpServletResponse.sendError(-1, "Ce token est invalide");
                         }
                         return;
                     }
