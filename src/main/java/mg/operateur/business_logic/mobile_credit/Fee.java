@@ -21,7 +21,7 @@ import mg.operateur.gen.InvalidAmountException;
 public class Fee extends BaseClass {
     
     
-    public List<Object> getAllFees(Date date, Connection conn) throws SQLException, IllegalAccessException, InstantiationException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException {
+    public List<Object> getAllFees(Connection conn) throws SQLException, IllegalAccessException, InstantiationException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException {
         return FctGen.findAll(new Fee(), String.format("select * from %s", tableName()), columns(), conn);
     }
 

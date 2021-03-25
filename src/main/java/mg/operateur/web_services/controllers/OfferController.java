@@ -63,6 +63,26 @@ public class OfferController {
         return response;
     }
     
+    @PostMapping(value = "/{offer_id}/buyfrommobile")
+    public ResponseBody buyOfferMobileMOney(
+            @PathVariable("offer_id") int _offerId, 
+            @RequestBody TransacJSON _purchase
+    ) {
+        ResponseBody response = new ResponseBody();
+        Connection conn = null;
+        try {
+            conn = ConnGen.getConn();
+            new Offer().buyFromMobileMoney(_offerId, _purchase, offerRepository, purchaseRepository, conn);
+            response.getStatus().setMessage("Succés");
+        } catch(Exception ex) {
+            setError(response, ex);
+            out(ex);
+        } finally {
+            try {if(conn!=null) conn.close();}catch(SQLException ex) {setError(response, ex);out(ex);}
+        }
+        return response;
+    }
+    
         
     @PostMapping(value = "/{offer_id}/buy")
     public ResponseBody create(

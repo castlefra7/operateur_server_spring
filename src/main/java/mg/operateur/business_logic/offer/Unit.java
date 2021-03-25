@@ -5,6 +5,7 @@
  */
 package mg.operateur.business_logic.offer;
 
+import mg.operateur.gen.InvalidFormatException;
 import mg.operateur.gen.RequiredException;
 
 /**
@@ -18,7 +19,7 @@ public class Unit {
     public Unit() {
     }
 
-    public Unit(int id, String suffix) throws Exception {
+    public Unit(int id, String suffix) throws RequiredException, InvalidFormatException {
         setId(id);
         setSuffix(suffix);
     }
@@ -35,9 +36,11 @@ public class Unit {
         return suffix;
     }
 
-    public void setSuffix(String suffix) throws RequiredException {
+    public void setSuffix(String suffix) throws RequiredException, InvalidFormatException {
         if (suffix == null)
             throw new RequiredException("Unit suffix is required");
+        suffix = suffix.toLowerCase();
+        if(suffix != "sec" && suffix != "mn"  && suffix != "hr" && suffix != "n" && suffix != "ko" && suffix != "go" && suffix != "mo") throw new InvalidFormatException("L'unité doit être: Mn, Hr, Sec, Go, Ko, Mo");
         this.suffix = suffix;
     }
 
