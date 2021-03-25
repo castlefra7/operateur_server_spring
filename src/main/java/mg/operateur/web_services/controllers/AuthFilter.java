@@ -16,7 +16,6 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.CrossOrigin;
 
-
 @Component
 public class AuthFilter extends OncePerRequestFilter {
 
@@ -25,6 +24,7 @@ public class AuthFilter extends OncePerRequestFilter {
     @Override
     public void destroy() {
     }
+
     @CrossOrigin(origins = "*", allowedHeaders = "*")
     @Override
     protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, FilterChain filterChain) throws ServletException, IOException {
@@ -43,6 +43,7 @@ public class AuthFilter extends OncePerRequestFilter {
                 if (token == null) {
                     httpServletResponse.setHeader("Access-Control-Allow-Headers", "*");
                     httpServletResponse.setHeader("Access-Control-Allow-Origin", "*");
+                    httpServletResponse.setHeader("Access-Control-Allow-Methods", "*");
                     httpServletResponse.sendError(-1, "Vous devez spécifié un token");
                     return;
                 } else {
@@ -62,7 +63,8 @@ public class AuthFilter extends OncePerRequestFilter {
                         httpServletRequest.setAttribute("id", jws.getBody().getSubject());
                     } catch (JwtException ex) {
                         httpServletResponse.setHeader("Access-Control-Allow-Headers", "*");
-                    httpServletResponse.setHeader("Access-Control-Allow-Origin", "*");
+                        httpServletResponse.setHeader("Access-Control-Allow-Origin", "*");
+                        httpServletResponse.setHeader("Access-Control-Allow-Methods", "*");
                         if (ex.getMessage().contains("admin")) {
                             httpServletResponse.sendError(-1, "Vous devez vous connectez en tant que admin");
                         } else {
