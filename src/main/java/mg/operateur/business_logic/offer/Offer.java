@@ -6,10 +6,10 @@
 package mg.operateur.business_logic.offer;
 
 import java.lang.reflect.InvocationTargetException;
+import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -18,6 +18,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import mg.operateur.business_logic.mobile_credit.CreditConsumption;
+import mg.operateur.business_logic.mobile_credit.Withdraw;
 import mg.operateur.gen.CDate;
 import mg.operateur.gen.FctGen;
 import mg.operateur.gen.InvalidAmountException;
@@ -134,11 +135,44 @@ public final class Offer {
     public Limitation getLimitation() { return limitation; }
     public List<Amount> getAmounts() { return amounts; }
     
+    public void buyFromMobileMoney(int _offerId, TransacJSON _purchase, OfferRepository offerRepository, PurchaseRepository purchaseRepository, Connection conn) throws NotFoundException, RequiredException, SQLException, InstantiationException, NoSuchMethodException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, ParseException, LimitReachedException, InvalidAmountException, InvalidDateException, InvalidFormatException, NoSuchAlgorithmException {
+        mg.operateur.business_logic.mobile_credit.Customer foundCustomer = new mg.operateur.business_logic.mobile_credit.Customer().find(_purchase.getPhone_number(), conn);        
+        foundCustomer.checkLastOperation(CDate.getDate().parse(_purchase.getDate()), conn);
+        Offer offer = offerRepository.findById(_offerId);
+        if (offer == null)
+            throw new NotFoundException("L'offre specifié n'existe pas"); 
+        if(offer.getPrice() > foundCustomer.mobileBalance(CDate.getDate().parse(_purchase.getDate()), conn)) throw new InvalidAmountException("Votre solde mobile money est insuffisant pour acheter cette offre");
+        mg.operateur.business_logic.offer.Customer customer = new mg.operateur.business_logic.offer.
+                Customer(foundCustomer.getId(), foundCustomer.getName(), foundCustomer.getEmail(), foundCustomer.getPhone_number());
+        List<Purchase> purchases = purchaseRepository.findByCustomer_id(customer.getId());
+        purchases.forEach(p -> {
+            try {
+                p.setOffer(offerRepository.findById(p.getOffer_id()));
+            } catch (RequiredException ex) {
+                Logger.getLogger(PurchaseController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        });
+        
+        Account account = new Account(customer.getId(), purchases, new ArrayList<>());
+        customer.setAccount(account);
+        
+        
+        Date date = CDate.getDate().parse(_purchase.getDate());
+        
+        Withdraw withdraw = new Withdraw();
+        withdraw.setCreated_at(date);
+        withdraw.setCustomer_id(foundCustomer.getId());
+        withdraw.setAmount(offer.getPrice());
+        foundCustomer.withdraw(withdraw, _purchase.getPassword(), true, conn);
+        
+        customer.purchase(offer, date, conn, purchaseRepository);
+        
+        
+    }
     
     public void buy(int _offerId, TransacJSON _purchase, OfferRepository offerRepository, PurchaseRepository purchaseRepository, Connection conn) throws NotFoundException, RequiredException, SQLException, InstantiationException, NoSuchMethodException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, ParseException, LimitReachedException, InvalidAmountException, InvalidDateException, InvalidFormatException {
         
         mg.operateur.business_logic.mobile_credit.Customer foundCustomer = new mg.operateur.business_logic.mobile_credit.Customer().find(_purchase.getPhone_number(), conn);        
-        
         foundCustomer.checkLastOperation(CDate.getDate().parse(_purchase.getDate()), conn);
 
         Offer offer = offerRepository.findById(_offerId);
@@ -166,13 +200,15 @@ public final class Offer {
         
         Date date = CDate.getDate().parse(_purchase.getDate());
         
-        customer.purchase(offer, date, conn, purchaseRepository);
-        
         CreditConsumption creditCons = new CreditConsumption();
         creditCons.setCreated_at(date);
         creditCons.setCustomer_id(customer.getId());
         creditCons.setCons_amount(offer.getPrice());
         creditCons.insert(conn);
+        
+        customer.purchase(offer, date, conn, purchaseRepository);
+        
+
     }
     
     

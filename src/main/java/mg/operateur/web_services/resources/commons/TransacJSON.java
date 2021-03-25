@@ -13,6 +13,17 @@ public class TransacJSON {
     private String date;
     private double amount;
     private String phone_number;
+    private String password;
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+    
+    
 
     public String getPhone_number() {
         return phone_number;

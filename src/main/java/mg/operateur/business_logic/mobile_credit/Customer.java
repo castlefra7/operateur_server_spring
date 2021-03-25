@@ -7,6 +7,7 @@ package mg.operateur.business_logic.mobile_credit;
 
 import mg.operateur.gen.FctGen;
 import java.lang.reflect.InvocationTargetException;
+import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.text.ParseException;
@@ -479,6 +480,8 @@ public final class Customer extends Person {
 
         }
     }
+    
+    
 
     public void buyCreditFromMobile(Credit credit, String pwd, Connection conn) throws SQLException, InvalidDateException, InvalidAmountException, Exception {
         checkLastOperation(credit.getCreated_at(), conn);
@@ -552,20 +555,21 @@ public final class Customer extends Person {
         }
     }
 
-    public void withdraw(Withdraw withdraw, String pwd, boolean isFree, Connection conn) throws SQLException, InstantiationException, NoSuchMethodException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, Exception {
+    public void withdraw(Withdraw withdraw, String pwd, boolean isFree, Connection conn) throws SQLException, InstantiationException, NoSuchMethodException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, InvalidDateException, RequiredException, InvalidAmountException, NoSuchAlgorithmException {
         checkLastOperation(withdraw.getCreated_at(), conn);
 
         conn.setAutoCommit(false);
         Customer currCust = find(getId(), conn);
-        if (!currCust.getPassword().equals(PasswordHelper.md5(pwd))) {
-            throw new Exception("Mot de passe incorrect");
+        
+        if (pwd == null || !currCust.getPassword().equals(PasswordHelper.md5(pwd))) {
+            throw new RequiredException("Mot de passe incorrect");
         }
 
         if (isFree == false) {
             withdraw.setFee(getFeeAmount(withdraw.getAmount(), conn));
         }
         if ((withdraw.getAmount()) > mobileBalance(withdraw.getCreated_at(), conn)) {
-            throw new Exception("Votre solde est insuffisant pour effectuer cette opération");
+            throw new InvalidAmountException("Votre solde est insuffisant pour effectuer cette opération");
         }
 
         try {
@@ -590,7 +594,7 @@ public final class Customer extends Person {
 
     private double getFeeAmount(double amount, Connection conn) throws SQLException, IllegalAccessException, IllegalArgumentException, InstantiationException, InvocationTargetException, NoSuchMethodException {
         double result = 0;
-        List<Object> allFees = new Fee().getAllFees(null, conn);
+        List<Object> allFees = new Fee().getAllFees(conn);
         for (Object ob : allFees) {
             Fee fee = (Fee) ob;
             if (amount >= fee.getAmount_min() && amount <= fee.getAmount_max()) {
