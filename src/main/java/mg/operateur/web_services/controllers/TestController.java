@@ -30,6 +30,7 @@ import java.util.List;
 import javax.crypto.SecretKey;
 import mg.operateur.business_logic.offer.Offer;
 import mg.operateur.business_logic.offer.Purchase;
+import mg.operateur.business_logic.statistics.Statistic;
 
 /**
  *
@@ -65,11 +66,14 @@ public class TestController {
     @RequestMapping()
     public ResponseBody index() {
         ResponseBody response = new ResponseBody();
-
+Connection conn = null;
         try {
-            
+            conn = ConnGen.getConn();
+            response.getData().add(new Statistic().getDeposits(conn));
         } catch (Exception ex) {
             out(ex);
+        } finally {
+            try { if(conn!=null) conn.close();} catch(SQLException ex) {out(ex); }
         }
         return response;
     }

@@ -5,7 +5,10 @@
  */
 package mg.operateur.web_services.controllers;
 
+import java.sql.Connection;
+import java.sql.SQLException;
 import mg.operateur.business_logic.statistics.Statistic;
+import mg.operateur.conn.ConnGen;
 import mg.operateur.gen.CDate;
 import mg.operateur.web_services.ResponseBody;
 import mg.operateur.web_services.resources.commons.AskJSON;
@@ -50,6 +53,25 @@ public class StatController {
         } catch(Exception ex) {
             setError(response, ex);
             out(ex);
+        }
+        
+        return response;
+    }
+    
+    @GetMapping("/mobileops")
+    public ResponseBody deposits(
+    ) {
+        Connection conn = null;
+        ResponseBody response = new ResponseBody();
+        try {
+            conn = ConnGen.getConn();
+            response.getData().add(new Statistic().getDeposits(conn));
+            response.getData().add(new Statistic().getWithdraws(conn));
+        } catch(Exception ex) {
+            setError(response, ex);
+            out(ex);
+        } finally {
+            try { if(conn!=null) conn.close();} catch(SQLException ex) {out(ex); }
         }
         
         return response;

@@ -5,10 +5,13 @@
  */
 package mg.operateur.business_logic.statistics;
 
+import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -16,6 +19,7 @@ import java.util.Map;
 import java.util.Iterator;
 import mg.operateur.business_logic.offer.Purchase;
 import mg.operateur.conn.ConnGen;
+import mg.operateur.gen.FctGen;
 import mg.operateur.web_services.controllers.PurchaseRepository;
 
 /**
@@ -23,6 +27,36 @@ import mg.operateur.web_services.controllers.PurchaseRepository;
  * @author lacha
  */
 public class Statistic {
+    
+    public Chart getDeposits(Connection conn) throws SQLException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException {
+        List<Object> ob = FctGen.findAll(new AmountStat(), "select * from mg.deposits_stat", new String[]  {"date", "amount" }, conn);
+        List<String> labels = new ArrayList();
+        List<Double> data = new ArrayList();
+        for(Object o: ob) {
+            AmountStat amount = (AmountStat)o;
+            labels.add(amount.getDate());
+            data.add(amount.getAmount());
+        }
+        Chart ch =new Chart();
+        ch.setLabels(labels);
+        ch.setData(data);
+        return ch;
+    }
+    
+    public Chart getWithdraws(Connection conn) throws SQLException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException {
+        List<Object> ob = FctGen.findAll(new AmountStat(), "select * from mg.withdraws_stat", new String[]  {"date", "amount" }, conn);
+        List<String> labels = new ArrayList();
+        List<Double> data = new ArrayList();
+        for(Object o: ob) {
+            AmountStat amount = (AmountStat)o;
+            labels.add(amount.getDate());
+            data.add(amount.getAmount());
+        }
+        Chart ch =new Chart();
+        ch.setLabels(labels);
+        ch.setData(data);
+        return ch;
+    }
     
     public List<OfferStat> getOffersStat(Date date, PurchaseRepository purchase) throws SQLException {
         Connection conn = null;
@@ -41,6 +75,11 @@ public class Statistic {
         List<Purchase> all = purchase.findAll();
         HashMap<Integer, Integer> counts = new HashMap<>();
         HashSet<OfferStat> offersName = new HashSet();
+        Calendar calendar = new GregorianCalendar();
+        calendar.setTime(date);
+        calendar.set(Calendar.HOUR, 23);
+        calendar.set(Calendar.MINUTE, 59);
+        date = calendar.getTime();
         for(Purchase p: all) {
             if(p.getDate().compareTo(date) <= 0 ){
                 Integer newCount = counts.get(p.getOffer().getId());

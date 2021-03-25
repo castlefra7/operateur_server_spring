@@ -53,6 +53,7 @@ create table mg.deposits (
     foreign key (customer_source_id) references mg.customers(id)
 );
 
+
 create table mg.withdraws (
     id serial primary key,
     created_at timestamp not null,
@@ -143,6 +144,9 @@ create table mg.internet_consumptions (
     foreign key (customer_id) references mg.customers(id),
     foreign key (internet_application_id) references mg.internet_applications(id)
 );
+/* STATS */
+create view mg.deposits_stat as select date(created_at), sum(amount) as amount from mg.deposits where isValidated is true group by date(created_at) order by date(created_at);
+create view mg.withdraws_stat as select date(created_at), sum(amount) as amount from mg.withdraws group by date(created_at) order by date(created_at) ;
     
 /* CALLS history */
 create view mg.calls_history as select mg.messages_calls_consumptions.created_at, mg.messages_calls_consumptions.amount, mg.customers.phone_number, 

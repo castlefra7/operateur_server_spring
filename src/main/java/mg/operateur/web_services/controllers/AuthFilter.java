@@ -54,7 +54,7 @@ public class AuthFilter extends OncePerRequestFilter {
                                 .build()
                                 .parseClaimsJws(token);
 
-                        if (controller.equals("pricings") || controller.equals("pos")) {
+                        if (controller.equals("pricings") || controller.equals("pos") || controller.equals("stats")) {
                             if (!jws.getBody().getSubject().equals("Admin")) {
                                 throw new JwtException("admin");
                             }
