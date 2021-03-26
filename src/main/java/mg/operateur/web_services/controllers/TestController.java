@@ -5,35 +5,16 @@
  */
 package mg.operateur.web_services.controllers;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jws;
-import io.jsonwebtoken.JwtException;
 import java.sql.Connection;
 import java.sql.SQLException;
-import mg.operateur.business_logic.mobile_credit.Customer;
 import mg.operateur.conn.ConnGen;
 import mg.operateur.web_services.ResponseBody;
-import mg.operateur.web_services.resources.consumptions.CallJSON;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.security.Keys;
-import java.nio.charset.StandardCharsets;
-import java.security.Key;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collections;
 import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.List;
-import javax.crypto.SecretKey;
-import mg.operateur.business_logic.offer.Offer;
 import mg.operateur.business_logic.offer.Purchase;
-import mg.operateur.business_logic.statistics.Statistic;
-import mg.operateur.gen.CDate;
 
 /**
  *
@@ -45,9 +26,6 @@ public class TestController {
 
     @Autowired
     PurchaseRepository purchaseRepository;
-    
-
-    private static final String prefix = "/test";
 
     private void out(Exception ex) {
         ex.printStackTrace();
@@ -70,27 +48,49 @@ public class TestController {
     @RequestMapping()
     public ResponseBody index() {
         ResponseBody response = new ResponseBody();
-Connection conn = null;
+        Connection conn = null;
         try {
+            
+
             conn = ConnGen.getConn();
-            //Calendar res = javax.xml.bind.DatatypeConverter.parseDateTime("2021-12-01T07:00:02Z");
-            Calendar res = new GregorianCalendar();
-            res.set(Calendar.YEAR, 2021);
-            res.set(Calendar.MONTH, 5);
-            res.set(Calendar.DAY_OF_MONTH, 2);
-            
-            response.getData().add(purchaseRepository.findByEndDateGreaterThanAndCustomer_id(res.getTime(), 4));
-            
+
+            Purchase p = new Purchase();
+            p.setDate(new Date());
+
+            purchaseRepository.save(p);
+
+            response.getData().add(purchaseRepository.findAll());
+
         } catch (Exception ex) {
             out(ex);
         } finally {
-            try { if(conn!=null) conn.close();} catch(SQLException ex) {out(ex); }
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException ex) {
+                out(ex);
+            }
         }
         return response;
     }
+    
+   
 }
 
-/*Connection conn = null;
+
+
+/*
+System.setProperty("user.timezone", "UTC");
+
+Date nowUtc = new Date();
+            TimeZone tana = TimeZone.getTimeZone("UTC");
+
+            Calendar nowTana = Calendar.getInstance(tana);
+            nowTana.setTime(nowUtc);
+ */
+
+ /*Connection conn = null;
         String secretString = "123123123112312312311231231231222";
         SecretKey key;
         key = Keys.hmacShaKeyFor(secretString.getBytes(StandardCharsets.UTF_8));
@@ -129,9 +129,7 @@ Connection conn = null;
             this.setError(response, ex);
             out(ex);
         }*/
-
-
-/*
+ /*
 
     List<Purchase> all = new ArrayList();
     Offer o1 = new Offer();
@@ -148,4 +146,4 @@ Connection conn = null;
         System.out.println(p.getId());
     }
 
-*/
+ */

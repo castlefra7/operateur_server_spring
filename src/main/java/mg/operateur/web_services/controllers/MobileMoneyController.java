@@ -1,6 +1,7 @@
 package mg.operateur.web_services.controllers;
 
 import java.lang.reflect.InvocationTargetException;
+import java.net.URISyntaxException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.text.ParseException;
@@ -85,7 +86,7 @@ public class MobileMoneyController {
         }
         
         @PostMapping("/fees")
-        public ResponseBody fees(@RequestBody FeeJSON _fee) {
+        public ResponseBody fees(@RequestBody FeeJSON _fee) throws URISyntaxException {
             ResponseBody response = new ResponseBody();
             Connection conn = null;
             try {

@@ -7,6 +7,7 @@ package mg.operateur.business_logic.offer;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.time.ZonedDateTime;
 import java.util.Date;
 import java.util.List;
 import mg.operateur.gen.FctGen;
@@ -29,6 +30,10 @@ public final class Purchase implements Comparable {
     private int offer_id;
     
     private Date endDate;
+    
+    private ZonedDateTime time;
+
+ 
 
 
     public Purchase() {}
