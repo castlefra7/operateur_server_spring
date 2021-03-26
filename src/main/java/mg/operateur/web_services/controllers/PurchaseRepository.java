@@ -31,8 +31,8 @@ public interface PurchaseRepository extends MongoRepository<Purchase, String> {
     @org.springframework.data.mongodb.repository.Query("{ 'customer_id' : ?0 }")
     public List<Purchase> findByCustomer_id(int customer_id);
     public Purchase findById(int id);
-    @org.springframework.data.mongodb.repository.Query("{ 'customer_id' : ?0 }")
-    public List findByDateGreaterThan( int customer_id, Date date);
+    @org.springframework.data.mongodb.repository.Query("{ 'endDate': {$gt: ?0 }, 'customer_id' : ?1 }")
+    public List findByEndDateGreaterThanAndCustomer_id(Date date, int customer_id);
     
     /**
      *

@@ -16,6 +16,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import mg.operateur.business_logic.offer.Amount;
 import mg.operateur.business_logic.offer.Application;
 import mg.operateur.business_logic.offer.Offer;
@@ -66,11 +67,11 @@ public final class Customer extends Person {
             conn = ConnGen.getConn();
             Customer customer = this.find(_ask.getPhone_number(), conn);
             List<Purchase> validPurchases = findAllValidPurchases(customer.getId(), CDate.getDate().parse(_ask.getDate()), purchaseRepository, conn);
-
             for (Purchase p : validPurchases) {
                 List<Amount> amounts = p.getOffer().getAmounts();
                 for (Amount amount : amounts) {
                     Character type = amount.getApplication().getT_type();
+                    //System.out.println(type);
                     if (type == 'i') {
                         int val = new InternetPricing().convertToKo(String.valueOf(amount.getValue()).concat(amount.getApplication().getUnit().getSuffix()));
                         amount.setValue(val);
@@ -85,17 +86,15 @@ public final class Customer extends Person {
                                 val = val * 3600;
                             }
                         } else {
+                            // TODO convert utilisation to second;
                         }
                         amount.setValue(val);
                     }
 
-                    if (amount.getApplication().getInternet_application_id() == -1) {
-                        Double value = remain.get(type);
-                        if (value == null) {
-                            remain.put(String.valueOf(type), amount.getValue());
-                        } else {
-                            remain.put(String.valueOf(type), value + amount.getValue());
-                        }
+                    if (amount.getApplication().getInternet_application_id() == -1  || type == 'c' || type == 'm') {
+                        Double value = remain.get(String.valueOf(type));
+                        double res = value != null? value: 0;
+                        remain.put(String.valueOf(type), res + amount.getValue());
                     } else {
                         String typeI = type + String.valueOf(amount.getApplication().getInternet_application_id());
                         Double value = remain.get(typeI);
@@ -106,7 +105,6 @@ public final class Customer extends Person {
                         }
                     }
                 }
-
             }
         } catch (IllegalAccessException | IllegalArgumentException | InstantiationException | NoSuchMethodException | InvocationTargetException | SQLException | NotFoundException ex) {
             throw ex;
@@ -369,7 +367,7 @@ public final class Customer extends Person {
     }
 
     public List<Purchase> findAllValidPurchases(int customer_id, Date _date, PurchaseRepository purchaseRepository, Connection conn) {
-        List<Purchase> result = new ArrayList();
+        /*List<Purchase> result = new ArrayList();
         List<Purchase> allPurchases = Purchase.findByCustomerId(customer_id, purchaseRepository);
         for (Purchase purchase : allPurchases) {
             Offer offer = purchase.getOffer();
@@ -384,8 +382,10 @@ public final class Customer extends Person {
                     result.add(purchase);
                 }
             }
-
-        }
+        }*/
+        
+        // TODO MayBe date between two dates
+        List<Purchase> result = purchaseRepository.findByEndDateGreaterThanAndCustomer_id(_date, customer_id);
         Collections.sort(result);
         return result;
     }

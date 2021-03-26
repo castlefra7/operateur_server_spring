@@ -12,6 +12,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import mg.operateur.gen.CDate;
 import mg.operateur.gen.FctGen;
 import mg.operateur.gen.LimitReachedException;
 import mg.operateur.gen.RequiredException;
@@ -127,8 +128,12 @@ public class Customer {
         int buyingLimit = offer.getLimitation().getBuyingLimit();
         int buys = 1;
         
-        List<Purchase> validPurchase = getAccount().getValidPurchasesAtDate(newPurchaseDate);
+        // TODO get valid purchases in mongodb
+        //List<Purchase> validPurchase = getAccount().getValidPurchasesAtDate(newPurchaseDate);
+        System.out.println(newPurchaseDate);
+       List<Purchase> validPurchase = repo.findByEndDateGreaterThanAndCustomer_id( newPurchaseDate,getId());
         for (Purchase purchase : validPurchase) {
+            System.out.println(purchase.getEndDate());
             if (purchase.getOffer().equals(offer)) {
                 buys ++;
                 if (buys > buyingLimit) 
@@ -137,6 +142,12 @@ public class Customer {
         }
         int nextId = Purchase.getNextId(conn);
         Purchase newPurchase = new Purchase(nextId, getId(), offer, newPurchaseDate, offer.getId());
+        
+        Date endValidity = CDate.addDay(newPurchaseDate, offer.getValidityDay());
+        if (offer.getIsOneDay()) {
+            endValidity = CDate.endOfDay(newPurchaseDate);
+        }
+        newPurchase.setEndDate(endValidity);
         repo.save(newPurchase);
     }
     

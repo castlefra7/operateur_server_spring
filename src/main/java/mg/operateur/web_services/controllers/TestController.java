@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 import javax.crypto.SecretKey;
 import mg.operateur.business_logic.offer.Offer;
@@ -72,9 +73,13 @@ public class TestController {
 Connection conn = null;
         try {
             conn = ConnGen.getConn();
-            Calendar res = javax.xml.bind.DatatypeConverter.parseDateTime("2021-04-01T07:00:02Z");
-            System.out.println(res.getTime().toString());
-            response.getData().add(purchaseRepository.findByDateGreaterThan(2, res.getTime()));
+            //Calendar res = javax.xml.bind.DatatypeConverter.parseDateTime("2021-12-01T07:00:02Z");
+            Calendar res = new GregorianCalendar();
+            res.set(Calendar.YEAR, 2021);
+            res.set(Calendar.MONTH, 5);
+            res.set(Calendar.DAY_OF_MONTH, 2);
+            
+            response.getData().add(purchaseRepository.findByEndDateGreaterThanAndCustomer_id(res.getTime(), 4));
             
         } catch (Exception ex) {
             out(ex);

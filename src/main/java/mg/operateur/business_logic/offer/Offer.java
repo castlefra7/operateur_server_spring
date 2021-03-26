@@ -186,6 +186,7 @@ public final class Offer {
 
         List<Purchase> purchases = purchaseRepository.findByCustomer_id(customer.getId());
 
+        // TODO THIS LOOP
         purchases.forEach(p -> {
             try {
                 p.setOffer(offerRepository.findById(p.getOffer_id()));
@@ -206,6 +207,7 @@ public final class Offer {
         creditCons.setCons_amount(offer.getPrice());
         creditCons.insert(conn);
         
+        System.out.println(date);
         customer.purchase(offer, date, conn, purchaseRepository);
         
 

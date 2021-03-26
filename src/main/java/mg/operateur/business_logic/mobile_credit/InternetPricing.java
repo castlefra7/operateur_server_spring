@@ -24,7 +24,6 @@ public class InternetPricing {
     public int convertToKo(String amount) throws InvalidAmountException {
         amount = amount.toLowerCase();
         if(amount.length() < 3) throw new InvalidAmountException("Vérifier la consommation entrée");
-        System.out.println(amount);
         double r = Double.valueOf(amount.substring(0, amount.length()-2));
         int result = (int)r;
         if(amount.endsWith("mo")) {
