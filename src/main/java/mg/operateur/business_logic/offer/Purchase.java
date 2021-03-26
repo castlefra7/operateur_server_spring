@@ -93,7 +93,9 @@ public final class Purchase implements Comparable {
     public int getId() { return id; }
     public int getCustomer_id() { return customer_id; }
     public Offer getOffer() { return offer; }
-    public Date getDate() { return date; }
+    public Date getDate() { 
+
+        return date; }
 
     public boolean isStillValidAt(Date newPurchaseDate) {
         int validityDay = offer.getValidityDay();

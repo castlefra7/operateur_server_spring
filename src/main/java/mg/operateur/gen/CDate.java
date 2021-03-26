@@ -9,6 +9,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.TimeZone;
 
 /**
  *
@@ -17,13 +18,18 @@ import java.util.GregorianCalendar;
 public class CDate {
     public static CustomDateFormat getDate() {
         CustomDateFormat sdf = new CustomDateFormat("yyyy-MM-dd HH:mm");
+        //TimeZone tana = TimeZone.getTimeZone("Indian/Antananarivo");
+        //sdf.setTimeZone(tana);
         return sdf;
     }
     
     public static Date endOfDay(Date date) {
+        //TimeZone tana = TimeZone.getTimeZone("Indian/Antananarivo");
+
         Calendar cal = new GregorianCalendar();
+        //cal.setTimeZone(tana);
         cal.setTime(date);
-        cal.set(Calendar.HOUR, 23);
+        cal.set(Calendar.HOUR_OF_DAY, 23);
         cal.set(Calendar.MINUTE, 59);
         cal.set(Calendar.SECOND, 59);
         
