@@ -1,6 +1,7 @@
 package mg.operateur.web_services.controllers;
 
 import java.util.Arrays;
+import java.util.TimeZone;
 
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.ApplicationContext;
@@ -19,6 +20,8 @@ import org.springframework.data.mongodb.repository.config.EnableMongoRepositorie
 public class OperateurApplication {
 
     public static void main(String[] args) {
+        TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
+
         SpringApplication.run(OperateurApplication.class, args);
     }
 

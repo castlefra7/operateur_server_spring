@@ -7,6 +7,7 @@ package mg.operateur.web_services.controllers;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Calendar;
 import mg.operateur.conn.ConnGen;
 import mg.operateur.web_services.ResponseBody;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import mg.operateur.business_logic.offer.Purchase;
 
 /**
@@ -51,16 +53,14 @@ public class TestController {
         Connection conn = null;
         try {
             
-
-            conn = ConnGen.getConn();
-
-            Purchase p = new Purchase();
-            p.setDate(new Date());
-
-            purchaseRepository.save(p);
-
-            response.getData().add(purchaseRepository.findAll());
-
+            Date date = new Date();
+            Calendar c = new GregorianCalendar();
+            c.setTime(date);
+            c.set(Calendar.YEAR, 2022);
+            c.set(Calendar.MONTH, 1);
+            c.set(Calendar.DAY_OF_MONTH, 3);
+            c.set(Calendar.HOUR, 20);
+            response.getData().add(purchaseRepository.findByCustomer_id(4));
         } catch (Exception ex) {
             out(ex);
         } finally {

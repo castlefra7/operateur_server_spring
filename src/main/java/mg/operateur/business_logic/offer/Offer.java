@@ -206,9 +206,16 @@ public final class Offer {
         creditCons.setCustomer_id(customer.getId());
         creditCons.setCons_amount(offer.getPrice());
         creditCons.insert(conn);
-        
+        System.out.println("ato");
         System.out.println(date);
-        customer.purchase(offer, date, conn, purchaseRepository);
+         
+        Date endValidity = CDate.addDay(date, offer.getValidityDay());
+        if (offer.getIsOneDay()) {
+         endValidity = CDate.endOfDay(date);
+        }
+        //System.out.println(offer.getIsOneDay());
+        System.out.println(endValidity);
+       customer.purchase(offer, date, conn, purchaseRepository);
         
 
     }
