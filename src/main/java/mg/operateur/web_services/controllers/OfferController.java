@@ -18,6 +18,7 @@ import mg.operateur.business_logic.offer.Price;
 import mg.operateur.business_logic.offer.Unit;
 import mg.operateur.business_logic.offer.Utilization;
 import mg.operateur.conn.ConnGen;
+import mg.operateur.gen.CDate;
 import mg.operateur.web_services.ResponseBody;
 import mg.operateur.web_services.resources.commons.AskJSON;
 import mg.operateur.web_services.resources.commons.TransacJSON;
@@ -129,7 +130,7 @@ public class OfferController {
             }
             
             int lastId = Offer.getLastId(conn);
-            Offer offer = new Offer(lastId, _offer.getName(), _offer.getCreatedAt(), _offer.getPrice(), _offer.getValidityDay(), limitation, amounts, _offer.getPriority());
+            Offer offer = new Offer(lastId, _offer.getName(), CDate.getDate().parse(_offer.getCreatedAt()), _offer.getPrice(), _offer.getValidityDay(), limitation, amounts, _offer.getPriority());
             offer.setIsOneDay(_offer.getIsOneDay());
             
             offerRepository.save(offer);

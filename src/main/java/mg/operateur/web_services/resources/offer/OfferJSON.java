@@ -17,7 +17,7 @@ public class OfferJSON {
     private int id;
     private String name;
     private double price;
-    private Date createdAt;
+    private String createdAt;
     private int validityDay;
     private LimitationJSON limitation;
     private int priority;
@@ -50,7 +50,7 @@ public class OfferJSON {
     public void setName(String name) throws Exception { 
         this.name = name; 
     }
-    public void setCreatedAt(Date createdAt) throws Exception {
+    public void setCreatedAt(String createdAt) throws Exception {
         this.createdAt = createdAt; 
     }
     public void setPrice(double price) throws Exception {
@@ -68,7 +68,7 @@ public class OfferJSON {
     
     public int getId() { return id; }
     public String getName() { return name; }
-    public Date getCreatedAt() { return createdAt; }
+    public String getCreatedAt() { return createdAt; }
     public double getPrice() { return price; }
     public int getValidityDay() { return validityDay; }
     public LimitationJSON getLimitation() { return limitation; }
