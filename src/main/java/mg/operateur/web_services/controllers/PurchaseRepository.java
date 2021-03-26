@@ -9,6 +9,8 @@ import java.util.Date;
 import java.util.List;
 import mg.operateur.business_logic.offer.Purchase;
 import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Service;
 
 
 /**
@@ -21,8 +23,8 @@ public interface PurchaseRepository extends MongoRepository<Purchase, String> {
     /**
      *
      * @param customer_id
+     * @return 
      */
-
     @org.springframework.data.mongodb.repository.Query("{ 'customer_id' : ?0 }")
     public List<Purchase> findByCustomer_id(int customer_id);
     public Purchase findById(int id);
