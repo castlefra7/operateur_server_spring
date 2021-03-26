@@ -7,6 +7,7 @@ package mg.operateur.business_logic.mobile_credit;
 
 import mg.operateur.gen.FctGen;
 import java.lang.reflect.InvocationTargetException;
+import java.net.URISyntaxException;
 import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -58,7 +59,7 @@ public final class Customer extends Person {
     // Internet: 100Mo
     // Faceboobaka: 1Go
 
-    public HashMap<String, Double> getRemainings(AskJSON _ask, PurchaseRepository purchaseRepository) throws IllegalAccessException, IllegalArgumentException, InstantiationException, NoSuchMethodException, InvocationTargetException, SQLException, NotFoundException, ParseException, InvalidAmountException, InvalidFormatException {
+    public HashMap<String, Double> getRemainings(AskJSON _ask, PurchaseRepository purchaseRepository) throws IllegalAccessException, IllegalArgumentException, InstantiationException, NoSuchMethodException, InvocationTargetException, SQLException, NotFoundException, ParseException, InvalidAmountException, InvalidFormatException, URISyntaxException {
         Connection conn = null;
         List<RemainingOffer> result = new ArrayList();
         HashMap<String, Double> remain = new HashMap();

@@ -98,7 +98,7 @@ public class MobileMoneyController {
                 
                 fee.insert(conn);
                 response.getStatus().setMessage("Succés");
-            } catch(IllegalAccessException | IllegalArgumentException | InvocationTargetException | SQLException | ParseException | InvalidAmountException ex) {
+            } catch(Exception ex) {
                 setError(response, ex);
                 out(ex);
             } finally {

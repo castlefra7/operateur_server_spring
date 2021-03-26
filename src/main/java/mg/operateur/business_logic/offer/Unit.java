@@ -40,7 +40,7 @@ public class Unit {
         if (suffix == null)
             throw new RequiredException("Unit suffix is required");
         suffix = suffix.toLowerCase();
-        if(suffix != "sec" && suffix != "mn"  && suffix != "hr" && suffix != "n" && suffix != "ko" && suffix != "go" && suffix != "mo") throw new InvalidFormatException("L'unité doit être: Mn, Hr, Sec, Go, Ko, Mo");
+        if(!"sec".equals(suffix) && !"mn".equals(suffix)  && !"hr".equals(suffix) && !"n".equals(suffix) && !"ko".equals(suffix) && !"go".equals(suffix) && !"mo".equals(suffix)) throw new InvalidFormatException("L'unité doit être: Mn, Hr, Sec, Go, Ko, Mo");
         this.suffix = suffix;
     }
 
