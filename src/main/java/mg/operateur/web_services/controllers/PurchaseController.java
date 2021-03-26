@@ -5,17 +5,8 @@
  */
 package mg.operateur.web_services.controllers;
 
-import java.sql.Connection;
-import java.sql.SQLException;
-import mg.operateur.business_logic.offer.Offer;
-import mg.operateur.conn.ConnGen;
 import mg.operateur.web_services.ResponseBody;
-import mg.operateur.web_services.resources.commons.TransacJSON;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
