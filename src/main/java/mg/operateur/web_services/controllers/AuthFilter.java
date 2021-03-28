@@ -38,6 +38,7 @@ public class AuthFilter extends OncePerRequestFilter {
         httpServletResponse.setHeader("Access-Control-Allow-Headers", "*");
         httpServletResponse.setHeader("Access-Control-Allow-Origin", "*");
         httpServletResponse.setHeader("Access-Control-Allow-Methods", "*");
+        httpServletResponse.setStatus(200);
         
         if (splited.length >= 1) {
             String controller = splited[1];
