@@ -35,16 +35,16 @@ public class AuthFilter extends OncePerRequestFilter {
         String uri = httpServletRequest.getRequestURI();
         String[] splited = uri.split("/");
 
+        httpServletResponse.setHeader("Access-Control-Allow-Headers", "*");
+        httpServletResponse.setHeader("Access-Control-Allow-Origin", "*");
+        httpServletResponse.setHeader("Access-Control-Allow-Methods", "*");
+        
         if (splited.length >= 1) {
             String controller = splited[1];
             if (controller.equals("pricings") || controller.equals("stats") || controller.equals("pos") || controller.equals("customers")) {
-
                 String token = authLogic.resolveToken(httpServletRequest);
                 if (token == null) {
-                    httpServletResponse.setHeader("Access-Control-Allow-Headers", "*");
-                    httpServletResponse.setHeader("Access-Control-Allow-Origin", "*");
-                    httpServletResponse.setHeader("Access-Control-Allow-Methods", "*");
-                    httpServletResponse.sendError(-1, "Vous devez spécifié un token");
+                    httpServletResponse.setStatus(500);
                     return;
                 } else {
                     Jws<Claims> jws;
@@ -59,16 +59,12 @@ public class AuthFilter extends OncePerRequestFilter {
                                 throw new JwtException("admin");
                             }
                         }
-
                         httpServletRequest.setAttribute("id", jws.getBody().getSubject());
                     } catch (JwtException ex) {
-                        httpServletResponse.setHeader("Access-Control-Allow-Headers", "*");
-                        httpServletResponse.setHeader("Access-Control-Allow-Origin", "*");
-                        httpServletResponse.setHeader("Access-Control-Allow-Methods", "*");
                         if (ex.getMessage().contains("admin")) {
-                            httpServletResponse.sendError(-1, "Vous devez vous connectez en tant que admin");
+                            httpServletResponse.setStatus(500);
                         } else {
-                            httpServletResponse.sendError(-1, "Ce token est invalide");
+                            httpServletResponse.setStatus(500);
                         }
                         return;
                     }
@@ -76,7 +72,7 @@ public class AuthFilter extends OncePerRequestFilter {
 
             }
         }
-        System.out.println("=============================");
+        System.out.println("============================="); 
         filterChain.doFilter(httpServletRequest, httpServletResponse);
     }
 }
