@@ -630,14 +630,30 @@ public final class Customer extends Person {
     public Customer getExteriorCust(Connection conn) throws SQLException, InstantiationException, NoSuchMethodException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NotFoundException {
         return (Customer) FctGen.find(this, "select * from mg.customers where phone_number = '0'", columnsWithID(), conn);
     }
+    
+    public String  phoneExists(String _phone_number, Connection conn) {
+        String result;
+        try {
+            Customer cust = this.find(_phone_number, conn); 
+            result = cust.getPhone_number();
+        } catch(IllegalAccessException | IllegalArgumentException | InstantiationException | NoSuchMethodException | InvocationTargetException | SQLException | InvalidFormatException | NotFoundException ex ) {
+            result = null;
+        }
+        
+        return result;
+    }
 
     public Customer find(String _phone_number, Connection conn) throws SQLException, InstantiationException, NoSuchMethodException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NotFoundException, InvalidFormatException {
+       System.out.println(_phone_number);
+
         Customer result = null;
         ConfOperator conf = new ConfOperator().getLastConf(conn);
         if (PhoneNumber.getPrefix(_phone_number).equals(conf.getPrefix()) == false) {
             return getExteriorCust(conn);
         }
-        Object ob = FctGen.find(new Customer(), String.format("select * from %s where phone_number like '%s'", tableName(), _phone_number), columnsWithID(), conn);
+
+        Object ob = FctGen.find(new Customer(), String.format("select * from %s where phone_number = '%s'", tableName(), PhoneNumber.getValidNumber(_phone_number)), columnsWithID(), conn);
+        
         if (ob != null) {
             result = (Customer) ob;
         } else {

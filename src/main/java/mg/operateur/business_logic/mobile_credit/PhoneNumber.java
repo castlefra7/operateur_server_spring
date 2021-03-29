@@ -17,6 +17,10 @@ public class PhoneNumber {
         
         if(phone_number.startsWith("0")) {
             return "+261" + phone_number.substring(1, 3);
+        }  else if(phone_number.startsWith("261")) {
+            return "+261" + phone_number.substring(3,5);
+        } else if(phone_number.startsWith(" 261")) {
+            return "+261" + phone_number.substring(4, 6);
         } else {
             return "+261" + phone_number.substring(4, 6);
         }
@@ -28,6 +32,10 @@ public class PhoneNumber {
             result = String.format("+261%s", phone_number.substring(1));
         } else if (phone_number.startsWith("+261")) {
             result = phone_number;
+        } else if(phone_number.startsWith("261")) {
+            result = String.format("+261%s", phone_number.substring(3));
+        } else if (phone_number.startsWith(" 261")) {
+            result = String.format("+261%s", phone_number.substring(4));
         } else {
             result = String.format("+261%s", phone_number);
         }
