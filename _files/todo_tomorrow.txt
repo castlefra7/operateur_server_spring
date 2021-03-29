@@ -1,0 +1,20 @@
+# naina 1h
+# rojo 1h [code to offer, transaction mongodb, authentification mongodb]
+# animation physics à faire à moitié
+# réseau: terminer demain
+# classer les liens pour mongodb, spring boot, mongodb date
+# classer les liens spécifications mp3
+# lire une partie du thèse d'idriss aberkane
+# WINDOWS 10 TAHIANA ET PILOTE GTX 1050
+
+
+# save The message into mongodb
+# optimisation IONIC destroy subscription etc..
+# length of a md5 password
+# test for valid mail
+
+
+# add code to offer
+	- add field code in class offer and offer json
+	- when creating offer add field code
+	- when purchasing offer, specify the code

@@ -36,7 +36,7 @@ create table mg.customers (
 create table mg.fees (
     id serial primary key,
     created_at timestamp not null,
-    amount_min decimal,
+    amount_min decimal check(amount_min >= 0),
     amount_max decimal check (amount_max > 0),
     amount_fee decimal check (amount_fee >= 0),
     unique (amount_min)
@@ -99,7 +99,7 @@ create table mg.messages_calls_consumptions (
     created_at timestamp not null,
     customer_id int,
     customer_destination_id int,
-    amount int,
+    amount int  check (amount > 0),
     t_type char(1) not null,
     foreign key (customer_id) references mg.customers(id),
     foreign key (customer_destination_id) references mg.customers(id)
@@ -139,7 +139,7 @@ create table mg.internet_consumptions (
     id serial primary key,
     created_at timestamp not null,
     customer_id int,
-    amount decimal,
+    amount decimal check(amount > 0),
     internet_application_id int,
     foreign key (customer_id) references mg.customers(id),
     foreign key (internet_application_id) references mg.internet_applications(id)
@@ -183,11 +183,6 @@ create view mg.buyed_credit_sums as select customer_id, sum(amount) as sum_buyed
 create view mg.credit_consumption_sums as select customer_id, sum(cons_amount) as sum_cons_amount from mg.credit_consumptions group by customer_id;
 create view mg.customers_credit_balances as select mg.customers.id, (coalesce(sum_buyed_credit,0) - coalesce(sum_cons_amount,0)) as balance from mg.customers left join mg.buyed_credit_sums on mg.buyed_credit_sums.customer_id = mg.customers.id left join mg.credit_consumption_sums on mg.credit_consumption_sums.customer_id = mg.customers.id;
 
-/* DATA */
-/*insert into mg.customers (created_at, name, email, phone_number, password) values ('2021-03-16 08:00', 'rakoto manou', 'rak@gmail.com', '+261331125636', '2811');
-insert into mg.customers (created_at, name, email, phone_number, password) values ('2021-03-16 08:00', 'razaka rivo', 'rivo@gmail.com', '+261331525636', '0108');
-insert into mg.customers (created_at, name, email, phone_number, password) values ('2021-03-16 08:00', 'ramanajaka rabe', 'rabe@gmail.com', '+261335125636', '2202');
-*/
 
 insert into mg.customers (created_at, name, email, phone_number, password) values  ('2000-01-01', 'exterior user', 'exterior@gmail.com', '0', 'plosjsizosdpkjdn');
 
