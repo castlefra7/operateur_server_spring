@@ -7,6 +7,9 @@ package mg.operateur.gen;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.TemporalAccessor;
 import java.util.Date;
 
 /**
@@ -20,9 +23,18 @@ public class CustomDateFormat extends SimpleDateFormat {
     
     @Override
     public Date parse(String  source) throws ParseException {
+      
         if(!source.contains(":")) {
             source += " 00:00";
         }
+        
+        if(source.contains("T")) {
+            TemporalAccessor ta = DateTimeFormatter.ISO_OFFSET_DATE_TIME.parse(source);
+            Instant i = Instant.from(ta);
+            Date d = Date.from(i);
+            return d;
+        }
+        
         return super.parse(source);
     }
 }

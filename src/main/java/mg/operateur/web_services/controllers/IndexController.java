@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
  *
  * @author lacha
  */
-@RequestMapping("/credits")
+@RequestMapping("/")
 @CrossOrigin(origins = "*")
 @RestController
 public class IndexController {

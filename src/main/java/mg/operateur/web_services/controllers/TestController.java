@@ -7,6 +7,10 @@ package mg.operateur.web_services.controllers;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.TemporalAccessor;
 import java.util.Calendar;
 import mg.operateur.conn.ConnGen;
 import mg.operateur.web_services.ResponseBody;
@@ -53,14 +57,21 @@ public class TestController {
         Connection conn = null;
         try {
             
-            Date date = new Date();
+            /*Date date = new Date();
             Calendar c = new GregorianCalendar();
             c.setTime(date);
             c.set(Calendar.YEAR, 2022);
             c.set(Calendar.MONTH, 1);
             c.set(Calendar.DAY_OF_MONTH, 3);
             c.set(Calendar.HOUR, 20);
-            response.getData().add(purchaseRepository.findByCustomer_id(4));
+            response.getData().add(purchaseRepository.findByCustomer_id(4));*/
+            
+            /*String s = "2021-03-28T16:21:53.836Z";
+            TemporalAccessor ta = DateTimeFormatter.ISO_OFFSET_DATE_TIME.parse(s);
+            Instant i = Instant.from(ta);
+            Date d = Date.from(i);
+            response.getData().add(d.toString());
+            */
         } catch (Exception ex) {
             out(ex);
         } finally {

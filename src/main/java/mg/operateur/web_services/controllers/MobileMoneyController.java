@@ -150,8 +150,7 @@ public class MobileMoneyController {
                 conn = ConnGen.getConn();
                 Customer customer;
                 customer = new Customer().find(_withdraw.getPhone_number(), conn);
-                
-                System.out.println(_withdraw.getDate());
+         
                 Withdraw withdraw = new Withdraw();
                 withdraw.setCreated_at(CDate.getDate().parse(_withdraw.getDate()));
                 

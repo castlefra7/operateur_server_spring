@@ -85,16 +85,15 @@ public class OfferController {
     }
     
         
-    @PostMapping(value = "/{offer_id}/buy")
+    @PostMapping(value = "/buy")
     public ResponseBody create(
-            @PathVariable("offer_id") int _offerId, 
             @RequestBody TransacJSON _purchase
     ) {
         ResponseBody response = new ResponseBody();
         Connection conn = null;
         try {
             conn = ConnGen.getConn();
-            new Offer().buy(_offerId, _purchase, offerRepository, purchaseRepository, conn);
+            new Offer().buy(_purchase, offerRepository, purchaseRepository, conn);
             response.getStatus().setMessage("Succés");
         } catch(Exception ex) {
             setError(response, ex);
@@ -132,6 +131,7 @@ public class OfferController {
             int lastId = Offer.getLastId(conn);
             Offer offer = new Offer(lastId, _offer.getName(), CDate.getDate().parse(_offer.getCreatedAt()), _offer.getPrice(), _offer.getValidityDay(), limitation, amounts, _offer.getPriority());
             offer.setIsOneDay(_offer.getIsOneDay());
+            offer.setCode(_offer.getCode());
             
             offerRepository.save(offer);
             response.getStatus().setMessage("Offer Created");

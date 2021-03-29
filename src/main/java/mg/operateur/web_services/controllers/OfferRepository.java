@@ -15,4 +15,7 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 public interface OfferRepository extends MongoRepository<Offer, String> {
     
     public Offer findById(int id);
+    
+    @org.springframework.data.mongodb.repository.Query("{ 'code' : ?0 }")
+    public Offer findByCode(String code);
 }

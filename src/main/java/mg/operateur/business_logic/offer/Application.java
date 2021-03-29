@@ -20,6 +20,7 @@ import mg.operateur.gen.RequiredException;
  * @author dodaa
  */
 public final class Application {
+
     private int id;
     private String name;
     private char t_type;
@@ -29,13 +30,13 @@ public final class Application {
     public Application() {
     }
 
-    public Application(int id, String name, Unit unit) throws RequiredException {   
+    public Application(int id, String name, Unit unit) throws RequiredException {
         setId(id);
         setName(name);
         setUnit(unit);
     }
-    
-    public Application(int id, String name, char t_type, int internet_application_id, Unit unit) throws RequiredException, InvalidFormatException {   
+
+    public Application(int id, String name, char t_type, int internet_application_id, Unit unit) throws RequiredException, InvalidFormatException {
         setId(id);
         setName(name);
         setUnit(unit);
@@ -48,7 +49,9 @@ public final class Application {
     }
 
     public void setT_type(char t_type) throws InvalidFormatException {
-        if(t_type != 'c' && t_type != 'm' && t_type != 'i') throw new InvalidFormatException("Le type doit-être: m, c, i");
+        if (t_type != 'c' && t_type != 'm' && t_type != 'i') {
+            throw new InvalidFormatException("Le type doit-être: m, c, i");
+        }
         this.t_type = t_type;
     }
 
@@ -59,7 +62,7 @@ public final class Application {
     public void setInternet_application_id(int internet_application_id) {
         this.internet_application_id = internet_application_id;
     }
-    
+
     public int getId() {
         return id;
     }
@@ -73,21 +76,23 @@ public final class Application {
     }
 
     public void setName(String name) throws RequiredException {
-        if (name == null)
+        if (name == null) {
             throw new RequiredException("Application name is required");
+        }
         this.name = name;
     }
-    
+
     public Unit getUnit() {
         return unit;
     }
 
     public void setUnit(Unit unit) throws RequiredException {
-        if (unit == null)
+        if (unit == null) {
             throw new RequiredException("unit is required");
+        }
         this.unit = unit;
     }
-    
+
     /**
      *
      * @param conn
@@ -100,24 +105,35 @@ public final class Application {
      * @throws mg.operateur.gen.RequiredException
      * @throws java.lang.NoSuchMethodException
      */
-    public List<Application> findAll(Connection conn)   
+    public List<Application> findAll(Connection conn)
             throws SQLException, InstantiationException, IllegalAccessException, InstantiationException, InvocationTargetException, NoSuchMethodException, InvalidFormatException, RequiredException {
         List<Object> objects = FctGen.findAll(new Application(), "SELECT * FROM mg.internet_applications", columns(), conn);
         ArrayList<Application> val = new ArrayList<>();
-        for(Object o: objects) {
+        for (Object o : objects) {
             Application app = (Application) o;
             app.setInternet_application_id(app.getId());
             app.setT_type('i');
             val.add(app);
         }
-        
+
         val.add(new Application(-1, "message", 'm', -1, new Unit()));
         val.add(new Application(-1, "appel", 'c', -1, new Unit()));
         return val;
     }
-    
+
     public String[] columns() {
-        return new String[] {"id", "name"};
+        return new String[]{"id", "name"};
+    }
+
+    public List findAllInternetApps(Connection conn)
+            throws SQLException, InstantiationException, IllegalAccessException, InstantiationException, InvocationTargetException, NoSuchMethodException, InvalidFormatException, RequiredException {
+        List<Object> objects = FctGen.findAll(new Application(), "SELECT * FROM mg.internet_applications", columns(), conn);
+        for (Object o : objects) {
+            Application app = (Application) o;
+            app.setInternet_application_id(app.getId());
+            app.setT_type('i');
+        }
+        return objects;
     }
 
     @Override

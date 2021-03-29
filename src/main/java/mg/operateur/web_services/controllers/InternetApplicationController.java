@@ -20,11 +20,11 @@ import org.springframework.web.bind.annotation.RestController;
  *
  * @author lacha
  */
+@RequestMapping("/apps")
 @CrossOrigin(origins = "*")
 @RestController
 public class InternetApplicationController {
     
-    private static final String PREFIX = "apps";
     
     private void out(Exception ex) {
         ex.printStackTrace();
@@ -36,14 +36,36 @@ public class InternetApplicationController {
         response.getStatus().setMessage(ex.getMessage());
     }
     
-    @RequestMapping(PREFIX + "/ping")
+    @RequestMapping("/ping")
     public ResponseBody index() {
         ResponseBody response = new ResponseBody();
        response.getStatus().setMessage("Applications endpoint");
         return response;
     }
     
-    @GetMapping(PREFIX)
+     @GetMapping("/internet")
+    public ResponseBody readInternetApps() {
+        ResponseBody response = new ResponseBody();
+        Connection conn = null;
+        try {
+            conn = ConnGen.getConn();
+            List<Object> internet_applications = new Application().findAllInternetApps(conn);
+            response.setData(internet_applications);
+        } catch(Exception ex) {
+            setError(response, ex);
+            out(ex);
+        } finally {
+            try {
+                if(conn!=null) conn.close();
+            }  catch(SQLException ex) {
+                setError(response, ex);
+                out(ex);
+            }
+        }
+        return response;
+    }
+    
+    @GetMapping()
     public ResponseBody read() {
         ResponseBody response = new ResponseBody();
         Connection conn = null;

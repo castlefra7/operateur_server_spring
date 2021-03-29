@@ -50,6 +50,18 @@ public final class Offer {
     private int priority;
     private List<Amount> amounts;
     
+    private String code;
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+    
+    
+    
     
     private boolean isOneDay;
 
@@ -170,12 +182,15 @@ public final class Offer {
         
     }
     
-    public void buy(int _offerId, TransacJSON _purchase, OfferRepository offerRepository, PurchaseRepository purchaseRepository, Connection conn) throws NotFoundException, RequiredException, SQLException, InstantiationException, NoSuchMethodException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, ParseException, LimitReachedException, InvalidAmountException, InvalidDateException, InvalidFormatException {
+    public void buy(TransacJSON _purchase, OfferRepository offerRepository, PurchaseRepository purchaseRepository, Connection conn) throws NotFoundException, RequiredException, SQLException, InstantiationException, NoSuchMethodException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, ParseException, LimitReachedException, InvalidAmountException, InvalidDateException, InvalidFormatException {
         
         mg.operateur.business_logic.mobile_credit.Customer foundCustomer = new mg.operateur.business_logic.mobile_credit.Customer().find(_purchase.getPhone_number(), conn);        
         foundCustomer.checkLastOperation(CDate.getDate().parse(_purchase.getDate()), conn);
 
-        Offer offer = offerRepository.findById(_offerId);
+        
+       
+        
+        Offer offer = offerRepository.findByCode(_purchase.getCode());
         if (offer == null)
             throw new NotFoundException("L'offre specifié n'existe pas");  
         

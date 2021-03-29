@@ -14,6 +14,17 @@ public class TransacJSON {
     private double amount;
     private String phone_number;
     private String password;
+    
+    private String code;
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+    
 
     public String getPassword() {
         return password;
