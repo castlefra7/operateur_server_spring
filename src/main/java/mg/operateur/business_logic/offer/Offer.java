@@ -147,10 +147,11 @@ public final class Offer {
     public Limitation getLimitation() { return limitation; }
     public List<Amount> getAmounts() { return amounts; }
     
-    public void buyFromMobileMoney(int _offerId, TransacJSON _purchase, OfferRepository offerRepository, PurchaseRepository purchaseRepository, Connection conn) throws NotFoundException, RequiredException, SQLException, InstantiationException, NoSuchMethodException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, ParseException, LimitReachedException, InvalidAmountException, InvalidDateException, InvalidFormatException, NoSuchAlgorithmException {
+    public void buyFromMobileMoney(TransacJSON _purchase, OfferRepository offerRepository, PurchaseRepository purchaseRepository, Connection conn) throws NotFoundException, RequiredException, SQLException, InstantiationException, NoSuchMethodException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, ParseException, LimitReachedException, InvalidAmountException, InvalidDateException, InvalidFormatException, NoSuchAlgorithmException {
         mg.operateur.business_logic.mobile_credit.Customer foundCustomer = new mg.operateur.business_logic.mobile_credit.Customer().find(_purchase.getPhone_number(), conn);        
         foundCustomer.checkLastOperation(CDate.getDate().parse(_purchase.getDate()), conn);
-        Offer offer = offerRepository.findById(_offerId);
+        Offer offer = offerRepository.findByCode(_purchase.getCode());
+       
         if (offer == null)
             throw new NotFoundException("L'offre specifié n'existe pas"); 
         if(offer.getPrice() > foundCustomer.mobileBalance(CDate.getDate().parse(_purchase.getDate()), conn)) throw new InvalidAmountException("Votre solde mobile money est insuffisant pour acheter cette offre");
@@ -186,9 +187,6 @@ public final class Offer {
         
         mg.operateur.business_logic.mobile_credit.Customer foundCustomer = new mg.operateur.business_logic.mobile_credit.Customer().find(_purchase.getPhone_number(), conn);        
         foundCustomer.checkLastOperation(CDate.getDate().parse(_purchase.getDate()), conn);
-
-        
-       
         
         Offer offer = offerRepository.findByCode(_purchase.getCode());
         if (offer == null)
@@ -220,16 +218,14 @@ public final class Offer {
         creditCons.setCreated_at(date);
         creditCons.setCustomer_id(customer.getId());
         creditCons.setCons_amount(offer.getPrice());
+        System.out.println(offer.getPrice());
         creditCons.insert(conn);
-        System.out.println("ato");
-        System.out.println(date);
          
         Date endValidity = CDate.addDay(date, offer.getValidityDay());
         if (offer.getIsOneDay()) {
          endValidity = CDate.endOfDay(date);
         }
         //System.out.println(offer.getIsOneDay());
-        System.out.println(endValidity);
        customer.purchase(offer, date, conn, purchaseRepository);
         
 

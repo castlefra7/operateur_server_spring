@@ -64,16 +64,15 @@ public class OfferController {
         return response;
     }
     
-    @PostMapping(value = "/{offer_id}/buyfrommobile")
+    @PostMapping(value = "/buyfrommobile")
     public ResponseBody buyOfferMobileMOney(
-            @PathVariable("offer_id") int _offerId, 
             @RequestBody TransacJSON _purchase
     ) {
         ResponseBody response = new ResponseBody();
         Connection conn = null;
         try {
             conn = ConnGen.getConn();
-            new Offer().buyFromMobileMoney(_offerId, _purchase, offerRepository, purchaseRepository, conn);
+            new Offer().buyFromMobileMoney(_purchase, offerRepository, purchaseRepository, conn);
             response.getStatus().setMessage("Succés");
         } catch(Exception ex) {
             setError(response, ex);
