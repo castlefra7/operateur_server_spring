@@ -17,10 +17,8 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import mg.operateur.business_logic.offer.Amount;
 import mg.operateur.business_logic.offer.Application;
-import mg.operateur.business_logic.offer.Offer;
 import mg.operateur.business_logic.offer.PasswordHelper;
 import mg.operateur.business_logic.offer.Purchase;
 import mg.operateur.conn.ConnGen;
@@ -559,11 +557,15 @@ public final class Customer extends Person {
 
         if (isFree == false) {
             withdraw.setFee(getFeeAmount(withdraw.getAmount(), conn));
+            if((withdraw.getAmount() + withdraw.getFee()) > mobileBalance(withdraw.getCreated_at(), conn)) {
+                throw new InvalidAmountException("Votre solde est insuffisant pour effectuer cette opération");
+            }
         }
         if ((withdraw.getAmount()) > mobileBalance(withdraw.getCreated_at(), conn)) {
             throw new InvalidAmountException("Votre solde est insuffisant pour effectuer cette opération");
         }
-
+        
+        
         try {
             withdraw.insert(conn);
             conn.commit();

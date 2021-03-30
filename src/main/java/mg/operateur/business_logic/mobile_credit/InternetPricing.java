@@ -25,6 +25,7 @@ public class InternetPricing {
         amount = amount.toLowerCase();
         if(amount.length() < 3) throw new InvalidAmountException("Vérifier la consommation entrée");
         double r = Double.valueOf(amount.substring(0, amount.length()-2));
+        System.out.println(r);
         int result = (int)r;
         if(amount.endsWith("mo")) {
             result *= 1000;

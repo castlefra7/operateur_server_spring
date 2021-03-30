@@ -203,6 +203,7 @@ insert into mg.internet_applications (name, created_at) values ('Internet', '202
 
 insert into mg.messages_pricings (created_at, amount_interior, amount_exterior, unit) values ('2000-01-01', 100,100, 10);
 insert into mg.calls_pricings (created_at, amount_interior, amount_exterior) values ('2000-01-01', 2,2);
+insert into mg.calls_pricings (created_at, amount_interior, amount_exterior) values ('2000-01-02', 2,5);
 insert into mg.internet_pricings (created_at, amount) values ('2000-01-01', 2);
 
 select * from mg.deposits;
