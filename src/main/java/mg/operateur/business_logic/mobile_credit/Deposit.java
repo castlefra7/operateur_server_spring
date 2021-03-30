@@ -9,6 +9,7 @@ import mg.operateur.gen.FctGen;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
 import java.sql.SQLException;
+import mg.operateur.gen.NotFoundException;
 
 /**
  *
@@ -38,9 +39,16 @@ public class Deposit extends Transaction{
         FctGen.insert(this, columns(), tableName(), conn);
     }
     
-
+    public Deposit find(int _id, Connection conn) throws SQLException, InstantiationException, NoSuchMethodException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NotFoundException {
+        
+        Object ob = FctGen.find(new Deposit(), "select * from mg.deposits where id = " + _id, new String[]{"amount"}, conn);
+        
+        if(ob == null) throw new NotFoundException("Ce dépôt n'existe pas");
+        return (Deposit)ob;
+    }
     
-    public void validate(Connection conn) throws SQLException {
+    public void validate(Connection conn) throws SQLException, InstantiationException, NoSuchMethodException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NotFoundException {
+        find(this.getId(), conn);
         String req = String.format("update mg.deposits set isvalidated = true where id =%d", this.getId());
         FctGen.update(req, conn);
     }

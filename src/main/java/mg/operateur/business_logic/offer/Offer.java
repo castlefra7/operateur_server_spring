@@ -210,22 +210,20 @@ public final class Offer {
         Account account = new Account(customer.getId(), purchases, new ArrayList<>());
         customer.setAccount(account);
         
-        
         Date date = CDate.getDate().parse(_purchase.getDate());
+        
+        
+        customer.purchase(offer, date, conn, purchaseRepository);
         
         CreditConsumption creditCons = new CreditConsumption();
         creditCons.setCreated_at(date);
         creditCons.setCustomer_id(customer.getId());
         creditCons.setCons_amount(offer.getPrice());
-        System.out.println(offer.getPrice());
         creditCons.insert(conn);
          
-        Date endValidity = CDate.addDay(date, offer.getValidityDay());
-        if (offer.getIsOneDay()) {
-         endValidity = CDate.endOfDay(date);
-        }
+   
         //System.out.println(offer.getIsOneDay());
-       customer.purchase(offer, date, conn, purchaseRepository);
+       
         
 
     }

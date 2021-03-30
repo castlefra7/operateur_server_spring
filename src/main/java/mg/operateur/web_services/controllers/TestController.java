@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import mg.operateur.business_logic.mobile_credit.MessageMongo;
 import mg.operateur.business_logic.offer.Purchase;
 
 /**
@@ -32,6 +33,8 @@ public class TestController {
 
     @Autowired
     PurchaseRepository purchaseRepository;
+    @Autowired
+    MessageRepository messageRepo;
 
     private void out(Exception ex) {
         ex.printStackTrace();
@@ -56,22 +59,11 @@ public class TestController {
         ResponseBody response = new ResponseBody();
         Connection conn = null;
         try {
-            
-            /*Date date = new Date();
-            Calendar c = new GregorianCalendar();
-            c.setTime(date);
-            c.set(Calendar.YEAR, 2022);
-            c.set(Calendar.MONTH, 1);
-            c.set(Calendar.DAY_OF_MONTH, 3);
-            c.set(Calendar.HOUR, 20);
-            response.getData().add(purchaseRepository.findByCustomer_id(4));*/
-            
-            /*String s = "2021-03-28T16:21:53.836Z";
-            TemporalAccessor ta = DateTimeFormatter.ISO_OFFSET_DATE_TIME.parse(s);
-            Instant i = Instant.from(ta);
-            Date d = Date.from(i);
-            response.getData().add(d.toString());
-            */
+            MessageMongo message = new MessageMongo();
+            message.setText("salut cax va ");
+            messageRepo.save(message);
+            System.out.println("ato");
+
         } catch (Exception ex) {
             out(ex);
         } finally {
@@ -85,13 +77,25 @@ public class TestController {
         }
         return response;
     }
-    
-   
+
 }
 
 
-
-/*
+/*Date date = new Date();
+            Calendar c = new GregorianCalendar();
+            c.setTime(date);
+            c.set(Calendar.YEAR, 2022);
+            c.set(Calendar.MONTH, 1);
+            c.set(Calendar.DAY_OF_MONTH, 3);
+            c.set(Calendar.HOUR, 20);
+            response.getData().add(purchaseRepository.findByCustomer_id(4));*/
+ /*String s = "2021-03-28T16:21:53.836Z";
+            TemporalAccessor ta = DateTimeFormatter.ISO_OFFSET_DATE_TIME.parse(s);
+            Instant i = Instant.from(ta);
+            Date d = Date.from(i);
+            response.getData().add(d.toString());
+ */
+ /*
 System.setProperty("user.timezone", "UTC");
 
 Date nowUtc = new Date();

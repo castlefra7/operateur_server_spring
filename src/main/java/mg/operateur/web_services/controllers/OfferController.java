@@ -85,7 +85,7 @@ public class OfferController {
     
         
     @PostMapping(value = "/buy")
-    public ResponseBody create(
+    public ResponseBody buyFromCredit(
             @RequestBody TransacJSON _purchase
     ) {
         ResponseBody response = new ResponseBody();
@@ -108,6 +108,8 @@ public class OfferController {
         ResponseBody response = new ResponseBody();
         Connection conn = null;
         try {
+            if(offerRepository.findByCode(_offer.getCode()) != null) throw new Exception("Veuillez choisir un autre code");
+
             conn = ConnGen.getConn();
             Limitation limitation = new Limitation(_offer.getLimitation().getBuyingLimit(), _offer.getLimitation().getDurationInDays());
             ArrayList<Amount> amounts = new ArrayList<Amount>();

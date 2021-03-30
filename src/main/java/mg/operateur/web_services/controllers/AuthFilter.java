@@ -1,5 +1,7 @@
 package mg.operateur.web_services.controllers;
 
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtException;
@@ -11,6 +13,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import mg.operateur.conn.Auth;
+import mg.operateur.web_services.ResponseBody;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import org.springframework.stereotype.Component;
@@ -47,8 +50,17 @@ public class AuthFilter extends OncePerRequestFilter {
                 String controller = splited[1];
                 if (controller.equals("pricings") || controller.equals("stats") || controller.equals("pos") || controller.equals("customers")) {
                     String token = authLogic.resolveToken(httpServletRequest);
+                    System.out.println(token);
                     if (token == null) {
-                        httpServletResponse.setStatus(500);
+                        httpServletResponse.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                        ObjectMapper objectMapper = new ObjectMapper();
+                        ResponseBody response = new ResponseBody();
+                        response.getStatus().setCode(500);
+                        response.getStatus().setMessage("Veuillez spécifier un token");
+                        httpServletResponse.setContentType("application/json");
+                        httpServletResponse.setCharacterEncoding("UTF-8");
+                        httpServletResponse.getWriter().print(objectMapper.writeValueAsString(response));
+
                         return;
                     } else {
                         Jws<Claims> jws;
@@ -65,11 +77,15 @@ public class AuthFilter extends OncePerRequestFilter {
                             }
                             httpServletRequest.setAttribute("id", jws.getBody().getSubject());
                         } catch (JwtException ex) {
-                            if (ex.getMessage().contains("admin")) {
-                                httpServletResponse.setStatus(500);
-                            } else {
-                                httpServletResponse.setStatus(500);
-                            }
+                            httpServletResponse.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                            ObjectMapper objectMapper = new ObjectMapper();
+                            ResponseBody response = new ResponseBody();
+                            response.getStatus().setCode(500);
+                            response.getStatus().setMessage("Veuillez spécifier un token");
+                            httpServletResponse.setContentType("application/json");
+                            httpServletResponse.setCharacterEncoding("UTF-8");
+                            httpServletResponse.getWriter().print(objectMapper.writeValueAsString(response));
+
                             return;
                         }
                     }
