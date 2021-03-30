@@ -57,7 +57,7 @@ public final class Offer {
     }
 
     public void setCode(String code) throws Exception {
-        if (code == null)
+        if (code == null || code.equals(""))
             throw new Exception("le code de l'offre est obligatoire");
         this.code = code;
     }
