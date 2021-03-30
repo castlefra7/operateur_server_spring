@@ -26,7 +26,7 @@ public class Limitation {
     }
 
     public void setBuyingLimit(int BuyLimit) throws Exception {
-        if (buyingLimit < 0)
+        if (BuyLimit < 0)
             throw new Exception("buying limit must not be negative");
         this.buyingLimit = BuyLimit;
     }
