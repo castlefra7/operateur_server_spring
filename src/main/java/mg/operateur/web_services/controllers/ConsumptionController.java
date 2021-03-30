@@ -37,7 +37,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class ConsumptionController {
     @Autowired
     PurchaseRepository purchaseRepository;
-    
+    @Autowired
+    MessageRepository messageRepo;
     
     private void out(Exception ex) {
         ex.printStackTrace();
@@ -79,7 +80,7 @@ public class ConsumptionController {
         Connection conn = null;
         try {
             conn = ConnGen.getConn();                
-            new Customer().sendMessage(_message, purchaseRepository, conn);
+            new Customer().sendMessage(_message, purchaseRepository, messageRepo, conn);
             response.getStatus().setMessage("Succés");
         } catch(Exception ex) {
             this.setError(response, ex);

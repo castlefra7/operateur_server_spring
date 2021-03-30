@@ -30,6 +30,7 @@ import mg.operateur.gen.InvalidDateException;
 import mg.operateur.gen.InvalidFormatException;
 import mg.operateur.gen.NotFoundException;
 import mg.operateur.gen.RequiredException;
+import mg.operateur.web_services.controllers.MessageRepository;
 import mg.operateur.web_services.controllers.PurchaseRepository;
 import mg.operateur.web_services.resources.commons.AskJSON;
 import mg.operateur.web_services.resources.consumptions.CallJSON;
@@ -305,7 +306,7 @@ public final class Customer extends Person {
         }
     }
 
-    public void sendMessage(MessageJSON _message, PurchaseRepository purchaseRepository, Connection conn) throws SQLException, InstantiationException, NoSuchMethodException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NotFoundException, ParseException, InvalidAmountException, InvalidDateException, InvalidFormatException {
+    public void sendMessage(MessageJSON _message, PurchaseRepository purchaseRepository, MessageRepository messageRepo, Connection conn) throws SQLException, InstantiationException, NoSuchMethodException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NotFoundException, ParseException, InvalidAmountException, InvalidDateException, InvalidFormatException {
 
         Customer source = this.find(_message.getPhone_number_source(), conn);
         Customer dest = this.find(_message.getPhone_number_destination(), conn); // TODO create external customer
@@ -365,27 +366,17 @@ public final class Customer extends Person {
         } else {
             this.insertMessageOrCallConsumption(false, true, orgLengthUnit, date, source.getId(), dest.getId(), 0.0, conn);
         }
+        
+        // Insert message into MongoDB
+        MessageMongo message = new MessageMongo();
+        message.setText(_message.getText());
+        message.setCustomer_source(source.getId());
+        message.setCustomer_dest(dest.getId());
+        message.setDate(date);
+        messageRepo.save(message);
     }
 
     public List<Purchase> findAllValidPurchases(int customer_id, Date _date, PurchaseRepository purchaseRepository, Connection conn) {
-        /*List<Purchase> result = new ArrayList();
-        List<Purchase> allPurchases = Purchase.findByCustomerId(customer_id, purchaseRepository);
-        for (Purchase purchase : allPurchases) {
-            Offer offer = purchase.getOffer();
-            System.out.println(purchase.getDate());
-            if (purchase.getDate().before(_date) || purchase.getDate().equals(_date)) {
-                Date endValidity = CDate.addDay(purchase.getDate(), offer.getValidityDay());
-                if (offer.getIsOneDay()) {
-                    endValidity = CDate.endOfDay(purchase.getDate());
-                }
-                purchase.setEndDate(endValidity);
-                if (endValidity.after(_date)) {
-                    result.add(purchase);
-                }
-            }
-        }*/
-        
-        // TODO MayBe date between two dates
         List<Purchase> result = purchaseRepository.findByEndDateGreaterThanAndCustomer_id(_date, customer_id);
         Collections.sort(result);
         return result;
