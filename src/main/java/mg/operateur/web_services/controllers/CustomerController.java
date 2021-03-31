@@ -5,10 +5,10 @@
  */
 package mg.operateur.web_services.controllers;
 
-import java.sql.Connection;
+import java.lang.reflect.InvocationTargetException;
+import java.net.URISyntaxException;
 import java.sql.SQLException;
 import mg.operateur.business_logic.mobile_credit.CallsHistory;
-import mg.operateur.conn.ConnGen;
 import mg.operateur.web_services.ResponseBody;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -37,16 +37,13 @@ public class CustomerController {
     @GetMapping("/callshistory")
     public ResponseBody index(@RequestAttribute String id) {
         ResponseBody response = new ResponseBody();
-        Connection conn = null;
+    
         try {
-            conn = ConnGen.getConn();
-            response.getData().add(new CallsHistory().findAll(Integer.valueOf(id), conn));
+            response.getData().add(new CallsHistory().findAll(Integer.valueOf(id)));
             response.getStatus().setMessage("Succés");
-        } catch(Exception ex) {
+        } catch(IllegalAccessException | IllegalArgumentException | InstantiationException | NoSuchMethodException | InvocationTargetException | URISyntaxException | SQLException ex) {
             setError(response, ex);
             out(ex);
-        } finally {
-            try {if(conn!=null) conn.close();}catch(SQLException ex) {setError(response, ex);out(ex);}
         }
         return response;
     }

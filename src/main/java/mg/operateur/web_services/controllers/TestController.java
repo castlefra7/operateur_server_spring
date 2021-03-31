@@ -7,21 +7,12 @@ package mg.operateur.web_services.controllers;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.text.SimpleDateFormat;
-import java.time.Instant;
-import java.time.format.DateTimeFormatter;
-import java.time.temporal.TemporalAccessor;
-import java.util.Calendar;
-import mg.operateur.conn.ConnGen;
 import mg.operateur.web_services.ResponseBody;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import java.util.Date;
-import java.util.GregorianCalendar;
 import mg.operateur.business_logic.mobile_credit.MessageMongo;
-import mg.operateur.business_logic.offer.Purchase;
 
 /**
  *

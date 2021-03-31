@@ -6,6 +6,7 @@
 package mg.operateur.web_services.controllers;
 
 import java.lang.reflect.InvocationTargetException;
+import java.net.URISyntaxException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.text.ParseException;
@@ -15,6 +16,7 @@ import mg.operateur.gen.InvalidAmountException;
 import mg.operateur.gen.InvalidDateException;
 import mg.operateur.gen.InvalidFormatException;
 import mg.operateur.gen.NotFoundException;
+import mg.operateur.gen.RequiredException;
 import mg.operateur.web_services.ResponseBody;
 import mg.operateur.web_services.resources.consumptions.CallJSON;
 import mg.operateur.web_services.resources.consumptions.InternetJSON;
@@ -82,7 +84,7 @@ public class ConsumptionController {
             conn = ConnGen.getConn();                
             new Customer().sendMessage(_message, purchaseRepository, messageRepo, conn);
             response.getStatus().setMessage("Succés");
-        } catch(Exception ex) {
+        } catch(IllegalAccessException | IllegalArgumentException | InstantiationException | NoSuchMethodException | InvocationTargetException | URISyntaxException | SQLException | ParseException | InvalidAmountException | InvalidDateException | InvalidFormatException | NotFoundException ex) {
             this.setError(response, ex);
             out(ex);
         } finally {
@@ -99,9 +101,11 @@ public class ConsumptionController {
             conn = ConnGen.getConn();
             new Customer().useInternet(_internet, purchaseRepository, conn);
             response.getStatus().setMessage("Succés");
-        } catch(Exception ex) {
+        } catch(IllegalAccessException | IllegalArgumentException | InstantiationException | NoSuchMethodException | InvocationTargetException | URISyntaxException | SQLException | ParseException | InvalidAmountException | InvalidDateException | InvalidFormatException | NotFoundException | RequiredException ex) {
             setError(response, ex);
             out(ex);
+        } finally {
+            try { if(conn!=null)conn.close();} catch(SQLException ex) {out(ex);}
         }
         return response;
     }

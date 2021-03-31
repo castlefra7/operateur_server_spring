@@ -5,20 +5,24 @@
  */
 package mg.operateur.web_services.controllers;
 
+import java.lang.reflect.InvocationTargetException;
+import java.net.URISyntaxException;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.text.ParseException;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.GregorianCalendar;
 import mg.operateur.business_logic.mobile_credit.Customer;
 import mg.operateur.conn.ConnGen;
+import mg.operateur.gen.InvalidAmountException;
+import mg.operateur.gen.InvalidFormatException;
+import mg.operateur.gen.NotFoundException;
 import mg.operateur.web_services.ResponseBody;
 import mg.operateur.web_services.resources.commons.AskJSON;
 import mg.operateur.web_services.resources.commons.BalanceJSON;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -61,7 +65,7 @@ public class BalanceController {
 
             response.getData().add(new BalanceJSON(creditBalance, moneyBalance, new Customer().getRemainings(_ask, purchaseRepository)));
             response.getStatus().setMessage("Succés");
-        } catch (Exception ex) {
+        } catch (IllegalAccessException | IllegalArgumentException | InstantiationException | NoSuchMethodException | InvocationTargetException | URISyntaxException | SQLException | ParseException | InvalidAmountException | InvalidFormatException | NotFoundException ex) {
             setError(response, ex);
             out(ex);
         } finally {

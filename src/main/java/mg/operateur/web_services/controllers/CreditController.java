@@ -5,16 +5,20 @@
  */
 package mg.operateur.web_services.controllers;
 
-import java.sql.Connection;
+import java.lang.reflect.InvocationTargetException;
+import java.net.URISyntaxException;
+import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
-import mg.operateur.business_logic.mobile_credit.Credit;
+import java.text.ParseException;
 import mg.operateur.business_logic.mobile_credit.Customer;
-import mg.operateur.conn.ConnGen;
-import mg.operateur.gen.CDate;
+import mg.operateur.gen.InvalidAmountException;
+import mg.operateur.gen.InvalidDateException;
+import mg.operateur.gen.InvalidFormatException;
+import mg.operateur.gen.NotFoundException;
+import mg.operateur.gen.RequiredException;
 import mg.operateur.web_services.ResponseBody;
 import mg.operateur.web_services.resources.commons.AskJSON;
 import mg.operateur.web_services.resources.commons.TransferJSON;
-import mg.operateur.web_services.resources.commons.MessageJSON;
 import mg.operateur.web_services.resources.credit.CreditJSON;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,7 +32,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @author lacha
  */
 @RequestMapping("/credits")
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
 public class CreditController {
     
@@ -52,42 +56,24 @@ public class CreditController {
     @GetMapping("/balance")
     public ResponseBody balance( @RequestBody AskJSON _ask) {
         ResponseBody response = new ResponseBody();
-        Connection conn = null;
         try {
-            conn = ConnGen.getConn();
-            
-            double balance = new Customer().creditBalance(_ask, conn);
-            response.getData().add(new MessageJSON("Solde de votre crédit est de " + balance));
-        } catch(Exception ex) {
+            double balance = new Customer().creditBalance(_ask);
+            response.getData().add(new mg.operateur.web_services.resources.commons.MessageJSON("Solde de votre crédit est de " + balance));
+        } catch(IllegalAccessException | IllegalArgumentException | InstantiationException | NoSuchMethodException | InvocationTargetException | URISyntaxException | SQLException | ParseException | InvalidFormatException | NotFoundException ex) {
             setError(response, ex);
             out(ex);
-        } finally {
-            try {if(conn!=null) conn.close();}catch(SQLException ex) {setError(response, ex);out(ex);}
         }
-        
         return response;
     }
     
     @PostMapping("/buy")
     public ResponseBody buy(@RequestBody CreditJSON _credit) {
         ResponseBody response = new ResponseBody();
-        Connection conn = null;
         try {
-            conn = ConnGen.getConn();
-            Customer customer = new Customer().find(_credit.getPhone_number(), conn);
-            
-            Credit credit = new Credit();
-            credit.setCustomer_id(customer.getId());
-            credit.setAmount(_credit.getAmount());
-            credit.setCustomer_source_id(customer.getId());
-            credit.setCreated_at(CDate.getDate().parse(_credit.getDate()));
-            
-            customer.buyCredit(credit, conn);
-        } catch(Exception ex) {
+            new Customer().buyCredit(_credit);
+        } catch(IllegalAccessException | IllegalArgumentException | InstantiationException | NoSuchMethodException | InvocationTargetException | URISyntaxException | SQLException | ParseException | InvalidAmountException | InvalidDateException | InvalidFormatException | NotFoundException ex) {
             setError(response, ex);
             out(ex);
-        } finally {
-            try {if(conn!=null) conn.close();}catch(SQLException ex) {setError(response, ex);out(ex);}
         }
         return response;
     }
@@ -95,23 +81,11 @@ public class CreditController {
     @PostMapping("/transfer")
     public ResponseBody transfer(@RequestBody TransferJSON _transfer) {
         ResponseBody response = new ResponseBody();
-        Connection conn = null;
         try {
-            conn = ConnGen.getConn();
-            Customer customer = new Customer().find(_transfer.getPhone_number(), conn);
-            Customer customerDest = new Customer().find(_transfer.getPhone_number_destination(), conn);
-            
-            customer.transferCredit(_transfer.getAmount(), _transfer.getPassword(), CDate.getDate().parse(_transfer.getDate()), customerDest.getId(), conn);
-        } catch(Exception ex) {
+           new Customer().transferCredit(_transfer);
+        } catch(IllegalAccessException | IllegalArgumentException | InstantiationException | NoSuchMethodException | InvocationTargetException | URISyntaxException | NoSuchAlgorithmException | SQLException | ParseException | InvalidAmountException | InvalidDateException | InvalidFormatException | NotFoundException | RequiredException ex) {
             setError(response, ex);
             out(ex);
-        } finally {
-            try {
-                if(conn!=null) conn.close();
-            }  catch(SQLException ex) {
-                setError(response, ex);
-                out(ex);
-            }
         }
         return response;
     }
