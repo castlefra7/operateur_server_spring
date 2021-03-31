@@ -2,6 +2,7 @@ package mg.operateur.web_services.controllers;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Date;
 import mg.operateur.business_logic.mobile_credit.CallPricing;
 import mg.operateur.business_logic.mobile_credit.InternetPricing;
 import mg.operateur.business_logic.mobile_credit.MessagePricing;
@@ -77,7 +78,28 @@ public class PricingController {
         return response;
     }
     
-    @PostMapping("/calls")
+    @GetMapping("/messages")
+    public ResponseBody findMessageCallPricing() {
+        ResponseBody response = new ResponseBody();
+        Connection conn = null;
+        try {
+            conn = ConnGen.getConn();
+            MessagePricing pricing = new MessagePricing();
+            response.getData().add(pricing.findLatest(conn));
+        } catch(Exception ex) {
+            this.setError(response, ex);
+            out(ex);
+        } finally {
+            try {
+                if(conn!=null) conn.close();
+            } catch(SQLException ex) {
+                out(ex);
+            }
+        }
+        return response;
+    }
+    
+    @GetMapping("/calls")
     public ResponseBody messagePricing(@RequestBody PricingJSON _message) {
         ResponseBody response = new ResponseBody();
         Connection conn = null;
@@ -89,6 +111,27 @@ public class PricingController {
             pricing.setAmount_interior(_message.getAmount_interior());
             pricing.insert(conn);
             response.getStatus().setMessage("Succés");
+        } catch(Exception ex) {
+            this.setError(response, ex);
+            out(ex);
+        } finally {
+            try {
+                if(conn!=null) conn.close();
+            } catch(SQLException ex) {
+                out(ex);
+            }
+        }
+        return response;
+    }
+    
+    @GetMapping("/calls/price")
+    public ResponseBody findCallsPricing() {
+        ResponseBody response = new ResponseBody();
+        Connection conn = null;
+        try {
+            conn = ConnGen.getConn();
+            CallPricing pricing = new CallPricing();
+            response.getData().add(pricing.findLatest(conn));
         } catch(Exception ex) {
             this.setError(response, ex);
             out(ex);
@@ -114,6 +157,27 @@ public class PricingController {
             pricing.setAmount(_internet.getAmount());
             pricing.insert(conn);
             response.getStatus().setMessage("Succés");
+        } catch(Exception ex) {
+            this.setError(response, ex);
+            out(ex);
+        } finally {
+            try {
+                if(conn!=null) conn.close();
+            } catch(SQLException ex) {
+                out(ex);
+            }
+        }
+        return response;
+    }
+    
+    @GetMapping("/internet")
+    public ResponseBody findInternetPricing() {
+        ResponseBody response = new ResponseBody();
+        Connection conn = null;
+        try {
+            conn = ConnGen.getConn();
+            InternetPricing pricing = new InternetPricing();
+            response.getData().add(pricing.getLastPricing(new Date(), conn));
         } catch(Exception ex) {
             this.setError(response, ex);
             out(ex);

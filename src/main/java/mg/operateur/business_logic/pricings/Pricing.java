@@ -16,6 +16,7 @@ import mg.operateur.business_logic.mobile_credit.Transaction;
 import mg.operateur.business_logic.offer.Offer;
 import mg.operateur.business_logic.offer.Purchase;
 import mg.operateur.gen.FctGen;
+import mg.operateur.gen.RequiredException;
 
 /**
  *
@@ -70,7 +71,9 @@ public class Pricing extends Transaction {
         return amount_interior;
     }
 
-    public void setAmount_interior(double amount_interior) {
+    public void setAmount_interior(double amount_interior) throws RequiredException {
+        if (amount_interior < 0)
+            throw new RequiredException("Le montant extérieur doit-être posistif");
         this.amount_interior = amount_interior;
     }
 
@@ -78,7 +81,9 @@ public class Pricing extends Transaction {
         return amount_exterior;
     }
 
-    public void setAmount_exterior(double amount_exterior) {
+    public void setAmount_exterior(double amount_exterior) throws RequiredException {
+        if (amount_exterior < 0)
+            throw new RequiredException("Le montant extérieur doit-être posistif");
         this.amount_exterior = amount_exterior;
     }
     

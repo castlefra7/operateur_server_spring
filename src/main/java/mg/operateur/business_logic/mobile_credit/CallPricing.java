@@ -27,6 +27,11 @@ public class CallPricing extends Pricing {
         FctGen.insert(this, columns(), tableName(), conn);
     }
     
+    public CallPricing findLatest(Connection conn) 
+            throws SQLException, InstantiationException, NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+        return (CallPricing) FctGen.find(new CallPricing(), "select * from mg.calls_pricings where created_at in (select max(created_at) from mg.calls_pricings)", new String[] {"created_at", "amount_interior", "amount_exterior", "unit" }, conn);
+    }
+    
     @Override
     public String tableName() {
         return "mg.calls_pricings";
