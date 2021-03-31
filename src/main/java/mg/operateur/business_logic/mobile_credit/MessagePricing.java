@@ -33,6 +33,11 @@ public class MessagePricing extends Pricing {
         FctGen.insert(this, columns(), tableName(), conn);
     }
     
+    public MessagePricing findLatest(Connection conn) 
+            throws SQLException, InstantiationException, NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+        return (MessagePricing) FctGen.find(new MessagePricing(), "select * from mg.messages_pricings where created_at in (select max(created_at) from mg.messages_pricings);", columns(), conn);
+    }
+    
     @Override
     public String tableName() {
         return "mg.messages_pricings";
