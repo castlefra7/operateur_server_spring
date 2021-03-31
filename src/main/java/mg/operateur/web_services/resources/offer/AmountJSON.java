@@ -16,6 +16,15 @@ public class AmountJSON {
     private ApplicationJSON application;
     private double value;
     private UtilizationJSON utilization;
+    private boolean isUnlimited;
+
+    public boolean getIsUnlimited() {
+        return isUnlimited;
+    }
+
+    public void setIsUnlimited(boolean isUnlimited) {
+        this.isUnlimited = isUnlimited;
+    }
 
     public UtilizationJSON getUtilization() {
         return utilization;

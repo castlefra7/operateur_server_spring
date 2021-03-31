@@ -10,7 +10,6 @@ import java.net.URISyntaxException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.Properties;
 
 /**
  *
@@ -22,7 +21,7 @@ public class ConnGen {
     }
     
     public static Connection getConn() throws SQLException, URISyntaxException {
-        Connection conn = null;
+        Connection conn;
         if (System.getenv("DATABASE_URL") != null) {
             
             URI dbUri = new URI(System.getenv("DATABASE_URL"));

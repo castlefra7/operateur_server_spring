@@ -11,7 +11,9 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -49,6 +51,43 @@ public final class Offer {
     private Limitation limitation;
     private int priority;
     private List<Amount> amounts;
+    private int hourMin = -1;
+    private int hourMax = -1;
+    
+    public boolean canBeUsed(int currHour) {
+        int _hourMin = getHourMin();
+        int _hourMax = getHourMax();
+        boolean result = true;
+        if( _hourMin == -1 && _hourMax == -1) {
+            result = true;
+        } else {
+            if(currHour >= _hourMin && currHour <= _hourMax) {
+                result = true;
+            } else {
+                result = false;
+            }
+        }
+        
+        return result;
+    }
+
+    public int getHourMin() {
+        return hourMin;
+    }
+
+    public void setHourMin(int hourMin) {
+        this.hourMin = hourMin;
+    }
+
+    public int getHourMax() {
+        return hourMax;
+    }
+
+    public void setHourMax(int hourMax) {
+        this.hourMax = hourMax;
+    }
+    
+    
     
     private String code;
 
@@ -131,7 +170,7 @@ public final class Offer {
         if (amounts == null)
             throw new Exception("amounts are required");
         if (amounts.isEmpty())
-            throw new Exception("offer has a minimal of 1 amount");
+            throw new Exception("Spécifier au moins un montant");
         this.amounts = amounts;
     }
 

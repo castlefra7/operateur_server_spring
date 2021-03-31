@@ -17,7 +17,7 @@ create table mg.users (
     id serial primary key,
     created_at timestamp not null,
     name varchar(255) not null,
-    pwd varchar(255) not null,
+    pwd varchar(32) not null,
     unique(name)
 );
 
@@ -27,7 +27,7 @@ create table mg.customers (
     name varchar(255) not null,
     email varchar(25),
     phone_number char(13) not null,
-    password VARCHAR(255) not null,
+    password VARCHAR(32) not null,
     unique (phone_number),
     unique (email)
 );
@@ -183,6 +183,7 @@ create view mg.buyed_credit_sums as select customer_id, sum(amount) as sum_buyed
 create view mg.credit_consumption_sums as select customer_id, sum(cons_amount) as sum_cons_amount from mg.credit_consumptions group by customer_id;
 create view mg.customers_credit_balances as select mg.customers.id, (coalesce(sum_buyed_credit,0) - coalesce(sum_cons_amount,0)) as balance from mg.customers left join mg.buyed_credit_sums on mg.buyed_credit_sums.customer_id = mg.customers.id left join mg.credit_consumption_sums on mg.credit_consumption_sums.customer_id = mg.customers.id;
 
+insert into mg.users (created_at, name, pwd) values ('2000-01-01 00:00', 'admin', '63a9f0ea7bb98050796b649e85481845');
 
 insert into mg.customers (created_at, name, email, phone_number, password) values  ('2000-01-01', 'exterior user', 'exterior@gmail.com', '0', 'plosjsizosdpkjdn');
 

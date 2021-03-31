@@ -125,15 +125,17 @@ public class OfferController {
                     Price extra = new Price(amountJSON.getUtilization().getExtra().getPrice(), amountJSON.getUtilization().getExtra().getPer());
                     amount.setUtilization(new Utilization(intra, extra));
                 }
-                
+                amount.setIsUnlimited(amountJSON.getIsUnlimited());
                 amounts.add(amount);
             }
             
             int lastId = Offer.getLastId(conn);
+            
             Offer offer = new Offer(lastId, _offer.getName(), CDate.getDate().parse(_offer.getCreatedAt()), _offer.getPrice(), _offer.getValidityDay(), limitation, amounts, _offer.getPriority());
             offer.setIsOneDay(_offer.getIsOneDay());
             offer.setCode(_offer.getCode());
-            
+            offer.setHourMin(_offer.getHourMin());
+            offer.setHourMax(_offer.getHourMax());
             offerRepository.save(offer);
             response.getStatus().setMessage("Offer Created");
                 response.getData().add(offer);

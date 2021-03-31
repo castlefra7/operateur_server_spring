@@ -23,6 +23,27 @@ public class OfferJSON {
     private int priority;
     private List<AmountJSON> amounts;
     private String code;
+    
+    private int hourMin;
+    private int hourMax;
+
+    public int getHourMin() {
+        return hourMin;
+    }
+
+    public void setHourMin(int hourMin) {
+        this.hourMin = hourMin;
+    }
+
+    public int getHourMax() {
+        return hourMax;
+    }
+
+    public void setHourMax(int hourMax) {
+        this.hourMax = hourMax;
+    }
+    
+    
 
     public String getCode() {
         return code;

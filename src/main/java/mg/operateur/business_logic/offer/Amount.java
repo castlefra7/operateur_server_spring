@@ -17,6 +17,18 @@ public final class Amount {
     private Application application;
     private double value;
     private Utilization utilization;
+    
+    private boolean isUnlimited;
+
+    public boolean getIsUnlimited() {
+        return isUnlimited;
+    }
+
+    public void setIsUnlimited(boolean isUnlimited) {
+        this.isUnlimited = isUnlimited;
+    }
+    
+    
 
     public Utilization getUtilization() {
         return utilization;

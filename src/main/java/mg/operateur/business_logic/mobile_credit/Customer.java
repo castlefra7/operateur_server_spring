@@ -13,8 +13,10 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import mg.operateur.business_logic.offer.Amount;
@@ -57,10 +59,8 @@ public final class Customer extends Person {
     // Appel: 60 sec
     // Internet: 100Mo
     // Faceboobaka: 1Go
-
     public HashMap<String, Double> getRemainings(AskJSON _ask, PurchaseRepository purchaseRepository) throws IllegalAccessException, IllegalArgumentException, InstantiationException, NoSuchMethodException, InvocationTargetException, SQLException, NotFoundException, ParseException, InvalidAmountException, InvalidFormatException, URISyntaxException {
         Connection conn = null;
-        List<RemainingOffer> result = new ArrayList();
         HashMap<String, Double> remain = new HashMap();
 
         try {
@@ -68,10 +68,10 @@ public final class Customer extends Person {
             Customer customer = this.find(_ask.getPhone_number(), conn);
             List<Purchase> validPurchases = findAllValidPurchases(customer.getId(), CDate.getDate().parse(_ask.getDate()), purchaseRepository, conn);
             for (Purchase p : validPurchases) {
+              
                 List<Amount> amounts = p.getOffer().getAmounts();
                 for (Amount amount : amounts) {
                     Character type = amount.getApplication().getT_type();
-                    //System.out.println(type);
                     if (type == 'i') {
                         int val = new InternetPricing().convertToKo(String.valueOf(amount.getValue()).concat(amount.getApplication().getUnit().getSuffix()));
                         amount.setValue(val);
@@ -91,9 +91,9 @@ public final class Customer extends Person {
                         amount.setValue(val);
                     }
 
-                    if (amount.getApplication().getInternet_application_id() == -1  || type == 'c' || type == 'm') {
+                    if (amount.getApplication().getInternet_application_id() == -1 || type == 'c' || type == 'm') {
                         Double value = remain.get(String.valueOf(type));
-                        double res = value != null? value: 0;
+                        double res = value != null ? value : 0;
                         remain.put(String.valueOf(type), res + amount.getValue());
                     } else {
                         String typeI = type + String.valueOf(amount.getApplication().getInternet_application_id());
@@ -117,7 +117,6 @@ public final class Customer extends Person {
                 out(ex);
             }
         }
-
         return remain;
     }
 
@@ -135,34 +134,49 @@ public final class Customer extends Person {
         boolean shouldUseCredit = false;
 
         /* use offers first */
+        Calendar cal = new GregorianCalendar();
+        cal.setTime(date);
+        int currHour = cal.get(Calendar.HOUR_OF_DAY);
+        
+        boolean unlimited = false;
         List<Purchase> validPurchases = findAllValidPurchases(customer.getId(), date, purchaseRepository, conn);
         if (validPurchases.size() > 0) {
             for (Purchase purchase : validPurchases) {
                 List<Amount> allAmounts = purchase.getOffer().getAmounts();
-                for (Amount amount : allAmounts) {
-                    Application app = amount.getApplication();
-                    if (app.getT_type() == 'i' && amount.getValue() > 0 && app.getInternet_application_id() == _internet.getInternet_application_id()) {
-                        int val = lastPricing.convertToKo(String.valueOf(amount.getValue()).concat(app.getUnit().getSuffix()));
-                        app.getUnit().setSuffix("ko");
+                boolean canBeUsed = purchase.getOffer().canBeUsed(currHour);
+                if (canBeUsed) {
+                    for (Amount amount : allAmounts) {
+                        
+                        Application app = amount.getApplication();
+                        if (app.getT_type() == 'i' && (amount.getValue() == 0 || amount.getValue() > 0 ) && app.getInternet_application_id() == _internet.getInternet_application_id()) {
+                            unlimited = amount.getIsUnlimited();
+                        }
+                        if (app.getT_type() == 'i' && amount.getValue() > 0 && app.getInternet_application_id() == _internet.getInternet_application_id()) {
+                            
+                            int val = lastPricing.convertToKo(String.valueOf(amount.getValue()).concat(app.getUnit().getSuffix()));
+                            app.getUnit().setSuffix("ko");
 
-                        double orgValue = val;
-                        int remainingValue = ((int) orgValue - amountKo) > 0 ? ((int) orgValue - amountKo) : 0;
-                        amount.setValue(remainingValue);
-                        if (((int) orgValue - amountKo) >= 0) {
-                            amountKo = 0;
-                            break;
-                        } else {
-                            amountKo = Math.abs(((int) orgValue - amountKo));
+                            double orgValue = val;
+                            int remainingValue = ((int) orgValue - amountKo) > 0 ? ((int) orgValue - amountKo) : 0;
+                            amount.setValue(remainingValue);
+                            if (((int) orgValue - amountKo) >= 0) {
+                                amountKo = 0;
+                                break;
+                            } else {
+                                amountKo = Math.abs(((int) orgValue - amountKo));
+                            }
                         }
                     }
+                    purchaseRepository.save(purchase);
                 }
-                purchaseRepository.save(purchase);
             }
         }
 
         if (amountKo > 0 || validPurchases.isEmpty()) {
             shouldUseCredit = true;
         }
+        
+        if(unlimited) shouldUseCredit = false;
 
         try {
 
@@ -227,6 +241,12 @@ public final class Customer extends Person {
         /**
          * ** Begin use call using offers ****
          */
+        Calendar cal = new GregorianCalendar();
+        cal.setTime(date);
+        int currHour = cal.get(Calendar.HOUR_OF_DAY);
+        
+        boolean unlimited = false;
+        
         List<Purchase> validPurchases = findAllValidPurchases(source.getId(), date, purchaseRepository, conn);
         if (validPurchases.size() > 0) {
             for (Purchase purchase : validPurchases) {
@@ -234,58 +254,67 @@ public final class Customer extends Person {
                 if (numberSecond <= 0) {
                     break;
                 }
-                for (Amount amount : allAmounts) {
-                    Application app = amount.getApplication();
-                    if (numberSecond <= 0) {
-                        break;
-                    }
-                    if (app.getT_type() == 'c' && amount.getValue() > 0) {
-                        double val = amount.getValue();
+                boolean canBeUsed = purchase.getOffer().canBeUsed(currHour);
+                if (canBeUsed) {
+                    for (Amount amount : allAmounts) {
+                        Application app = amount.getApplication();
+                        if (numberSecond <= 0) {
+                            break;
+                        }
+                        if(app.getT_type() == 'c' && (amount.getValue() == 0 || amount.getValue() > 0)) {
+                            unlimited = amount.getIsUnlimited();
+                        }
+                        if (app.getT_type() == 'c' && amount.getValue() > 0) {
+                            
+                            double val = amount.getValue();
 
-                        if (amount.getUtilization() != null) {
-                            if (amount.getUtilization().getIntra() != null && amount.getUtilization().getExtra() != null) {
-                                double price = amount.getUtilization().getIntra().getPrice();
-                                if (!PhoneNumber.getPrefix(_call.getPhone_number_destination()).equals(conf.getPrefix())) {
-                                    price = amount.getUtilization().getExtra().getPrice();
+                            if (amount.getUtilization() != null) {
+                                if (amount.getUtilization().getIntra() != null && amount.getUtilization().getExtra() != null) {
+                                    double price = amount.getUtilization().getIntra().getPrice();
+                                    if (!PhoneNumber.getPrefix(_call.getPhone_number_destination()).equals(conf.getPrefix())) {
+                                        price = amount.getUtilization().getExtra().getPrice();
+                                    }
+                                    double amountIShouldConsume = price * (double) numberSecond;
+                                    double remainingValue = (val - amountIShouldConsume) > 0 ? (val - amountIShouldConsume) : 0;
+                                    amount.setValue(remainingValue);
+                                    if ((val - amountIShouldConsume) >= 0) {
+                                        numberSecond = 0;
+                                        break;
+                                    } else {
+                                        int nSecsConsumed = (int) Math.ceil(val / price);
+                                        numberSecond -= nSecsConsumed;
+                                    }
                                 }
-                                double amountIShouldConsume = price * (double) numberSecond;
-                                double remainingValue = (val - amountIShouldConsume) > 0 ? (val - amountIShouldConsume) : 0;
+                            } else {
+                                if (amount.getApplication().getUnit().getSuffix().toLowerCase().equals("mn")) {
+                                    val = val * 60;
+                                } else if (amount.getApplication().getUnit().getSuffix().toLowerCase().equals("hr")) {
+                                    val = val * 3600;
+                                }
+                                double orgValue = val;
+                                amount.getApplication().getUnit().setSuffix("sec");
+
+                                int remainingValue = ((int) orgValue - numberSecond) > 0 ? ((int) orgValue - numberSecond) : 0;
                                 amount.setValue(remainingValue);
-                                if ((val - amountIShouldConsume) >= 0) {
+                                if (((int) orgValue - numberSecond) >= 0) {
                                     numberSecond = 0;
                                     break;
                                 } else {
-                                    int nSecsConsumed = (int) Math.ceil(val / price);
-                                    numberSecond -= nSecsConsumed;
+                                    numberSecond = Math.abs(((int) orgValue - numberSecond));
                                 }
-                            }
-                        } else {
-                            if (amount.getApplication().getUnit().getSuffix().toLowerCase().equals("mn")) {
-                                val = val * 60;
-                            } else if (amount.getApplication().getUnit().getSuffix().toLowerCase().equals("hr")) {
-                                val = val * 3600;
-                            }
-                            double orgValue = val;
-                            amount.getApplication().getUnit().setSuffix("sec");
-
-                            int remainingValue = ((int) orgValue - numberSecond) > 0 ? ((int) orgValue - numberSecond) : 0;
-                            amount.setValue(remainingValue);
-                            if (((int) orgValue - numberSecond) >= 0) {
-                                numberSecond = 0;
-                                break;
-                            } else {
-                                numberSecond = Math.abs(((int) orgValue - numberSecond));
                             }
                         }
                     }
+                    purchaseRepository.save(purchase);
                 }
-                purchaseRepository.save(purchase);
+
             }
         }
 
         if (numberSecond > 0 || validPurchases.isEmpty()) {
             shouldUseCredit = true;
         }
+        if(unlimited) shouldUseCredit = false;
         if (shouldUseCredit) {
             double amount = lastPricing.getAmount_interior();
             if (PhoneNumber.getPrefix(_call.getPhone_number_destination()).equals(conf.getPrefix()) == false) {
@@ -309,7 +338,7 @@ public final class Customer extends Person {
         Customer source = this.find(_message.getPhone_number_source(), conn);
         Customer dest = this.find(_message.getPhone_number_destination(), conn); // TODO create external customer
         source.checkLastOperation(CDate.getDate().parse(_message.getDate()), conn);
-
+        
         Date date = CDate.getDate().parse(_message.getDate());
         int lengthMessage = _message.getText().length();
         MessagePricing lastPricing = (MessagePricing) new MessagePricing().getLastPricing(date, conn);
@@ -318,53 +347,71 @@ public final class Customer extends Person {
         if (lengthUnit <= 0) {
             throw new InvalidAmountException("Veuillez entrer un message valide");
         }
+        ConfOperator conf = new ConfOperator().getLastConf(conn);
         boolean shouldUseCredit = false;
 
         /**
          * ** Begin Send message message using offers ****
          */
+        
+        Calendar cal = new GregorianCalendar();
+        cal.setTime(date);
+        int currHour = cal.get(Calendar.HOUR_OF_DAY);
+        boolean unlimited = false;
+        
         List<Purchase> validPurchases = findAllValidPurchases(source.getId(), date, purchaseRepository, conn);
         if (validPurchases.size() > 0) {
             for (Purchase purchase : validPurchases) {
                 List<Amount> allAmounts = purchase.getOffer().getAmounts();
-                for (Amount amount : allAmounts) {
-                    Application app = amount.getApplication();
-                    if (app.getT_type() == 'm' && amount.getValue() > 0) {
-                        double orgValue = amount.getValue();
-                        int remainingValue = ((int) orgValue - lengthUnit) > 0 ? ((int) orgValue - lengthUnit) : 0;
-                        amount.setValue(remainingValue);
-                        if (((int) orgValue - lengthUnit) >= 0) {
-                            lengthUnit = 0;
-                            break;
-                        } else {
-                            lengthUnit = Math.abs(((int) orgValue - lengthUnit));
+                boolean canBeUsed = purchase.getOffer().canBeUsed(currHour);
+                if (canBeUsed) {
+                    for (Amount amount : allAmounts) {
+                        Application app = amount.getApplication();
+                        if(app.getT_type() == 'm' && (amount.getValue() == 0 || amount.getValue() > 0))  {
+                            unlimited = amount.getIsUnlimited();
                         }
-
+                        
+                        if (app.getT_type() == 'm' && amount.getValue() > 0) {
+                            double orgValue = amount.getValue();
+                            int remainingValue = ((int) orgValue - lengthUnit) > 0 ? ((int) orgValue - lengthUnit) : 0;
+                            amount.setValue(remainingValue);
+                            if (((int) orgValue - lengthUnit) >= 0) {
+                                lengthUnit = 0;
+                                break;
+                            } else {
+                                lengthUnit = Math.abs(((int) orgValue - lengthUnit));
+                            }
+                        }
                     }
+                    purchaseRepository.save(purchase);
                 }
-                purchaseRepository.save(purchase);
             }
         }
 
         if (lengthUnit > 0 || validPurchases.isEmpty()) {
             shouldUseCredit = true;
         }
-
+        
+        if(unlimited) shouldUseCredit = false;
+        
         if (shouldUseCredit) {
-            // TODO CHECK IF Phone_number is exterior
+            double amount = lastPricing.getAmount_interior();
+            if (PhoneNumber.getPrefix(_message.getPhone_number_destination()).equals(conf.getPrefix()) == false) {
+                amount = lastPricing.getAmount_exterior();
+            }
+            
             double creditBalance = source.creditBalance(date, conn);
-            int howManyUnit = (int) Math.ceil(creditBalance / lastPricing.getAmount_interior());
+            int howManyUnit = (int) Math.ceil(creditBalance / amount);
             int nUnitICanAfford = Math.min(howManyUnit, lengthUnit);
             if (nUnitICanAfford <= 0) {
                 throw new InvalidAmountException(String.format("Votre crédit est insuffisant. %d messages n'a pas été envoyé", lengthUnit));
             }
-            double priceToPay = (double) nUnitICanAfford * lastPricing.getAmount_interior();
-            System.out.println(priceToPay);
+            double priceToPay = (double) nUnitICanAfford * amount;
             this.insertMessageOrCallConsumption(shouldUseCredit, true, nUnitICanAfford, date, source.getId(), dest.getId(), priceToPay, conn);
         } else {
             this.insertMessageOrCallConsumption(false, true, orgLengthUnit, date, source.getId(), dest.getId(), 0.0, conn);
         }
-        
+
         // Insert message into MongoDB
         MessageMongo message = new MessageMongo();
         message.setText(_message.getText());
@@ -375,8 +422,12 @@ public final class Customer extends Person {
     }
 
     public List<Purchase> findAllValidPurchases(int customer_id, Date _date, PurchaseRepository purchaseRepository, Connection conn) {
+        System.out.println("================");
+        System.out.println(_date);
         List<Purchase> result = purchaseRepository.findByEndDateGreaterThanAndCustomer_id(_date, customer_id);
         Collections.sort(result);
+        System.out.println("===============");
+        System.out.println(result.size());
         return result;
     }
 
@@ -470,8 +521,6 @@ public final class Customer extends Person {
 
         }
     }
-    
-    
 
     public void buyCreditFromMobile(Credit credit, String pwd, Connection conn) throws SQLException, InvalidDateException, InvalidAmountException, Exception {
         checkLastOperation(credit.getCreated_at(), conn);
@@ -550,22 +599,21 @@ public final class Customer extends Person {
 
         conn.setAutoCommit(false);
         Customer currCust = find(getId(), conn);
-        
+
         if (pwd == null || !currCust.getPassword().equals(PasswordHelper.md5(pwd))) {
             throw new RequiredException("Mot de passe incorrect");
         }
 
         if (isFree == false) {
             withdraw.setFee(getFeeAmount(withdraw.getAmount(), conn));
-            if((withdraw.getAmount() + withdraw.getFee()) > mobileBalance(withdraw.getCreated_at(), conn)) {
+            if ((withdraw.getAmount() + withdraw.getFee()) > mobileBalance(withdraw.getCreated_at(), conn)) {
                 throw new InvalidAmountException("Votre solde est insuffisant pour effectuer cette opération");
             }
         }
         if ((withdraw.getAmount()) > mobileBalance(withdraw.getCreated_at(), conn)) {
             throw new InvalidAmountException("Votre solde est insuffisant pour effectuer cette opération");
         }
-        
-        
+
         try {
             withdraw.insert(conn);
             conn.commit();
@@ -600,7 +648,6 @@ public final class Customer extends Person {
     }
 
     private Date lastOperationDate(Connection conn) throws SQLException {
-        // TODO: also get Purchases operation date in mongodb
         String req = String.format("select max(created_at) as max  from mg.all_customer_operations where customer_id= %d", getId());
         return FctGen.getDate(req, "max", conn);
     }
@@ -623,21 +670,20 @@ public final class Customer extends Person {
     public Customer getExteriorCust(Connection conn) throws SQLException, InstantiationException, NoSuchMethodException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NotFoundException {
         return (Customer) FctGen.find(this, "select * from mg.customers where phone_number = '0'", columnsWithID(), conn);
     }
-    
-    public String  phoneExists(String _phone_number, Connection conn) {
+
+    public String phoneExists(String _phone_number, Connection conn) {
         String result;
         try {
-            Customer cust = this.find(_phone_number, conn); 
+            Customer cust = this.find(_phone_number, conn);
             result = cust.getPhone_number();
-        } catch(IllegalAccessException | IllegalArgumentException | InstantiationException | NoSuchMethodException | InvocationTargetException | SQLException | InvalidFormatException | NotFoundException ex ) {
+        } catch (IllegalAccessException | IllegalArgumentException | InstantiationException | NoSuchMethodException | InvocationTargetException | SQLException | InvalidFormatException | NotFoundException ex) {
             result = null;
         }
-        
+
         return result;
     }
 
     public Customer find(String _phone_number, Connection conn) throws SQLException, InstantiationException, NoSuchMethodException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NotFoundException, InvalidFormatException {
-       System.out.println(_phone_number);
 
         Customer result = null;
         ConfOperator conf = new ConfOperator().getLastConf(conn);
@@ -646,7 +692,7 @@ public final class Customer extends Person {
         }
 
         Object ob = FctGen.find(new Customer(), String.format("select * from %s where phone_number = '%s'", tableName(), PhoneNumber.getValidNumber(_phone_number)), columnsWithID(), conn);
-        
+
         if (ob != null) {
             result = (Customer) ob;
         } else {
