@@ -37,8 +37,6 @@ public class Unit {
     }
 
     public void setSuffix(String suffix) throws RequiredException, InvalidFormatException {
-        if (suffix == null)
-            throw new RequiredException("Unit suffix is required");
         suffix = suffix.toLowerCase();
         if(!"ar".equals(suffix) && !"sec".equals(suffix) && !"mn".equals(suffix)  && !"hr".equals(suffix) && !"n".equals(suffix) && !"ko".equals(suffix) && !"go".equals(suffix) && !"mo".equals(suffix)) throw new InvalidFormatException("L'unité doit être: Mn, Hr, Sec, Go, Ko, Mo");
         this.suffix = suffix;
