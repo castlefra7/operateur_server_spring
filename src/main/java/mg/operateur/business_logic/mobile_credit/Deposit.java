@@ -5,6 +5,7 @@
  */
 package mg.operateur.business_logic.mobile_credit;
 
+import java.io.IOException;
 import mg.operateur.gen.FctGen;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URISyntaxException;
@@ -51,7 +52,7 @@ public class Deposit extends Transaction {
         return (Deposit) ob;
     }
 
-    public void validate(int id) throws SQLException, InstantiationException, NoSuchMethodException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NotFoundException, URISyntaxException {
+    public void validate(int id) throws SQLException, InstantiationException, NoSuchMethodException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NotFoundException, URISyntaxException, IOException {
         Connection conn = null;
         try {
             conn = ConnGen.getConn();

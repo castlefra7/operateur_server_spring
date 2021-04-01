@@ -5,6 +5,7 @@
  */
 package mg.operateur.business_logic.mobile_credit;
 
+import java.io.IOException;
 import mg.operateur.gen.FctGen;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URISyntaxException;
@@ -33,7 +34,7 @@ public class Fee extends BaseClass {
         return (Fee) FctGen.find(new Fee(), String.format(" select * from %s where created_at <= '%s' order by created_at desc limit 1", tableName(), date.toString()), columns(), conn);
     }
 
-    public void insert(FeeJSON _fee) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, SQLException, URISyntaxException, ParseException, InvalidAmountException {
+    public void insert(FeeJSON _fee) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, SQLException, URISyntaxException, ParseException, InvalidAmountException, IOException {
         Connection conn = null;
         try {
             conn = ConnGen.getConn();

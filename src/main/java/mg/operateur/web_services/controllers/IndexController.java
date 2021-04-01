@@ -5,6 +5,7 @@
  */
 package mg.operateur.web_services.controllers;
 
+import java.io.IOException;
 import java.net.URISyntaxException;
 import java.sql.SQLException;
 import mg.operateur.business_logic.mobile_credit.Customer;
@@ -41,7 +42,7 @@ public class IndexController {
     }
     
     @GetMapping("phone_exists")
-    public ResponseBody phoneExists(@RequestParam(value="phone_number") String _phone) {
+    public ResponseBody phoneExists(@RequestParam(value="phone_number") String _phone) throws IOException {
         ResponseBody response = new ResponseBody();
         try {
             response.getData().add(new Customer().phoneExists(_phone));

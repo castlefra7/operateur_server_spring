@@ -5,6 +5,7 @@
  */
 package mg.operateur.web_services.controllers;
 
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URISyntaxException;
 import java.security.NoSuchAlgorithmException;
@@ -66,7 +67,7 @@ public class OfferController {
     @PostMapping(value = "/buyfrommobile")
     public ResponseBody buyOfferMobileMOney(
             @RequestBody TransacJSON _purchase
-    ) {
+    ) throws IOException {
         ResponseBody response = new ResponseBody();
         try {
             new Offer().buyFromMobileMoney(_purchase, offerRepository, purchaseRepository);
@@ -81,7 +82,7 @@ public class OfferController {
     @PostMapping(value = "/buy")
     public ResponseBody buyFromCredit(
             @RequestBody TransacJSON _purchase
-    ) {
+    ) throws IOException {
         ResponseBody response = new ResponseBody();
         try {
             new Offer().buy(_purchase, offerRepository, purchaseRepository);
@@ -125,7 +126,7 @@ public class OfferController {
     }
 
     @GetMapping("/remainings")
-    public ResponseBody response(@RequestBody AskJSON _ask) {
+    public ResponseBody response(@RequestBody AskJSON _ask) throws IOException {
         ResponseBody response = new ResponseBody();
         try {
             response.getData().add(new Customer().getRemainings(_ask, purchaseRepository));

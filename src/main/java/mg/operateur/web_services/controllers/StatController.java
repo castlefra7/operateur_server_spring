@@ -48,7 +48,7 @@ public class StatController {
     @GetMapping()
     public ResponseBody index(
             @RequestParam String date
-    ) {
+    ) throws IOException {
         ResponseBody response = new ResponseBody();
         try {
             response.getData().add(new Statistic().getOffersStat(CDate.getDate().parse(date), purchaseRepository));

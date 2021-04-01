@@ -5,6 +5,7 @@
  */
 package mg.operateur.web_services.controllers;
 
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URISyntaxException;
 import java.sql.SQLException;
@@ -35,7 +36,7 @@ public class CustomerController {
     }
     
     @GetMapping("/callshistory")
-    public ResponseBody index(@RequestAttribute String id) {
+    public ResponseBody index(@RequestAttribute String id) throws IOException {
         ResponseBody response = new ResponseBody();
     
         try {
