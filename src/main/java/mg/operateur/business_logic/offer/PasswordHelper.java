@@ -14,7 +14,6 @@ import java.security.NoSuchAlgorithmException;
  */
 public class PasswordHelper {
     public static String md5(String password) throws NoSuchAlgorithmException {
-        String generatedPassword = null;
         MessageDigest md = MessageDigest.getInstance("MD5");
         md.update(password.getBytes());
         byte[] bytes = md.digest();

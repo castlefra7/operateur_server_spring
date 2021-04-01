@@ -6,10 +6,12 @@
 package mg.operateur.business_logic.mobile_credit;
 
 import java.lang.reflect.InvocationTargetException;
+import java.net.URISyntaxException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import mg.operateur.conn.ConnGen;
 import mg.operateur.gen.FctGen;
 
 /**
@@ -17,19 +19,40 @@ import mg.operateur.gen.FctGen;
  * @author lacha
  */
 public class DepositView extends Deposit {
+
     private String phone_number;
     private String name;
 
-    public List<Object> findAllDeposit(Connection conn) throws SQLException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException {
+    public List<Object> findAllDeposit() throws SQLException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, URISyntaxException {
+        Connection conn = null;
         List<Object> result = new ArrayList();
+        try {
+            conn = ConnGen.getConn();
+            result = new DepositView().findAllDeposit(conn);
+        } catch (IllegalAccessException | IllegalArgumentException | InstantiationException | NoSuchMethodException | InvocationTargetException | URISyntaxException | SQLException ex) {
+            throw ex;
+        } finally {
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException ex) {
+                System.out.println(ex);
+            }
+        }
+        return result;
+    }
+
+    public List<Object> findAllDeposit(Connection conn) throws SQLException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException {
+        List<Object> result;
         result = FctGen.findAll(new DepositView(), "select * from mg.all_customers_deposits where isvalidated is false and customer_id = customer_source_id", columnsWithID(), conn);
         return result;
     }
-    
-        public String[] columnsWithID() {
-        return new String[]{"id","created_at", "customer_id", "amount", "customer_source_id", "phone_number", "name"};
+
+    public String[] columnsWithID() {
+        return new String[]{"id", "created_at", "customer_id", "amount", "customer_source_id", "phone_number", "name"};
     }
-    
+
     public String getPhone_number() {
         return phone_number;
     }
@@ -45,5 +68,5 @@ public class DepositView extends Deposit {
     public void setName(String name) {
         this.name = name;
     }
-    
+
 }

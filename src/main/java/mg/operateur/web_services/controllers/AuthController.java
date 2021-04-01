@@ -6,8 +6,12 @@
 package mg.operateur.web_services.controllers;
 
 import io.jsonwebtoken.Jwts;
+import java.lang.reflect.InvocationTargetException;
+import java.net.URISyntaxException;
+import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.text.ParseException;
 import mg.operateur.business_logic.mobile_credit.ConfOperator;
 import mg.operateur.business_logic.mobile_credit.Customer;
 import mg.operateur.business_logic.offer.Admin;
@@ -33,84 +37,66 @@ import org.springframework.web.bind.annotation.RestController;
 @CrossOrigin(origins = "*")
 @RestController
 public class AuthController {
-    
+
     private void out(Exception ex) {
         ex.printStackTrace();
         System.out.println(ex.getMessage());
     }
-        
+
     private void setError(ResponseBody response, Exception ex) {
         response.getStatus().setCode(500);
         response.getStatus().setMessage(ex.getMessage());
     }
-    
+
     @RequestMapping()
     public ResponseBody index() {
         ResponseBody response = new ResponseBody();
-       response.getStatus().setMessage("Signin endpoint");
+        response.getStatus().setMessage("Signin endpoint");
         return response;
     }
-    
+
     @PostMapping("/signin")
     public ResponseBody signin(
             @RequestBody CustomerJSON _customer
-    ) {    
+    ) {
         AuthResponseBody response = new AuthResponseBody();
-        Connection conn = null;
-        try {
-            conn = ConnGen.getConn();
-            Customer found = new Customer().find(_customer.getPhoneNumber(), conn);
-            
-            if (!found.getPassword().equals(PasswordHelper.md5(_customer.getPassword())))
+       try {
+            Customer found = new Customer().find(_customer.getPhoneNumber());
+
+            if (!found.getPassword().equals(PasswordHelper.md5(_customer.getPassword()))) {
                 throw new Exception("Mot de passe ou numero incorrect");
-            
+            }
             String jws = Jwts.builder().setHeaderParam("kid", "you").setAudience(String.valueOf(found.getId())).setIssuer("me").setSubject(String.valueOf(found.getId())).signWith(Auth.getKey()).compact();
             response.setToken(jws);
             response.getData().add(found);
-        } catch(Exception ex) {
+        } catch (Exception ex) {
             setError(response, ex);
             out(ex);
-        } finally {
-            try {
-                if(conn!=null) conn.close();
-            }  catch(SQLException ex) {
-                setError(response, ex);
-                out(ex);
-            }
         }
         return response;
     }
-    
+
     @PostMapping("/signin/admin")
     public ResponseBody signinAdmin(
             @RequestBody CustomerJSON _customer
-    ) {    
+    ) {
         AuthResponseBody response = new AuthResponseBody();
-        Connection conn = null;
         try {
-            conn = ConnGen.getConn();
-            Admin found = new Admin().FindByName(_customer.getName(), conn);
-            if (!found.getPwd().equals(PasswordHelper.md5(_customer.getPassword())))
+            Admin found = new Admin().FindByName(_customer.getName());
+            if (!found.getPwd().equals(PasswordHelper.md5(_customer.getPassword()))) {
                 throw new Exception("Mot de passe ou numero incorrect");
-            
+            }
             String jws = Jwts.builder().setHeaderParam("kid", "you").setAudience(String.valueOf(found.getName())).setIssuer("me").setSubject("Admin").signWith(Auth.getKey()).compact();
             response.setToken(jws);
             response.getData().add(found);
             response.getStatus().setMessage("okay");
-        } catch(Exception ex) {
+        } catch (Exception ex) {
             setError(response, ex);
             out(ex);
-        } finally {
-            try {
-                if(conn!=null) conn.close();
-            }  catch(SQLException ex) {
-                setError(response, ex);
-                out(ex);
-            }
         }
         return response;
     }
-    
+
     @PostMapping("/signup")
     public AuthResponseBody signup(
             @RequestBody CustomerJSON _customer
@@ -121,55 +107,41 @@ public class AuthController {
             conn = ConnGen.getConn();
             ConfOperator confOp = new ConfOperator().getLastConf(conn);
             Operator orange = new mg.operateur.business_logic.offer.Operator(confOp.getName(), confOp.getPrefix());
-            mg.operateur.business_logic.offer.Customer customer = new mg.operateur.business_logic.offer.
-                    Customer(_customer.getName(), _customer.getEmail(), _customer.getPassword(), CDate.getDate().parse(_customer.getCreatedAt()), orange.issueNewPhoneNumber());
+            mg.operateur.business_logic.offer.Customer customer = new mg.operateur.business_logic.offer.Customer(_customer.getName(), _customer.getEmail(), _customer.getPassword(), CDate.getDate().parse(_customer.getCreatedAt()), orange.issueNewPhoneNumber());
             customer.save(conn);
             Customer createdCust = new Customer().find(customer.getPhone_number(), conn);
             int id = createdCust.getId();
-            
+
             String jws = Jwts.builder().setHeaderParam("kid", "you").setAudience(String.valueOf(id)).setIssuer("me").setSubject(String.valueOf(id)).signWith(Auth.getKey()).compact();
             response.setToken(jws);
             response.getData().add(customer);
-        } catch(Exception ex) {
+        } catch (Exception ex) {
             setError(response, ex);
             out(ex);
         } finally {
             try {
-                if(conn!=null) conn.close();
-            }  catch(SQLException ex) {
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException ex) {
                 setError(response, ex);
                 out(ex);
             }
         }
         return response;
     }
-    
+
     @PostMapping("/signup/admin")
     public AuthResponseBody signupAdmin(
             @RequestBody CustomerJSON _customer
     ) {
         AuthResponseBody response = new AuthResponseBody();
-        Connection conn = null;
-        try {
-            conn = ConnGen.getConn();
-            Admin admin = new Admin();
-            admin.setName(_customer.getName());
-            admin.setPwd(PasswordHelper.md5(_customer.getPassword()));
-            admin.setCreated_at(CDate.getDate().parse(_customer.getCreatedAt()));
-            admin.insert(conn);
-           
-            response.getData().add(admin);
+       try {
+            response.getData().add(new Admin().insert(_customer));
             response.getStatus().setMessage("okay");
-        } catch(Exception ex) {
+        } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | URISyntaxException | NoSuchAlgorithmException | SQLException | ParseException ex) {
             setError(response, ex);
             out(ex);
-        } finally {
-            try {
-                if(conn!=null) conn.close();
-            }  catch(SQLException ex) {
-                setError(response, ex);
-                out(ex);
-            }
         }
         return response;
     }

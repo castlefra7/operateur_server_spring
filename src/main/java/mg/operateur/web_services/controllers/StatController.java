@@ -5,17 +5,18 @@
  */
 package mg.operateur.web_services.controllers;
 
+import java.lang.reflect.InvocationTargetException;
+import java.net.URISyntaxException;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.text.ParseException;
 import mg.operateur.business_logic.statistics.Statistic;
 import mg.operateur.conn.ConnGen;
 import mg.operateur.gen.CDate;
 import mg.operateur.web_services.ResponseBody;
-import mg.operateur.web_services.resources.commons.AskJSON;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -50,7 +51,7 @@ public class StatController {
         ResponseBody response = new ResponseBody();
         try {
             response.getData().add(new Statistic().getOffersStat(CDate.getDate().parse(date), purchaseRepository));
-        } catch(Exception ex) {
+        } catch(URISyntaxException | SQLException | ParseException ex) {
             setError(response, ex);
             out(ex);
         }
@@ -67,7 +68,7 @@ public class StatController {
             conn = ConnGen.getConn();
             response.getData().add(new Statistic().getDeposits(conn));
             response.getData().add(new Statistic().getWithdraws(conn));
-        } catch(Exception ex) {
+        } catch(IllegalAccessException | IllegalArgumentException | InstantiationException | NoSuchMethodException | InvocationTargetException | URISyntaxException | SQLException ex) {
             setError(response, ex);
             out(ex);
         } finally {

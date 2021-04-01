@@ -1,14 +1,13 @@
 package mg.operateur.web_services.controllers;
 
-import java.sql.Connection;
+import java.lang.reflect.InvocationTargetException;
+import java.net.URISyntaxException;
 import java.sql.SQLException;
-import java.util.Date;
+import java.text.ParseException;
 import mg.operateur.business_logic.mobile_credit.CallPricing;
 import mg.operateur.business_logic.mobile_credit.InternetPricing;
 import mg.operateur.business_logic.mobile_credit.MessagePricing;
-import mg.operateur.business_logic.pricings.Pricing;
-import mg.operateur.conn.ConnGen;
-import mg.operateur.gen.CDate;
+import mg.operateur.gen.InvalidAmountException;
 import mg.operateur.web_services.ResponseBody;
 import mg.operateur.web_services.resources.pricings.InternetPricingJSON;
 import mg.operateur.web_services.resources.pricings.MessagePricingJSON;
@@ -25,7 +24,6 @@ import org.springframework.web.bind.annotation.RestController;
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 /**
  *
  * @author lacha
@@ -34,161 +32,97 @@ import org.springframework.web.bind.annotation.RestController;
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
 public class PricingController {
-    
+
     private void out(Exception ex) {
         ex.printStackTrace();
         System.out.println(ex.getMessage());
     }
-        
+
     private void setError(ResponseBody response, Exception ex) {
         response.getStatus().setCode(500);
         response.getStatus().setMessage(ex.getMessage());
     }
-    
+
     @GetMapping()
     public ResponseBody index() {
         ResponseBody response = new ResponseBody();
         response.getStatus().setMessage("Tarifs EndPoint");
         return response;
     }
-    
+
     @PostMapping("/messages")
     public ResponseBody messageCallPricing(@RequestBody MessagePricingJSON _message) {
         ResponseBody response = new ResponseBody();
-        Connection conn = null;
         try {
-            conn = ConnGen.getConn();
-            MessagePricing pricing = new MessagePricing();
-            pricing.setCreated_at(CDate.getDate().parse(_message.getDate()));
-            pricing.setAmount_exterior(_message.getAmount_exterior());
-            pricing.setAmount_interior(_message.getAmount_interior());
-            pricing.setUnit(_message.getUnit());
-            pricing.insert(conn);
+            new MessagePricing().insert(_message);
             response.getStatus().setMessage("Succés");
-        } catch(Exception ex) {
+        } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | URISyntaxException | SQLException | ParseException | InvalidAmountException ex) {
             this.setError(response, ex);
             out(ex);
-        } finally {
-            try {
-                if(conn!=null) conn.close();
-            } catch(SQLException ex) {
-                out(ex);
-            }
         }
         return response;
     }
-    
+
     @GetMapping("/messages")
     public ResponseBody findMessageCallPricing() {
         ResponseBody response = new ResponseBody();
-        Connection conn = null;
         try {
-            conn = ConnGen.getConn();
-            MessagePricing pricing = new MessagePricing();
-            response.getData().add(pricing.findLatest(conn));
-        } catch(Exception ex) {
+            response.getData().add(new MessagePricing().findLatest());
+        } catch (IllegalAccessException | InstantiationException | NoSuchMethodException | InvocationTargetException | URISyntaxException | SQLException ex) {
             this.setError(response, ex);
             out(ex);
-        } finally {
-            try {
-                if(conn!=null) conn.close();
-            } catch(SQLException ex) {
-                out(ex);
-            }
         }
         return response;
     }
-    
-    @GetMapping("/calls")
-    public ResponseBody messagePricing(@RequestBody PricingJSON _message) {
+
+    @PostMapping("/calls")
+    public ResponseBody messagePricing(@RequestBody PricingJSON _call) {
         ResponseBody response = new ResponseBody();
-        Connection conn = null;
         try {
-            conn = ConnGen.getConn();
-            CallPricing pricing = new CallPricing();
-            pricing.setCreated_at(CDate.getDate().parse(_message.getDate()));
-            pricing.setAmount_exterior(_message.getAmount_exterior());
-            pricing.setAmount_interior(_message.getAmount_interior());
-            pricing.insert(conn);
+            new CallPricing().insert(_call);
             response.getStatus().setMessage("Succés");
-        } catch(Exception ex) {
+        } catch (IllegalAccessException | InvocationTargetException | URISyntaxException | SQLException | ParseException | InvalidAmountException ex) {
             this.setError(response, ex);
             out(ex);
-        } finally {
-            try {
-                if(conn!=null) conn.close();
-            } catch(SQLException ex) {
-                out(ex);
-            }
         }
         return response;
     }
-    
+
     @GetMapping("/calls/price")
     public ResponseBody findCallsPricing() {
         ResponseBody response = new ResponseBody();
-        Connection conn = null;
         try {
-            conn = ConnGen.getConn();
-            CallPricing pricing = new CallPricing();
-            response.getData().add(pricing.findLatest(conn));
-        } catch(Exception ex) {
+            response.getData().add(new CallPricing().findLatest());
+        } catch (IllegalAccessException | InstantiationException | NoSuchMethodException | InvocationTargetException | SQLException | URISyntaxException ex) {
             this.setError(response, ex);
             out(ex);
-        } finally {
-            try {
-                if(conn!=null) conn.close();
-            } catch(SQLException ex) {
-                out(ex);
-            }
         }
         return response;
     }
-    
-    
+
     @PostMapping("/internet")
     public ResponseBody internetPricing(@RequestBody InternetPricingJSON _internet) {
         ResponseBody response = new ResponseBody();
-        Connection conn = null;
         try {
-            conn = ConnGen.getConn();
-            InternetPricing pricing = new InternetPricing();
-            pricing.setCreated_at(CDate.getDate().parse(_internet.getDate()));
-            pricing.setAmount(_internet.getAmount());
-            pricing.insert(conn);
+            new InternetPricing().insert(_internet);
             response.getStatus().setMessage("Succés");
-        } catch(Exception ex) {
+        } catch (IllegalAccessException | InvocationTargetException | URISyntaxException | SQLException | ParseException | InvalidAmountException ex) {
             this.setError(response, ex);
             out(ex);
-        } finally {
-            try {
-                if(conn!=null) conn.close();
-            } catch(SQLException ex) {
-                out(ex);
-            }
         }
         return response;
     }
-    
+
     @GetMapping("/internet")
     public ResponseBody findInternetPricing() {
         ResponseBody response = new ResponseBody();
-        Connection conn = null;
         try {
-            conn = ConnGen.getConn();
-            InternetPricing pricing = new InternetPricing();
-            response.getData().add(pricing.getLastPricing(new Date(), conn));
-        } catch(Exception ex) {
+            response.getData().add(new InternetPricing().getLastPricing());
+        } catch (Exception ex) {
             this.setError(response, ex);
             out(ex);
-        } finally {
-            try {
-                if(conn!=null) conn.close();
-            } catch(SQLException ex) {
-                out(ex);
-            }
         }
         return response;
     }
-    
+
 }

@@ -6,10 +6,13 @@
 package mg.operateur.business_logic.mobile_credit;
 
 import java.lang.reflect.InvocationTargetException;
+import java.net.URISyntaxException;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import mg.operateur.conn.ConnGen;
 import mg.operateur.gen.FctGen;
 
 /**
@@ -43,6 +46,23 @@ public class CallsHistory extends BaseClass {
 
     public void setPhone_number(String phone_number) {
         this.phone_number = phone_number;
+    }
+     private void out(Exception ex) {
+        ex.printStackTrace();
+        System.out.println(ex.getMessage());
+    }
+    public List<Object> findAll(int _customer_id) throws SQLException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, URISyntaxException {
+        Connection conn = null;
+        List<Object> result = new ArrayList();
+        try {
+            conn = ConnGen.getConn();
+            result = findAll(_customer_id, conn);
+        } catch(IllegalAccessException | IllegalArgumentException | InstantiationException | NoSuchMethodException | InvocationTargetException | URISyntaxException | SQLException ex) {
+            throw ex;
+        }  finally {
+            try {if(conn!=null) conn.close();}catch(SQLException ex) {out(ex);}
+        }
+        return result;
     }
     
     public List<Object> findAll(int _customer_id, Connection conn) throws SQLException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException {

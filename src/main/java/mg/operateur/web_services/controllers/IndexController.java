@@ -5,16 +5,12 @@
  */
 package mg.operateur.web_services.controllers;
 
-import java.sql.Connection;
+import java.net.URISyntaxException;
 import java.sql.SQLException;
 import mg.operateur.business_logic.mobile_credit.Customer;
-import mg.operateur.conn.ConnGen;
 import mg.operateur.web_services.ResponseBody;
-import mg.operateur.web_services.resources.commons.TransacJSON;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestAttribute;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -47,16 +43,12 @@ public class IndexController {
     @GetMapping("phone_exists")
     public ResponseBody phoneExists(@RequestParam(value="phone_number") String _phone) {
         ResponseBody response = new ResponseBody();
-        Connection conn = null;
         try {
-            conn = ConnGen.getConn();
-            response.getData().add(new Customer().phoneExists(_phone, conn));
+            response.getData().add(new Customer().phoneExists(_phone));
             response.getStatus().setMessage("Succés");
-        } catch(Exception ex) {
+        } catch(URISyntaxException | SQLException ex) {
             setError(response, ex);
             out(ex);
-        } finally {
-            try {if(conn!=null) conn.close();}catch(SQLException ex) {setError(response, ex);out(ex);}
         }
         return response;
     }

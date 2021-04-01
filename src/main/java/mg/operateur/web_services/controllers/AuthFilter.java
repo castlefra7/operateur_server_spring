@@ -1,6 +1,5 @@
 package mg.operateur.web_services.controllers;
 
-import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
@@ -33,8 +32,6 @@ public class AuthFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, FilterChain filterChain) throws ServletException, IOException {
 
         System.out.println("======Security Filtering=====");
-        // System.out.println("Remote Host:"+request.getRemoteHost());
-        // System.out.println("Remote Address:"+httpServletRequest.getRemoteAddr());
         String uri = httpServletRequest.getRequestURI();
         String[] splited = uri.split("/");
 
@@ -50,7 +47,7 @@ public class AuthFilter extends OncePerRequestFilter {
                 String controller = splited[1];
                 if (controller.equals("pricings") || controller.equals("stats") || controller.equals("pos") || controller.equals("customers")) {
                     String token = authLogic.resolveToken(httpServletRequest);
-                    System.out.println(token);
+                    
                     if (token == null) {
                         httpServletResponse.setStatus(HttpServletResponse.SC_FORBIDDEN);
                         ObjectMapper objectMapper = new ObjectMapper();
@@ -72,7 +69,7 @@ public class AuthFilter extends OncePerRequestFilter {
 
                             if (controller.equals("pricings") || controller.equals("pos") || controller.equals("stats")) {
                                 if (!jws.getBody().getSubject().equals("Admin")) {
-                                    throw new JwtException("admin");
+                                    throw new JwtException("Admin");
                                 }
                             }
                             httpServletRequest.setAttribute("id", jws.getBody().getSubject());
@@ -81,7 +78,7 @@ public class AuthFilter extends OncePerRequestFilter {
                             ObjectMapper objectMapper = new ObjectMapper();
                             ResponseBody response = new ResponseBody();
                             response.getStatus().setCode(500);
-                            response.getStatus().setMessage("Veuillez spécifier un token");
+                            response.getStatus().setMessage("Veuillez spécifier un token valide");
                             httpServletResponse.setContentType("application/json");
                             httpServletResponse.setCharacterEncoding("UTF-8");
                             httpServletResponse.getWriter().print(objectMapper.writeValueAsString(response));

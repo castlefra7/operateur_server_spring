@@ -10,6 +10,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Date;
 import mg.operateur.gen.FctGen;
+import mg.operateur.gen.InvalidAmountException;
 
 /**
  *
@@ -33,9 +34,9 @@ public class Pricing extends BaseClass {
         return amount_interior;
     }
 
-    public void setAmount_interior(double amount_interior) throws Exception {
+    public void setAmount_interior(double amount_interior) throws InvalidAmountException {
         if (amount_interior < 0)
-            throw new Exception("veuillez entrer un prix d'appel interne positif");
+            throw new InvalidAmountException("veuillez entrer un prix d'appel interne positif");
         this.amount_interior = amount_interior;
     }
 
@@ -43,9 +44,9 @@ public class Pricing extends BaseClass {
         return amount_exterior;
     }
 
-    public void setAmount_exterior(double amount_exterior) throws Exception {
+    public void setAmount_exterior(double amount_exterior) throws InvalidAmountException {
         if (amount_exterior < 0)
-            throw new Exception("veuillez entrer un prix d'appel externe positif");
+            throw new InvalidAmountException("veuillez entrer un prix d'appel externe positif");
         this.amount_exterior = amount_exterior;
     }
     
