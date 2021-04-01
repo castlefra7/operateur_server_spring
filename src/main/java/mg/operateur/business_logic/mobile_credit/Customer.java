@@ -65,6 +65,40 @@ public final class Customer extends Person {
     // Appel: 60 sec
     // Internet: 100Mo
     // Faceboobaka: 1Go
+    public HashMap<String, Date> getOffersRemains(AskJSON _ask, PurchaseRepository purchaseRepository) throws ParseException, IllegalAccessException, 
+            SQLException, NotFoundException, InvalidFormatException, URISyntaxException, IllegalArgumentException, InstantiationException, NoSuchMethodException, InvocationTargetException {
+        Connection conn = null;
+        HashMap<String, Date> result = new HashMap();
+
+        try {
+            conn = ConnGen.getConn();
+            Customer customer = this.find(_ask.getPhone_number(), conn);
+            List<Purchase> validPurchases = findAllValidPurchases(customer.getId(), CDate.getDate().parse(_ask.getDate()), purchaseRepository, conn);
+            
+            for (Purchase p : validPurchases) {
+                Date curr = result.get(p.getOffer().getName());
+                if(curr == null) {
+                     result.put(p.getOffer().getName(), p.getEndDate());
+                }
+               
+            }
+        } catch (ParseException | IllegalAccessException | InvalidFormatException | 
+                URISyntaxException | IllegalArgumentException | InstantiationException | 
+                NoSuchMethodException | InvocationTargetException | SQLException | 
+                NotFoundException ex) {
+            throw ex;
+        } finally {
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException ex) {
+                out(ex);
+            }
+        }
+        return result;
+    }
+    
     public HashMap<String, Double> getRemainings(AskJSON _ask, PurchaseRepository purchaseRepository) throws IllegalAccessException, IllegalArgumentException, InstantiationException, NoSuchMethodException, InvocationTargetException, SQLException, NotFoundException, ParseException, InvalidAmountException, InvalidFormatException, URISyntaxException {
         Connection conn = null;
         HashMap<String, Double> remain = new HashMap();
@@ -73,7 +107,7 @@ public final class Customer extends Person {
             conn = ConnGen.getConn();
             Customer customer = this.find(_ask.getPhone_number(), conn);
             List<Purchase> validPurchases = findAllValidPurchases(customer.getId(), CDate.getDate().parse(_ask.getDate()), purchaseRepository, conn);
-            System.out.println(validPurchases.size());
+            
             for (Purchase p : validPurchases) {
                 
                 List<Amount> amounts = p.getOffer().getAmounts();
@@ -83,7 +117,7 @@ public final class Customer extends Person {
                         int val = new InternetPricing().convertToKo(String.valueOf(amount.getValue()).concat(amount.getApplication().getUnit().getSuffix()));
                         amount.setValue(val);
                     }
-
+                    String strType = String.valueOf(type);
                     if (type == 'c') {
                         int val = (int) amount.getValue();
                         if (amount.getUtilization() == null) {
@@ -92,16 +126,27 @@ public final class Customer extends Person {
                             } else if (amount.getApplication().getUnit().getSuffix().toLowerCase().equals("hr")) {
                                 val = val * 3600;
                             }
+                            strType += "Sec";
                         } else {
+                            strType += "Ar";
                             // TODO convert utilisation to second;
                         }
                         amount.setValue(val);
                     }
-                    //System.out.println(amount.getIsUnlimited());
+                    
+                    if (type == 'm') {
+                        if(amount.getUtilization() == null) {
+                            strType += "N";
+                        } else {
+                            strType += "Ar";
+                        }
+                    }
+                    
+                    
                     if (amount.getApplication().getInternet_application_id() == -1 || type == 'c' || type == 'm') {
-                        Double value = remain.get(String.valueOf(type));
+                        Double value = remain.get(strType);
                         double res = value != null ? value : 0;
-                        remain.put(String.valueOf(type), res + amount.getValue());
+                        remain.put(strType, res + amount.getValue());
                     } else {
                         String typeI = type + String.valueOf(amount.getApplication().getInternet_application_id());
                         Double value = remain.get(typeI);
@@ -440,12 +485,10 @@ public final class Customer extends Person {
     }
 
     public List<Purchase> findAllValidPurchases(int customer_id, Date _date, PurchaseRepository purchaseRepository, Connection conn) {
-        System.out.println("================");
-        System.out.println(_date);  
+
         List<Purchase> result = purchaseRepository.findByEndDateGreaterThanAndCustomer_id(_date, customer_id);
         Collections.sort(result);
-        System.out.println("===============");
-        System.out.println(result.size());
+
         return result;
     }
 

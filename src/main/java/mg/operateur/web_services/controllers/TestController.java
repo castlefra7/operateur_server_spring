@@ -7,12 +7,17 @@ package mg.operateur.web_services.controllers;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import mg.operateur.web_services.ResponseBody;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import mg.operateur.business_logic.mobile_credit.MessageMongo;
+import mg.operateur.business_logic.offer.Purchase;
+import mg.operateur.gen.CDate;
 
 /**
  *
@@ -50,10 +55,24 @@ public class TestController {
         ResponseBody response = new ResponseBody();
         Connection conn = null;
         try {
-            MessageMongo message = new MessageMongo();
-            message.setText("salut cax va ");
-            messageRepo.save(message);
-            System.out.println("ato");
+            List<Purchase> sorted = new ArrayList();
+            Purchase p1 = new Purchase();
+            p1.setEndDate(CDate.getDate().parse("2021-04-01 08:00"));
+            Purchase p2 = new Purchase();
+            p2.setEndDate(CDate.getDate().parse("2021-04-01 09:00"));
+            
+            Purchase p3 = new Purchase();
+            p3.setEndDate(CDate.getDate().parse("2021-04-01 10:00"));
+            
+            sorted.add(p1);
+            sorted.add(p3);
+            sorted.add(p2);
+         
+            Collections.sort(sorted);
+            
+            for(Purchase p: sorted) {
+                System.out.println(p.getEndDate());
+            }
 
         } catch (Exception ex) {
             out(ex);

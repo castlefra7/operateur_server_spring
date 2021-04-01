@@ -51,4 +51,16 @@ public class CDate {
         c.add(Calendar.DAY_OF_MONTH, number);
         return c.getTime();
     }
+    
+    public static String format(Date date) {
+        Calendar c = new GregorianCalendar();
+        c.setTime(date);
+        String day = c.get(Calendar.DAY_OF_MONTH) <= 9 ? "0" + String.valueOf(c.get(Calendar.DAY_OF_MONTH)):  String.valueOf(c.get(Calendar.DAY_OF_MONTH));
+        String month = c.get(Calendar.MONTH) <= 9 ? "0" + String.valueOf(c.get(Calendar.MONTH)):  String.valueOf(c.get(Calendar.MONTH));
+        String hour = c.get(Calendar.HOUR_OF_DAY) <= 9 ? "0" + String.valueOf(c.get(Calendar.HOUR_OF_DAY)):  String.valueOf(c.get(Calendar.HOUR_OF_DAY));
+        String minute = c.get(Calendar.MINUTE) <= 9 ? "0" + String.valueOf(c.get(Calendar.MINUTE)):  String.valueOf(c.get(Calendar.MINUTE));
+        String result = String.format("%s/%s/%s à %s:%s", day, month, c.get(Calendar.YEAR), hour, minute);
+        
+        return result;
+    }
 }

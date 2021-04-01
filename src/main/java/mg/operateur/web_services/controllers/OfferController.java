@@ -13,6 +13,7 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 import mg.operateur.business_logic.mobile_credit.Customer;
+import mg.operateur.business_logic.mobile_credit.ResponseMessage;
 import mg.operateur.business_logic.offer.Offer;
 import mg.operateur.gen.InvalidAmountException;
 import mg.operateur.gen.InvalidDateException;
@@ -130,6 +131,18 @@ public class OfferController {
         try {
             response.getData().add(new Customer().getRemainings(_ask, purchaseRepository));
         } catch (IllegalAccessException | IllegalArgumentException | InstantiationException | NoSuchMethodException | InvocationTargetException | URISyntaxException | SQLException | ParseException | InvalidAmountException | InvalidFormatException | NotFoundException ex) {
+            setError(response, ex);
+            out(ex);
+        }
+        return response;
+    }
+    
+    @GetMapping("/remaingOffers")
+    public ResponseBody remainOffersCust(@RequestBody AskJSON _ask) {
+        ResponseBody response = new ResponseBody();
+        try {
+            response.getData().add(ResponseMessage.customerRemainOffer(new Customer().getOffersRemains(_ask, purchaseRepository)));
+        } catch(IllegalAccessException | IllegalArgumentException | InstantiationException | NoSuchMethodException | InvocationTargetException | URISyntaxException | SQLException | ParseException | InvalidFormatException | NotFoundException ex) {
             setError(response, ex);
             out(ex);
         }
