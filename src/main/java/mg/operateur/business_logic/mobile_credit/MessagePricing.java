@@ -61,7 +61,8 @@ public class MessagePricing extends Pricing {
     }
 
     public void insert(Connection conn)
-            throws IllegalAccessException, IllegalArgumentException, SQLException, InvocationTargetException {
+            throws IllegalAccessException, IllegalArgumentException, SQLException, InvocationTargetException, InvalidAmountException {
+        if(getUnit() <= 0) throw new InvalidAmountException("L'unité est requise");
         FctGen.insert(this, columns(), tableName(), conn);
 
     }

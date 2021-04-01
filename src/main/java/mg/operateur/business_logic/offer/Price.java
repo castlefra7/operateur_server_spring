@@ -25,7 +25,7 @@ public class Price {
         return price;
     }
 
-    public void setPrice(double price) {
+    public final void setPrice(double price) {
         this.price = price;
     }
 
@@ -33,7 +33,7 @@ public class Price {
         return per;
     }
 
-    public void setPer(String per) {
+    public final void setPer(String per) {
         this.per = per;
     }
 }

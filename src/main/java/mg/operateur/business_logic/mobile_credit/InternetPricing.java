@@ -32,7 +32,6 @@ public class InternetPricing {
             throw new InvalidAmountException("Vérifier la consommation entrée");
         }
         double r = Double.valueOf(amount.substring(0, amount.length() - 2));
-        System.out.println(r);
         int result = (int) r;
         if (amount.endsWith("mo")) {
             result *= 1000;
@@ -87,7 +86,8 @@ public class InternetPricing {
     }
 
     public void insert(Connection conn)
-            throws IllegalAccessException, InvocationTargetException, SQLException {
+            throws IllegalAccessException, InvocationTargetException, SQLException, InvalidAmountException {
+        if(getAmount() <=0) throw new InvalidAmountException("Le prix est requis");
         FctGen.insert(this, columns(), tableName(), conn);
     }
 

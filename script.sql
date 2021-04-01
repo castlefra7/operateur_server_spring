@@ -182,12 +182,9 @@ left join mg.withdraws_sums on mg.withdraws_sums.customer_id = mg.customers.id;
 create view mg.buyed_credit_sums as select customer_id, sum(amount) as sum_buyed_credit from mg.buyed_credits group by customer_id;
 create view mg.credit_consumption_sums as select customer_id, sum(cons_amount) as sum_cons_amount from mg.credit_consumptions group by customer_id;
 create view mg.customers_credit_balances as select mg.customers.id, (coalesce(sum_buyed_credit,0) - coalesce(sum_cons_amount,0)) as balance from mg.customers left join mg.buyed_credit_sums on mg.buyed_credit_sums.customer_id = mg.customers.id left join mg.credit_consumption_sums on mg.credit_consumption_sums.customer_id = mg.customers.id;
-
-insert into mg.users (created_at, name, pwd) values ('2000-01-01 00:00', 'admin', '63a9f0ea7bb98050796b649e85481845');
-
-insert into mg.customers (created_at, name, email, phone_number, password) values  ('2000-01-01', 'exterior user', 'exterior@gmail.com', '0', 'plosjsizosdpkjdn');
-
+insert into mg.customers (created_at, name, email, phone_number, password) values  ('2000-01-01', 'exterior user', 'exterior@gmail.com', '0', '63a9f0ea7bb98050796b649e85481845');
 insert into mg.conf_operator (created_at, prefix , name) values ('2000-01-01', '+26133', 'orange');
+
 
 insert into mg.fees (created_at, amount_min, amount_max, amount_fee) values ('2000-01-01 00:00', 100, 1000, 50);
 insert into mg.fees (created_at, amount_min, amount_max, amount_fee) values ('2000-01-01 00:00', 1001, 5000, 50);
@@ -200,13 +197,17 @@ insert into mg.internet_applications (name, created_at) values ('Facebook', '202
 insert into mg.internet_applications (name, created_at) values ('Instagram', '2021-03-19');
 insert into mg.internet_applications (name, created_at) values ('Tiktok', '2021-03-19');
 insert into mg.internet_applications (name, created_at) values ('Internet', '2021-03-19');
-
-
-insert into mg.messages_pricings (created_at, amount_interior, amount_exterior, unit) values ('2000-01-01', 100,100, 10);
+insert into mg.messages_pricings (created_at, amount_interior, amount_exterior, unit) values ('2000-01-01', 100,200, 10);
 insert into mg.calls_pricings (created_at, amount_interior, amount_exterior) values ('2000-01-01', 2,2);
-insert into mg.calls_pricings (created_at, amount_interior, amount_exterior) values ('2000-01-02', 2,5);
 insert into mg.internet_pricings (created_at, amount) values ('2000-01-01', 2);
 
+/*
+insert into mg.users (created_at, name, pwd) values ('2000-01-01 00:00', 'admin', '63a9f0ea7bb98050796b649e85481845');
+
+
+
+
+*/
 select * from mg.deposits;
 select * from mg.withdraws;
 select * from mg.customers_balances order by id;

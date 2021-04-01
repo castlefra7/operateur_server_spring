@@ -75,7 +75,7 @@ public class PricingController {
         return response;
     }
 
-    @GetMapping("/calls")
+    @PostMapping("/calls")
     public ResponseBody messagePricing(@RequestBody PricingJSON _call) {
         ResponseBody response = new ResponseBody();
         try {

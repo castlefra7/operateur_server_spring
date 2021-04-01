@@ -73,8 +73,9 @@ public final class Customer extends Person {
             conn = ConnGen.getConn();
             Customer customer = this.find(_ask.getPhone_number(), conn);
             List<Purchase> validPurchases = findAllValidPurchases(customer.getId(), CDate.getDate().parse(_ask.getDate()), purchaseRepository, conn);
+            System.out.println(validPurchases.size());
             for (Purchase p : validPurchases) {
-
+                
                 List<Amount> amounts = p.getOffer().getAmounts();
                 for (Amount amount : amounts) {
                     Character type = amount.getApplication().getT_type();
@@ -96,7 +97,7 @@ public final class Customer extends Person {
                         }
                         amount.setValue(val);
                     }
-
+                    //System.out.println(amount.getIsUnlimited());
                     if (amount.getApplication().getInternet_application_id() == -1 || type == 'c' || type == 'm') {
                         Double value = remain.get(String.valueOf(type));
                         double res = value != null ? value : 0;
@@ -152,7 +153,8 @@ public final class Customer extends Person {
                 boolean canBeUsed = purchase.getOffer().canBeUsed(currHour);
                 if (canBeUsed) {
                     for (Amount amount : allAmounts) {
-
+                        if(unlimited) break;
+                        
                         Application app = amount.getApplication();
                         if (app.getT_type() == 'i' && (amount.getValue() == 0 || amount.getValue() > 0) && app.getInternet_application_id() == _internet.getInternet_application_id()) {
                             unlimited = amount.getIsUnlimited();
@@ -261,6 +263,7 @@ public final class Customer extends Person {
                 if (numberSecond <= 0) {
                     break;
                 }
+                if(unlimited) break;
                 boolean canBeUsed = purchase.getOffer().canBeUsed(currHour);
                 if (canBeUsed) {
                     for (Amount amount : allAmounts) {
@@ -372,13 +375,15 @@ public final class Customer extends Person {
             for (Purchase purchase : validPurchases) {
                 List<Amount> allAmounts = purchase.getOffer().getAmounts();
                 boolean canBeUsed = purchase.getOffer().canBeUsed(currHour);
+                if(unlimited) break;
+                
                 if (canBeUsed) {
                     for (Amount amount : allAmounts) {
                         Application app = amount.getApplication();
                         if (app.getT_type() == 'm' && (amount.getValue() == 0 || amount.getValue() > 0)) {
                             unlimited = amount.getIsUnlimited();
                         }
-
+                        
                         if (app.getT_type() == 'm' && amount.getValue() > 0) {
                             double orgValue = amount.getValue();
                             int remainingValue = ((int) orgValue - lengthUnit) > 0 ? ((int) orgValue - lengthUnit) : 0;
@@ -403,13 +408,15 @@ public final class Customer extends Person {
         if (unlimited) {
             shouldUseCredit = false;
         }
+        
+        System.out.println(lengthUnit);
 
         if (shouldUseCredit) {
             double amount = lastPricing.getAmount_interior();
             if (PhoneNumber.getPrefix(_message.getPhone_number_destination()).equals(conf.getPrefix()) == false) {
                 amount = lastPricing.getAmount_exterior();
             }
-
+            
             double creditBalance = source.creditBalance(date, conn);
             int howManyUnit = (int) Math.ceil(creditBalance / amount);
             int nUnitICanAfford = Math.min(howManyUnit, lengthUnit);
@@ -417,6 +424,7 @@ public final class Customer extends Person {
                 throw new InvalidAmountException(String.format("Votre crédit est insuffisant. %d messages n'a pas été envoyé", lengthUnit));
             }
             double priceToPay = (double) nUnitICanAfford * amount;
+            System.out.println(priceToPay);
             this.insertMessageOrCallConsumption(shouldUseCredit, true, nUnitICanAfford, date, source.getId(), dest.getId(), priceToPay, conn);
         } else {
             this.insertMessageOrCallConsumption(false, true, orgLengthUnit, date, source.getId(), dest.getId(), 0.0, conn);
@@ -433,7 +441,7 @@ public final class Customer extends Person {
 
     public List<Purchase> findAllValidPurchases(int customer_id, Date _date, PurchaseRepository purchaseRepository, Connection conn) {
         System.out.println("================");
-        System.out.println(_date);
+        System.out.println(_date);  
         List<Purchase> result = purchaseRepository.findByEndDateGreaterThanAndCustomer_id(_date, customer_id);
         Collections.sort(result);
         System.out.println("===============");
