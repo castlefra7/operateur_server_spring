@@ -95,7 +95,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\"name\": \"charles baudain\", \"email\": \"baudain@gmail.com\", \"password\": \"2811\", \"createdAt\": \"2021-04-01 08:00\"}",
+					"raw": "{\"name\": \"guillaume\", \"email\": \"guillaume@gmail.com\", \"password\": \"2811\", \"createdAt\": \"2021-04-01 08:00\"}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -149,7 +149,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\"amount\": \"20000\", \"phone_number\": \"+261330747657\", \"date\": \"2021-04-01 09:00\"}",
+					"raw": "{\"amount\": \"20000\", \"phone_number\": \"+261331876577\", \"date\": \"2021-04-01 08:00\"}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -179,7 +179,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\"phone_number\": \"+261330747657\", \"date\": \"2021-12-31\"}",
+					"raw": "{\"phone_number\": \"+261331876577\", \"date\": \"2021-12-31\"}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -236,7 +236,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\"amount\": \"20000\", \"phone_number\": \"+261330754720\", \"date\": \"2021-04-01 14:00\"}",
+					"raw": "{\"amount\": \"20000\", \"phone_number\": \"+261331876577\", \"date\": \"2021-04-01 09:00\"}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -266,7 +266,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\"phone_number\": \"+261331545216\", \"date\": \"2021-12-31\"}",
+					"raw": "{\"phone_number\": \"+261331876577\", \"date\": \"2021-12-31\"}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -330,14 +330,14 @@
 				"method": "PUT",
 				"header": [],
 				"url": {
-					"raw": "{{URL}}/pos/validate/2",
+					"raw": "{{URL}}/pos/validate/1",
 					"host": [
 						"{{URL}}"
 					],
 					"path": [
 						"pos",
 						"validate",
-						"2"
+						"1"
 					]
 				}
 			},
@@ -431,7 +431,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "\r\n{\r\n    \"code\": \"#100#\",\r\n    \"name\": \"Offre Internet 10Go\",\r\n    \"isOneDay\": \"false\",\r\n    \"createdAt\": \"2021-01-01 12:00\",\r\n    \"validityDay\": 5,\r\n    \"limitation\": {\r\n        \"buyingLimit\": 1,\r\n        \"durationInDays\": 1\r\n    },\r\n    \"price\": 1000,\r\n    \"amounts\": [\r\n        {\r\n            \"application\": {\r\n                \"id\": 1,\r\n                \"name\": \"Internet\",\r\n                \"internet_application_id\": \"4\",\r\n                \"t_type\": \"i\",\r\n                \"unit\": {\r\n                    \"id\": 1,\r\n                    \"suffix\": \"Go\"\r\n                }\r\n            },\r\n            \"value\": \"10\"\r\n        }\r\n    ]\r\n}",
+					"raw": "\r\n{\r\n    \"code\": \"#105#\",\r\n    \"name\": \"Offre Appel 3000 Ar\",\r\n    \"isOneDay\": \"false\",\r\n    \"createdAt\": \"2021-01-01 12:00\",\r\n    \"validityDay\": 2,\r\n    \"hourMin\": 21,\r\n    \"hourMax\": 23,\r\n    \"limitation\": {\r\n        \"buyingLimit\": 1,\r\n        \"durationInDays\": 1\r\n    },\r\n    \"price\": 1000,\r\n    \"amounts\": [\r\n        {\r\n            \"isUnlimited\": false,\r\n            \"application\": {\r\n                \"id\": 1,\r\n                \"name\": \"Appel\",\r\n                \"internet_application_id\": \"-1\",\r\n                \"t_type\": \"c\",\r\n                \"unit\": {\r\n                    \"id\": 1,\r\n                    \"suffix\": \"Ar\"\r\n                }\r\n            },\r\n           \"utilization\": {\r\n               \"intra\": {\r\n                   \"price\": \"50\",\r\n                   \"per\": \"sec\"\r\n               },\r\n               \"extra\": {\r\n                   \"price\": \"100\",\r\n                   \"per\": \"sec\"\r\n               }\r\n           },\r\n            \"value\": \"3000\"\r\n        }\r\n    ]\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -452,9 +452,16 @@
 		},
 		{
 			"name": "FindOffers",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
 			"request": {
 				"method": "GET",
 				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
 				"url": {
 					"raw": "{{URL}}/offers",
 					"host": [
@@ -474,7 +481,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"phone_number\" : \"+261330747657\",\r\n    \"code\": \"#100#\",\r\n    \"date\" : \"2021-04-01 10:00\"\r\n}",
+					"raw": "{\r\n    \"phone_number\" : \"+261331876577\",\r\n    \"code\": \"#105#\",\r\n    \"date\" : \"2021-04-01 09:00\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -501,7 +508,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"phone_number\" : \"+261331128653\",\r\n    \"date\" : \"2021-06-26 10:00\",\r\n    \"password\": \"2811\",\r\n    \"code\": \"\"\r\n}",
+					"raw": "{\r\n    \"phone_number\" : \"+261331876577\",\r\n    \"date\" : \"2021-04-01 09:000\",\r\n    \"password\": \"2811\",\r\n    \"code\": \"#102#\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -531,7 +538,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\"phone_number\": \"+261330747657\", \"date\": \"2020-04-01 15:00\"}",
+					"raw": "{\"phone_number\": \"+261331876577\", \"date\": \"2021-04-02 09:00\"}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -558,7 +565,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\"date\": \"2021-04-24 12:00\", \"phone_number_source\": \"+261330747657\",  \"phone_number_destination\": \"+261340860764\", \"duration\": \"00:2:00\"}",
+					"raw": "{\"date\": \"2021-04-08 16:00\", \"phone_number_source\": \"+261331175953\",  \"phone_number_destination\": \"+261340860764\", \"duration\": \"00:00:01\"}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -625,7 +632,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\"date\": \"2021-04-23 19:00\", \"phone_number_source\": \"+261330747657\",  \"phone_number_destination\": \"+261330860764\", \"text\": \"aaaaaaaaaassa\"}",
+					"raw": "{\"date\": \"2021-04-02 10:00\", \"phone_number_source\": \"+261331643666\",  \"phone_number_destination\": \"+261350860764\", \"text\": \"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -652,7 +659,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\"created_at\": \"2021-04-01 11:00\", \"amount\": \"1Go\", \"phone_number\": \"+261330747657\", \"internet_application_id\": \"4\"}",
+					"raw": "{\"created_at\": \"2021-04-01 11:30\", \"amount\": \"10mo\", \"phone_number\": \"+261331248443\", \"internet_application_id\": \"4\"}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -876,6 +883,36 @@
 							"key": "phone_number",
 							"value": "+261330747657"
 						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Customer offers information",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"phone_number\": \"+261331876577\", \"date\": \"2021-04-02 09:00\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{URL}}/offers/remaingOffers",
+					"host": [
+						"{{URL}}"
+					],
+					"path": [
+						"offers",
+						"remaingOffers"
 					]
 				}
 			},

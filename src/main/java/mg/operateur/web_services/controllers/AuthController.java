@@ -35,7 +35,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @author lacha
  */
 @RequestMapping("/auth")
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
 public class AuthController {
 
@@ -84,6 +84,7 @@ public class AuthController {
         AuthResponseBody response = new AuthResponseBody();
         try {
             Admin found = new Admin().FindByName(_customer.getName());
+            if(found == null) throw new Exception("Cet admin n'existe pas");
             if (!found.getPwd().equals(PasswordHelper.md5(_customer.getPassword()))) {
                 throw new Exception("Mot de passe ou numero incorrect");
             }

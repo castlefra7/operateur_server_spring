@@ -20,6 +20,8 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import mg.operateur.business_logic.offer.Amount;
 import mg.operateur.business_logic.offer.Application;
 import mg.operateur.business_logic.offer.PasswordHelper;
@@ -88,6 +90,8 @@ public final class Customer extends Person {
                 NoSuchMethodException | InvocationTargetException | SQLException | 
                 NotFoundException ex) {
             throw ex;
+        } catch (IOException ex) {
+            Logger.getLogger(Customer.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             try {
                 if (conn != null) {
@@ -161,6 +165,8 @@ public final class Customer extends Person {
             }
         } catch (IllegalAccessException | IllegalArgumentException | InstantiationException | NoSuchMethodException | InvocationTargetException | SQLException | NotFoundException ex) {
             throw ex;
+        } catch (IOException ex) {
+            Logger.getLogger(Customer.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             try {
                 if (conn != null) {

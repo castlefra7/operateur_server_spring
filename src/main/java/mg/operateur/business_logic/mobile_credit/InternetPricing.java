@@ -107,7 +107,7 @@ public class InternetPricing {
             conn = ConnGen.getConn();
             InternetPricing pricing = new InternetPricing();
             result = pricing.getLastPricing(conn);
-        } catch (IllegalAccessException | IllegalArgumentException | InstantiationException | NoSuchMethodException | InvocationTargetException | URISyntaxException | SQLException ex) {
+        } catch (IOException | IllegalAccessException | InstantiationException | NoSuchMethodException | InvocationTargetException | URISyntaxException | SQLException ex) {
             throw ex;
         } finally {
             try {
@@ -121,12 +121,11 @@ public class InternetPricing {
         return result;
     }
 
-    public InternetPricing getLastPricing(Connection conn) throws SQLException, InstantiationException, NoSuchMethodException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+    public InternetPricing getLastPricing(Connection conn) throws SQLException, InstantiationException, NoSuchMethodException, IllegalAccessException, InvocationTargetException {
         String req = String.format("select * from %s order by created_at desc limit 1", tableName());
-        Object ob = FctGen.find(this, req, columns(), conn);
-        if (ob == null) {
-            throw new NullPointerException("Pas encore de prix pour cette opération");
-        }
+
+        Object ob = FctGen.find(new InternetPricing(), req, columns(), conn);
+      
         return (InternetPricing) ob;
     }
 }

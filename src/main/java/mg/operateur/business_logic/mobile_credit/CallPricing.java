@@ -102,6 +102,12 @@ public class CallPricing extends Pricing {
             throws SQLException, InstantiationException, NoSuchMethodException, IllegalAccessException, InvocationTargetException {
         return (CallPricing) FctGen.find(new CallPricing(), "select * from mg.calls_pricings where created_at in (select max(created_at) from mg.calls_pricings)", new String[]{"created_at", "amount_interior", "amount_exterior", "unit"}, conn);
     }
+    
+    
+    public InternetPricingV findLatestInternet(Connection conn)
+            throws SQLException, InstantiationException, NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+        return (InternetPricingV) FctGen.find(new InternetPricingV(), "select * from mg.internet_pricings where created_at in (select max(created_at) from mg.internet_pricings)", new String[]{"created_at", "amount"}, conn);
+    }
 
     @Override
     public String tableName() {
