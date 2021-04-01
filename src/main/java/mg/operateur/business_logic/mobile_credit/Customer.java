@@ -5,6 +5,7 @@
  */
 package mg.operateur.business_logic.mobile_credit;
 
+import java.io.IOException;
 import mg.operateur.gen.FctGen;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URISyntaxException;
@@ -65,7 +66,7 @@ public final class Customer extends Person {
     // Appel: 60 sec
     // Internet: 100Mo
     // Faceboobaka: 1Go
-    public HashMap<String, Double> getRemainings(AskJSON _ask, PurchaseRepository purchaseRepository) throws IllegalAccessException, IllegalArgumentException, InstantiationException, NoSuchMethodException, InvocationTargetException, SQLException, NotFoundException, ParseException, InvalidAmountException, InvalidFormatException, URISyntaxException {
+    public HashMap<String, Double> getRemainings(AskJSON _ask, PurchaseRepository purchaseRepository) throws IllegalAccessException, IllegalArgumentException, InstantiationException, NoSuchMethodException, InvocationTargetException, SQLException, NotFoundException, ParseException, InvalidAmountException, InvalidFormatException, URISyntaxException, IOException {
         Connection conn = null;
         HashMap<String, Double> remain = new HashMap();
 
@@ -481,7 +482,7 @@ public final class Customer extends Person {
         }
     }
 
-    public double mobileBalance(AskJSON _ask) throws SQLException, InstantiationException, NoSuchMethodException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NotFoundException, ParseException, InvalidFormatException, URISyntaxException {
+    public double mobileBalance(AskJSON _ask) throws SQLException, InstantiationException, NoSuchMethodException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NotFoundException, ParseException, InvalidFormatException, URISyntaxException, IOException {
         Connection conn = null;
         double result = 0;
         try {
@@ -512,7 +513,7 @@ public final class Customer extends Person {
         return FctGen.getAmount(String.format("select balance from mg.customers_balances where id = %d", getId()), "balance", conn);
     }
 
-    public double creditBalance(AskJSON _ask) throws SQLException, InstantiationException, NoSuchMethodException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NotFoundException, ParseException, InvalidFormatException, URISyntaxException {
+    public double creditBalance(AskJSON _ask) throws SQLException, InstantiationException, NoSuchMethodException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NotFoundException, ParseException, InvalidFormatException, URISyntaxException, IOException {
         Connection conn = null;
         double balance = 0;
         try {
@@ -544,7 +545,7 @@ public final class Customer extends Person {
     }
 
     public void transferCredit(TransferJSON _transfer) throws SQLException, InstantiationException, NoSuchMethodException,
-            IllegalAccessException, IllegalArgumentException, InvocationTargetException, InvalidDateException, NoSuchAlgorithmException, RequiredException, URISyntaxException, ParseException, InvalidFormatException, NotFoundException, InvalidAmountException {
+            IllegalAccessException, IllegalArgumentException, InvocationTargetException, InvalidDateException, NoSuchAlgorithmException, RequiredException, URISyntaxException, ParseException, InvalidFormatException, NotFoundException, InvalidAmountException, IOException {
 
         Connection conn = null;
         try {
@@ -604,7 +605,7 @@ public final class Customer extends Person {
         }
     }
 
-    public void buyCreditFromMobile(CreditMobileJSON _credit) throws SQLException, InvalidDateException, InvalidAmountException, IllegalAccessException, IllegalArgumentException, InstantiationException, NoSuchMethodException, InvocationTargetException, NoSuchAlgorithmException, NoSuchAlgorithmException, RequiredException, URISyntaxException, ParseException, InvalidFormatException, NotFoundException {
+    public void buyCreditFromMobile(CreditMobileJSON _credit) throws SQLException, InvalidDateException, InvalidAmountException, IllegalAccessException, IllegalArgumentException, InstantiationException, NoSuchMethodException, InvocationTargetException, NoSuchAlgorithmException, NoSuchAlgorithmException, RequiredException, URISyntaxException, ParseException, InvalidFormatException, NotFoundException, IOException {
 
         Connection conn = null;
         try {
@@ -658,7 +659,7 @@ public final class Customer extends Person {
             NoSuchMethodException, IllegalAccessException,
             IllegalArgumentException, InvocationTargetException,
             NotFoundException, InvalidFormatException,
-            InvalidAmountException, ParseException, InvalidDateException, URISyntaxException {
+            InvalidAmountException, ParseException, InvalidDateException, URISyntaxException, IOException {
 
         Connection conn = null;
         try {
@@ -703,7 +704,7 @@ public final class Customer extends Person {
         }
     }
 
-    public void transfer(TransferJSON _transfer) throws SQLException, InvocationTargetException, IllegalArgumentException, IllegalAccessException, NoSuchMethodException, InstantiationException, URISyntaxException, ParseException, InvalidAmountException, NoSuchAlgorithmException, InvalidDateException, InvalidFormatException, NotFoundException, RequiredException {
+    public void transfer(TransferJSON _transfer) throws SQLException, InvocationTargetException, IllegalArgumentException, IllegalAccessException, NoSuchMethodException, InstantiationException, URISyntaxException, ParseException, InvalidAmountException, NoSuchAlgorithmException, InvalidDateException, InvalidFormatException, NotFoundException, RequiredException, IOException {
         Connection conn = null;
         try {
             conn = ConnGen.getConn();
@@ -757,7 +758,7 @@ public final class Customer extends Person {
         }
     }
 
-    public void withdraw(WithdrawJSON _withdraw) throws SQLException, InstantiationException, NoSuchMethodException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, InvalidDateException, RequiredException, InvalidAmountException, NoSuchAlgorithmException, URISyntaxException, ParseException, InvalidFormatException, InvalidFormatException, NotFoundException {
+    public void withdraw(WithdrawJSON _withdraw) throws SQLException, InstantiationException, NoSuchMethodException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, InvalidDateException, RequiredException, InvalidAmountException, NoSuchAlgorithmException, URISyntaxException, ParseException, InvalidFormatException, InvalidFormatException, NotFoundException, IOException {
         Connection conn = null;
         try {
             conn = ConnGen.getConn();
@@ -844,7 +845,7 @@ public final class Customer extends Person {
         return FctGen.getDate(req, "max", conn);
     }
 
-    public void deposit(DepositJSON _deposit) throws SQLException, IllegalAccessException, InvocationTargetException, IllegalArgumentException, IllegalArgumentException, InstantiationException, InstantiationException, NoSuchMethodException, URISyntaxException, ParseException, InvalidAmountException, InvalidDateException, InvalidFormatException, NotFoundException {
+    public void deposit(DepositJSON _deposit) throws SQLException, IllegalAccessException, InvocationTargetException, IllegalArgumentException, IllegalArgumentException, InstantiationException, InstantiationException, NoSuchMethodException, URISyntaxException, ParseException, InvalidAmountException, InvalidDateException, InvalidFormatException, NotFoundException, IOException {
         Connection conn = null;
         try {
             conn = ConnGen.getConn();
@@ -890,7 +891,7 @@ public final class Customer extends Person {
         return (Customer) FctGen.find(this, "select * from mg.customers where phone_number = '0'", columnsWithID(), conn);
     }
 
-    public String phoneExists(String _phone_number) throws URISyntaxException, SQLException {
+    public String phoneExists(String _phone_number) throws URISyntaxException, SQLException, IOException {
         Connection conn = null;
         String result = null;
         try {
@@ -923,7 +924,7 @@ public final class Customer extends Person {
         return result;
     }
 
-    public Customer find(String _phone_number) throws SQLException, InstantiationException, NoSuchMethodException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NotFoundException, InvalidFormatException, URISyntaxException {
+    public Customer find(String _phone_number) throws SQLException, InstantiationException, NoSuchMethodException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NotFoundException, InvalidFormatException, URISyntaxException, IOException {
         Connection conn = null;
         Customer result = null;
         try {

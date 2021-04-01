@@ -5,6 +5,7 @@
  */
 package mg.operateur.business_logic.mobile_credit;
 
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URISyntaxException;
 import java.sql.Connection;
@@ -36,7 +37,7 @@ public class MessagePricing extends Pricing {
     }
 
     public void insert(MessagePricingJSON _message)
-            throws IllegalAccessException, IllegalArgumentException, SQLException, InvocationTargetException, URISyntaxException, ParseException, InvalidAmountException {
+            throws IllegalAccessException, IllegalArgumentException, SQLException, InvocationTargetException, URISyntaxException, ParseException, InvalidAmountException, IOException {
 
         Connection conn = null;
         try {
@@ -68,7 +69,7 @@ public class MessagePricing extends Pricing {
     }
 
     public MessagePricing findLatest()
-            throws SQLException, InstantiationException, NoSuchMethodException, IllegalAccessException, InvocationTargetException, URISyntaxException {
+            throws SQLException, InstantiationException, NoSuchMethodException, IllegalAccessException, InvocationTargetException, URISyntaxException, IOException {
         Connection conn = null;
         MessagePricing result = null;
         try {

@@ -5,6 +5,7 @@
  */
 package mg.operateur.web_services.controllers;
 
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URISyntaxException;
 import java.sql.Connection;
@@ -61,7 +62,7 @@ public class StatController {
     
     @GetMapping("/mobileops")
     public ResponseBody deposits(
-    ) {
+    ) throws IOException {
         Connection conn = null;
         ResponseBody response = new ResponseBody();
         try {

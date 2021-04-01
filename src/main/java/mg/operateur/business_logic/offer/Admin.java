@@ -5,6 +5,7 @@
  */
 package mg.operateur.business_logic.offer;
 
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URISyntaxException;
 import java.security.NoSuchAlgorithmException;
@@ -63,7 +64,7 @@ public final class Admin {
     }
 
     public Admin FindByName(String name)
-            throws SQLException, InstantiationException, NoSuchMethodException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, URISyntaxException {
+            throws SQLException, InstantiationException, NoSuchMethodException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, URISyntaxException, IOException {
         Connection conn = null;
         Admin result = null;
         try {
@@ -111,7 +112,7 @@ public final class Admin {
     }
 
     public Admin insert(CustomerJSON _customer)
-            throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, SQLException, URISyntaxException, NoSuchAlgorithmException, ParseException {
+            throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, SQLException, URISyntaxException, NoSuchAlgorithmException, ParseException, IOException {
 
         Connection conn = null;
         Admin result = null;
