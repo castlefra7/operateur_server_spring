@@ -1,5 +1,6 @@
 package mg.operateur.web_services.controllers;
 
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URISyntaxException;
 import java.security.NoSuchAlgorithmException;
@@ -43,7 +44,7 @@ public class MobileMoneyController {
     }
 
     @GetMapping("/balance")
-    public ResponseBody balance(@RequestBody AskJSON _ask) {
+    public ResponseBody balance(@RequestBody AskJSON _ask) throws IOException {
         ResponseBody response = new ResponseBody();
         try {
             double balance = new Customer().mobileBalance(_ask);
@@ -56,7 +57,7 @@ public class MobileMoneyController {
     }
 
     @PostMapping("/buycredit")
-    public ResponseBody buyCredit(@RequestBody CreditMobileJSON _credit) {
+    public ResponseBody buyCredit(@RequestBody CreditMobileJSON _credit) throws IOException {
         ResponseBody response = new ResponseBody();
         try {
             new Customer().buyCreditFromMobile(_credit);
@@ -69,7 +70,7 @@ public class MobileMoneyController {
     }
 
     @PostMapping("/fees")
-    public ResponseBody fees(@RequestBody FeeJSON _fee) throws URISyntaxException {
+    public ResponseBody fees(@RequestBody FeeJSON _fee) throws URISyntaxException, IOException {
         ResponseBody response = new ResponseBody();
         try {
             new Fee().insert(_fee);
@@ -89,7 +90,7 @@ public class MobileMoneyController {
     }
 
     @PostMapping("/deposit")
-    public ResponseBody deposit(@RequestBody DepositJSON _deposit) {
+    public ResponseBody deposit(@RequestBody DepositJSON _deposit) throws IOException {
         ResponseBody response = new ResponseBody();
         try {
             new Customer().deposit(_deposit);
@@ -102,7 +103,7 @@ public class MobileMoneyController {
     }
 
     @PostMapping("/withdraw")
-    public ResponseBody withdraw(@RequestBody WithdrawJSON _withdraw) {
+    public ResponseBody withdraw(@RequestBody WithdrawJSON _withdraw) throws IOException {
         ResponseBody response = new ResponseBody();
         try {
             new Customer().withdraw(_withdraw);
@@ -115,7 +116,7 @@ public class MobileMoneyController {
     }
 
     @PostMapping("/transfer")
-    public ResponseBody transfer(@RequestBody TransferJSON _transfer) {
+    public ResponseBody transfer(@RequestBody TransferJSON _transfer) throws IOException {
         ResponseBody response = new ResponseBody();
         try {
             new Customer().transfer(_transfer);

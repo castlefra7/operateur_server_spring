@@ -5,6 +5,7 @@
  */
 package mg.operateur.business_logic.mobile_credit;
 
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URISyntaxException;
 import java.sql.Connection;
@@ -51,7 +52,7 @@ public class CallsHistory extends BaseClass {
         ex.printStackTrace();
         System.out.println(ex.getMessage());
     }
-    public List<Object> findAll(int _customer_id) throws SQLException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, URISyntaxException {
+    public List<Object> findAll(int _customer_id) throws SQLException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, URISyntaxException, IOException {
         Connection conn = null;
         List<Object> result = new ArrayList();
         try {

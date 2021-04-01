@@ -5,6 +5,7 @@
  */
 package mg.operateur.business_logic.statistics;
 
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URISyntaxException;
 import java.sql.Connection;
@@ -59,7 +60,7 @@ public class Statistic {
         return ch;
     }
     
-    public List<OfferStat> getOffersStat(Date date, PurchaseRepository purchase) throws SQLException, URISyntaxException {
+    public List<OfferStat> getOffersStat(Date date, PurchaseRepository purchase) throws SQLException, URISyntaxException, IOException {
         Connection conn = null;
         try {
             conn = ConnGen.getConn();

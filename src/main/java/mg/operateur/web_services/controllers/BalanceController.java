@@ -5,6 +5,7 @@
  */
 package mg.operateur.web_services.controllers;
 
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URISyntaxException;
 import java.sql.Connection;
@@ -51,7 +52,7 @@ public class BalanceController {
     }
 
     @GetMapping()
-    public ResponseBody index(@RequestParam("phone_number") String _phone) {
+    public ResponseBody index(@RequestParam("phone_number") String _phone) throws IOException {
         ResponseBody response = new ResponseBody();
         Connection conn = null;
         try {

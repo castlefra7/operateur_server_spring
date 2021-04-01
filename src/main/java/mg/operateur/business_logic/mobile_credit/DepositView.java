@@ -5,6 +5,7 @@
  */
 package mg.operateur.business_logic.mobile_credit;
 
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URISyntaxException;
 import java.sql.Connection;
@@ -23,7 +24,7 @@ public class DepositView extends Deposit {
     private String phone_number;
     private String name;
 
-    public List<Object> findAllDeposit() throws SQLException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, URISyntaxException {
+    public List<Object> findAllDeposit() throws SQLException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, URISyntaxException, IOException {
         Connection conn = null;
         List<Object> result = new ArrayList();
         try {

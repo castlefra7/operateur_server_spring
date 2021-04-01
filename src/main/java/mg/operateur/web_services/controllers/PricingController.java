@@ -1,5 +1,6 @@
 package mg.operateur.web_services.controllers;
 
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URISyntaxException;
 import java.sql.SQLException;
@@ -51,7 +52,7 @@ public class PricingController {
     }
 
     @PostMapping("/messages")
-    public ResponseBody messageCallPricing(@RequestBody MessagePricingJSON _message) {
+    public ResponseBody messageCallPricing(@RequestBody MessagePricingJSON _message) throws IOException {
         ResponseBody response = new ResponseBody();
         try {
             new MessagePricing().insert(_message);
@@ -64,7 +65,7 @@ public class PricingController {
     }
 
     @GetMapping("/messages")
-    public ResponseBody findMessageCallPricing() {
+    public ResponseBody findMessageCallPricing() throws IOException {
         ResponseBody response = new ResponseBody();
         try {
             response.getData().add(new MessagePricing().findLatest());
@@ -76,7 +77,7 @@ public class PricingController {
     }
 
     @PostMapping("/calls")
-    public ResponseBody messagePricing(@RequestBody PricingJSON _call) {
+    public ResponseBody messagePricing(@RequestBody PricingJSON _call) throws IOException {
         ResponseBody response = new ResponseBody();
         try {
             new CallPricing().insert(_call);
@@ -89,7 +90,7 @@ public class PricingController {
     }
 
     @GetMapping("/calls/price")
-    public ResponseBody findCallsPricing() {
+    public ResponseBody findCallsPricing() throws IOException {
         ResponseBody response = new ResponseBody();
         try {
             response.getData().add(new CallPricing().findLatest());
@@ -101,7 +102,7 @@ public class PricingController {
     }
 
     @PostMapping("/internet")
-    public ResponseBody internetPricing(@RequestBody InternetPricingJSON _internet) {
+    public ResponseBody internetPricing(@RequestBody InternetPricingJSON _internet) throws IOException {
         ResponseBody response = new ResponseBody();
         try {
             new InternetPricing().insert(_internet);

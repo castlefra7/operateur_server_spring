@@ -5,6 +5,7 @@
  */
 package mg.operateur.conn;
 
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.sql.Connection;
@@ -20,7 +21,7 @@ public class ConnGen {
         Class.forName("org.postgresql.Driver");
     }
     
-    public static Connection getConn() throws SQLException, URISyntaxException {
+    public static Connection getConn() throws SQLException, URISyntaxException, IOException {
         Connection conn;
         if (System.getenv("DATABASE_URL") != null) {
             
@@ -32,8 +33,9 @@ public class ConnGen {
 
             conn = DriverManager.getConnection(dbUrl, username, password);
         } else {
-            String dbUrl = "jdbc:postgresql://" + "localhost" + ':' + "5432" + "/db_operateur";
-            conn = DriverManager.getConnection(dbUrl, "operateur", "123456");
+            PropReader prop = new PropReader();
+            String dbUrl = "jdbc:postgresql://" + "localhost" + ':' + prop.getDbPort() + "/" + prop.getDbName(); 
+            conn = DriverManager.getConnection(dbUrl, prop.getDbUser(), prop.getDbPassword());
         }
         return conn;
     }

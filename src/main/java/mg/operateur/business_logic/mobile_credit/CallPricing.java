@@ -5,6 +5,7 @@
  */
 package mg.operateur.business_logic.mobile_credit;
 
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URISyntaxException;
 import java.sql.Connection;
@@ -29,7 +30,7 @@ public class CallPricing extends Pricing {
     }
 
     public void insert(PricingJSON _call)
-            throws IllegalAccessException, IllegalAccessException, InvocationTargetException, SQLException, URISyntaxException, ParseException, InvalidAmountException {
+            throws IllegalAccessException, IllegalAccessException, InvocationTargetException, SQLException, URISyntaxException, ParseException, InvalidAmountException, IOException {
         Connection conn = null;
         try {
             conn = ConnGen.getConn();
@@ -51,7 +52,7 @@ public class CallPricing extends Pricing {
         }
     }
 
-    public void insert() throws IllegalAccessException, IllegalAccessException, InvocationTargetException, SQLException, URISyntaxException {
+    public void insert() throws IllegalAccessException, IllegalAccessException, InvocationTargetException, SQLException, URISyntaxException, IOException {
         Connection conn = null;
         try {
             conn = ConnGen.getConn();
@@ -77,7 +78,7 @@ public class CallPricing extends Pricing {
     }
 
     public CallPricing findLatest()
-            throws SQLException, InstantiationException, NoSuchMethodException, IllegalAccessException, InvocationTargetException, URISyntaxException {
+            throws SQLException, InstantiationException, NoSuchMethodException, IllegalAccessException, InvocationTargetException, URISyntaxException, IOException {
         Connection conn = null;
         CallPricing result = null;
         try {

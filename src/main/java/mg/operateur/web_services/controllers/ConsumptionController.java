@@ -5,6 +5,7 @@
  */
 package mg.operateur.web_services.controllers;
 
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URISyntaxException;
 import java.sql.Connection;
@@ -77,7 +78,7 @@ public class ConsumptionController {
     }
     
     @PostMapping("/messages")
-    public ResponseBody consumeMessages(@RequestBody MessageJSON _message) throws InvalidFormatException {
+    public ResponseBody consumeMessages(@RequestBody MessageJSON _message) throws InvalidFormatException, IOException {
          ResponseBody response = new ResponseBody();
         Connection conn = null;
         try {
@@ -94,7 +95,7 @@ public class ConsumptionController {
     }
     
     @PostMapping("/internet")
-    public ResponseBody consumeInternet(@RequestBody InternetJSON _internet) {
+    public ResponseBody consumeInternet(@RequestBody InternetJSON _internet) throws IOException {
         ResponseBody response = new ResponseBody();
         Connection conn = null;
         try {

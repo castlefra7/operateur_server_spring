@@ -5,6 +5,7 @@
  */
 package mg.operateur.web_services.controllers;
 
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URISyntaxException;
 import java.sql.SQLException;
@@ -47,7 +48,7 @@ public class POSController {
     }
     
     @PutMapping("/validate/{id}")
-    public ResponseBody validateDeposit(@PathVariable(value="id")int id) {
+    public ResponseBody validateDeposit(@PathVariable(value="id")int id) throws IOException {
         ResponseBody response = new ResponseBody();
         try {
             new Deposit().validate(id);
@@ -60,7 +61,7 @@ public class POSController {
     }
     
     @GetMapping("/deposits")
-    public ResponseBody allNonValidatedDeposits() {
+    public ResponseBody allNonValidatedDeposits() throws IOException {
         ResponseBody response = new ResponseBody();
         try {
             response.setData(new DepositView().findAllDeposit());

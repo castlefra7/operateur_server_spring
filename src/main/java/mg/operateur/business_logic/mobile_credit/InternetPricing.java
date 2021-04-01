@@ -5,6 +5,7 @@
  */
 package mg.operateur.business_logic.mobile_credit;
 
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URISyntaxException;
 import java.sql.Connection;
@@ -64,7 +65,7 @@ public class InternetPricing {
     }
 
     public void insert(InternetPricingJSON _internet)
-            throws IllegalAccessException, InvocationTargetException, SQLException, ParseException, InvalidAmountException, URISyntaxException {
+            throws IllegalAccessException, InvocationTargetException, SQLException, ParseException, InvalidAmountException, URISyntaxException, IOException {
         Connection conn = null;
         try {
             conn = ConnGen.getConn();
@@ -99,7 +100,7 @@ public class InternetPricing {
         return new String[]{"created_at", "amount"};
     }
 
-    public InternetPricing getLastPricing() throws SQLException, InstantiationException, NoSuchMethodException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, URISyntaxException {
+    public InternetPricing getLastPricing() throws SQLException, InstantiationException, NoSuchMethodException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, URISyntaxException, IOException {
         Connection conn = null;
         InternetPricing result = null;
         try {

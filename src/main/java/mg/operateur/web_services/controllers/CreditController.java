@@ -5,6 +5,7 @@
  */
 package mg.operateur.web_services.controllers;
 
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URISyntaxException;
 import java.security.NoSuchAlgorithmException;
@@ -54,7 +55,7 @@ public class CreditController {
     }
     
     @GetMapping("/balance")
-    public ResponseBody balance( @RequestBody AskJSON _ask) {
+    public ResponseBody balance( @RequestBody AskJSON _ask) throws IOException {
         ResponseBody response = new ResponseBody();
         try {
             double balance = new Customer().creditBalance(_ask);
@@ -67,7 +68,7 @@ public class CreditController {
     }
     
     @PostMapping("/buy")
-    public ResponseBody buy(@RequestBody CreditJSON _credit) {
+    public ResponseBody buy(@RequestBody CreditJSON _credit) throws IOException {
         ResponseBody response = new ResponseBody();
         try {
             new Customer().buyCredit(_credit);
@@ -79,7 +80,7 @@ public class CreditController {
     }
     
     @PostMapping("/transfer")
-    public ResponseBody transfer(@RequestBody TransferJSON _transfer) {
+    public ResponseBody transfer(@RequestBody TransferJSON _transfer) throws IOException {
         ResponseBody response = new ResponseBody();
         try {
            new Customer().transferCredit(_transfer);

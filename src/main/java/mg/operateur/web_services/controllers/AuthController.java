@@ -6,6 +6,7 @@
 package mg.operateur.web_services.controllers;
 
 import io.jsonwebtoken.Jwts;
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URISyntaxException;
 import java.security.NoSuchAlgorithmException;
@@ -134,7 +135,7 @@ public class AuthController {
     @PostMapping("/signup/admin")
     public AuthResponseBody signupAdmin(
             @RequestBody CustomerJSON _customer
-    ) {
+    ) throws IOException {
         AuthResponseBody response = new AuthResponseBody();
        try {
             response.getData().add(new Admin().insert(_customer));

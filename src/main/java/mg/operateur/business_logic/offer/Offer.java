@@ -5,6 +5,7 @@
  */
 package mg.operateur.business_logic.offer;
 
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URISyntaxException;
 import java.security.NoSuchAlgorithmException;
@@ -218,7 +219,7 @@ public final class Offer {
         return amounts;
     }
 
-    public void buyFromMobileMoney(TransacJSON _purchase, OfferRepository offerRepository, PurchaseRepository purchaseRepository) throws NotFoundException, RequiredException, SQLException, InstantiationException, NoSuchMethodException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, ParseException, LimitReachedException, InvalidAmountException, InvalidDateException, InvalidFormatException, NoSuchAlgorithmException, URISyntaxException {
+    public void buyFromMobileMoney(TransacJSON _purchase, OfferRepository offerRepository, PurchaseRepository purchaseRepository) throws NotFoundException, RequiredException, SQLException, InstantiationException, NoSuchMethodException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, ParseException, LimitReachedException, InvalidAmountException, InvalidDateException, InvalidFormatException, NoSuchAlgorithmException, URISyntaxException, IOException {
 
         Connection conn = null;
         try {
@@ -324,7 +325,7 @@ public final class Offer {
         return result;
     }
 
-    public void buy(TransacJSON _purchase, OfferRepository offerRepository, PurchaseRepository purchaseRepository) throws NotFoundException, RequiredException, SQLException, InstantiationException, NoSuchMethodException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, ParseException, LimitReachedException, InvalidAmountException, InvalidDateException, InvalidFormatException, URISyntaxException {
+    public void buy(TransacJSON _purchase, OfferRepository offerRepository, PurchaseRepository purchaseRepository) throws NotFoundException, RequiredException, SQLException, InstantiationException, NoSuchMethodException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, ParseException, LimitReachedException, InvalidAmountException, InvalidDateException, InvalidFormatException, URISyntaxException, IOException {
         Connection conn = null;
         try {
             conn = ConnGen.getConn();
