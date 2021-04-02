@@ -965,10 +965,10 @@ public final class Customer extends Person {
         return result;
     }
 
-    public String phoneExists(String _phone_number, Connection conn) {
+    public String phoneExists(String _phone_number, Connection conn) throws IOException, URISyntaxException {
         String result;
         try {
-            Customer cust = this.find(_phone_number, conn);
+            Customer cust = this.findTrue(_phone_number, conn);
             result = cust.getPhone_number();
         } catch (IllegalAccessException | IllegalArgumentException | InstantiationException | NoSuchMethodException | InvocationTargetException | SQLException | InvalidFormatException | NotFoundException ex) {
             result = null;
