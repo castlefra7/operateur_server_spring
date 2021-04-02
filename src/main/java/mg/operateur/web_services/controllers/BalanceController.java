@@ -53,15 +53,17 @@ public class BalanceController {
     }
 
     @GetMapping()
-    public ResponseBody index(@RequestParam("phone_number") String _phone) throws IOException {
+    public ResponseBody index(@RequestParam("phone_number") String _phone,  @RequestParam("date") String date) throws IOException {
         ResponseBody response = new ResponseBody();
         Connection conn = null;
         try {
             conn = ConnGen.getConn();
             AskJSON _ask = new AskJSON();
             _ask.setPhone_number(_phone);
+            _ask.setDate(date);
             Calendar calendar = new GregorianCalendar();
-            if(_ask.getDate() == null) _ask.setDate(String.format("%d-%d-%d", calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)));
+            
+            if(_ask.getDate() == null || date == null || date.isEmpty()) _ask.setDate(String.format("%d-%d-%d", calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)));
             double creditBalance = new Customer().creditBalance(_ask, conn);
             double moneyBalance = new Customer().mobileBalance(_ask, conn);
 

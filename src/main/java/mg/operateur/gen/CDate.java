@@ -56,7 +56,7 @@ public class CDate {
         Calendar c = new GregorianCalendar();
         c.setTime(date);
         String day = c.get(Calendar.DAY_OF_MONTH) <= 9 ? "0" + String.valueOf(c.get(Calendar.DAY_OF_MONTH)):  String.valueOf(c.get(Calendar.DAY_OF_MONTH));
-        String month = c.get(Calendar.MONTH) <= 9 ? "0" + String.valueOf(c.get(Calendar.MONTH)):  String.valueOf(c.get(Calendar.MONTH));
+        String month = (c.get(Calendar.MONTH)+1) <= 9 ? "0" + String.valueOf(c.get(Calendar.MONTH) + 1):  String.valueOf(c.get(Calendar.MONTH)+1);
         String hour = c.get(Calendar.HOUR_OF_DAY) <= 9 ? "0" + String.valueOf(c.get(Calendar.HOUR_OF_DAY)):  String.valueOf(c.get(Calendar.HOUR_OF_DAY));
         String minute = c.get(Calendar.MINUTE) <= 9 ? "0" + String.valueOf(c.get(Calendar.MINUTE)):  String.valueOf(c.get(Calendar.MINUTE));
         String result = String.format("%s/%s/%s à %s:%s", day, month, c.get(Calendar.YEAR), hour, minute);
