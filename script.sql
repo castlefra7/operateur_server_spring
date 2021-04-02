@@ -210,12 +210,11 @@ insert into mg.messages_pricings (created_at, amount_interior, amount_exterior, 
 insert into mg.calls_pricings (created_at, amount_interior, amount_exterior) values ('2000-01-01', 2,2);
 insert into mg.internet_pricings (created_at, amount) values ('2000-01-01', 2);
 
+
+insert into mg.users (created_at, name, pwd) values ('2000-01-01 00:00', 'adminProd', '63a9f0ea7bb98050796b649e85481845');
+
 /*
-insert into mg.users (created_at, name, pwd) values ('2000-01-01 00:00', 'admin', '63a9f0ea7bb98050796b649e85481845');
-
-
-
-
+Password adminProd: root
 */
 select * from mg.deposits;
 select * from mg.withdraws;
