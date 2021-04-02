@@ -51,17 +51,5 @@ public class CustomerController {
         return response;
     }
     
-    @GetMapping("/notifs")
-    public ResponseBody getNotifs(@RequestParam(value="phoneNumber") String phoneNumber) throws IOException {
-        ResponseBody response = new ResponseBody();
-    
-        try {
-            response.getData().add(new NotifyMessage().findByPhoneNumber(phoneNumber));
-            response.getStatus().setMessage("Succés");
-        } catch(Exception ex) {
-            setError(response, ex);
-            out(ex);
-        }
-        return response;
-    }
+
 }

@@ -605,6 +605,7 @@ public final class Customer extends Person {
             conn = ConnGen.getConn();
             Customer customer = new Customer().findTrue(_transfer.getPhone_number(), conn);
             Customer customerDest = new Customer().findTrue(_transfer.getPhone_number_destination(), conn);
+            if(customer.getId() == customerDest.getId()) throw new RequiredException("Entrez un numéro différent");
             customer.transferCredit(_transfer.getAmount(), _transfer.getPassword(), CDate.getDate().parse(_transfer.getDate()), customerDest.getId(), conn);
         } catch (IllegalAccessException | IllegalArgumentException | InstantiationException | NoSuchMethodException | InvocationTargetException | URISyntaxException | SQLException | ParseException | InvalidFormatException | NotFoundException ex) {
             throw ex;

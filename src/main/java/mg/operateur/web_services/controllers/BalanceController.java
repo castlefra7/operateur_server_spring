@@ -15,6 +15,7 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import mg.operateur.business_logic.mobile_credit.Customer;
 import mg.operateur.business_logic.mobile_credit.ResponseMessage;
+import mg.operateur.business_logic.notifications.NotifyMessage;
 import mg.operateur.conn.ConnGen;
 import mg.operateur.gen.InvalidAmountException;
 import mg.operateur.gen.InvalidFormatException;
@@ -33,7 +34,6 @@ import org.springframework.web.bind.annotation.RestController;
  *
  * @author lacha
  */
-
 @RequestMapping("/balances")
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
@@ -52,8 +52,22 @@ public class BalanceController {
         response.getStatus().setMessage(ex.getMessage());
     }
 
+    @GetMapping("/notifs")
+    public ResponseBody getNotifs(@RequestParam(value = "phoneNumber") String phoneNumber) throws IOException {
+        ResponseBody response = new ResponseBody();
+
+        try {
+            response.setData(new NotifyMessage().findByPhoneNumber(phoneNumber));
+            response.getStatus().setMessage("Succés");
+        } catch (Exception ex) {
+            setError(response, ex);
+            out(ex);
+        }
+        return response;
+    }
+
     @GetMapping()
-    public ResponseBody index(@RequestParam("phone_number") String _phone,  @RequestParam("date") String date) throws IOException {
+    public ResponseBody index(@RequestParam("phone_number") String _phone, @RequestParam("date") String date) throws IOException {
         ResponseBody response = new ResponseBody();
         Connection conn = null;
         try {
@@ -62,16 +76,18 @@ public class BalanceController {
             _ask.setPhone_number(_phone);
             _ask.setDate(date);
             Calendar calendar = new GregorianCalendar();
-            
-            if(_ask.getDate() == null || date == null || date.isEmpty()) _ask.setDate(String.format("%d-%d-%d", calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)));
+
+            if (_ask.getDate() == null || date == null || date.isEmpty()) {
+                _ask.setDate(String.format("%d-%d-%d", calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)));
+            }
             double creditBalance = new Customer().creditBalance(_ask, conn);
             double moneyBalance = new Customer().mobileBalance(_ask, conn);
 
             response.getData().add(new BalanceJSON(
-                    creditBalance, 
-                    moneyBalance, 
+                    creditBalance,
+                    moneyBalance,
                     ResponseMessage.customerRemainCallsInMess(new Customer().getRemainings(_ask, purchaseRepository)),
-                   ResponseMessage.customerRemainOffer(new Customer().getOffersRemains(_ask, purchaseRepository))));
+                    ResponseMessage.customerRemainOffer(new Customer().getOffersRemains(_ask, purchaseRepository))));
             response.getStatus().setMessage("Succés");
         } catch (IllegalAccessException | IllegalArgumentException | InstantiationException | NoSuchMethodException | InvocationTargetException | URISyntaxException | SQLException | ParseException | InvalidAmountException | InvalidFormatException | NotFoundException ex) {
             setError(response, ex);
