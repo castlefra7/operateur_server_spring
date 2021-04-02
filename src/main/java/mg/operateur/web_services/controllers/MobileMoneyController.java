@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestMapping;
 import mg.operateur.business_logic.mobile_credit.Customer;
 import mg.operateur.business_logic.mobile_credit.Fee;
+import mg.operateur.business_logic.notifications.NotificationMobileMoney;
 import mg.operateur.gen.InvalidAmountException;
 import mg.operateur.gen.InvalidDateException;
 import mg.operateur.gen.InvalidFormatException;
@@ -62,6 +63,7 @@ public class MobileMoneyController {
         try {
             new Customer().buyCreditFromMobile(_credit);
             response.getStatus().setMessage("Succés");
+            response.getData().add(NotificationMobileMoney.notiBuyCredit(_credit.getAmount(), _credit.getDate(), _credit.getPhone_number()));
         } catch (IllegalAccessException | IllegalArgumentException | InstantiationException | NoSuchMethodException | InvocationTargetException | URISyntaxException | NoSuchAlgorithmException | SQLException | ParseException | InvalidAmountException | InvalidDateException | InvalidFormatException | NotFoundException | RequiredException ex) {
             this.setError(response, ex);
             out(ex);
@@ -95,6 +97,7 @@ public class MobileMoneyController {
         try {
             new Customer().deposit(_deposit);
             response.getStatus().setMessage("Succés");
+            response.getData().add(NotificationMobileMoney.notifyDeposit(_deposit.getAmount(), _deposit.getDate(), _deposit.getPhone_number()));
         } catch (IllegalAccessException | IllegalArgumentException | InstantiationException | NoSuchMethodException | InvocationTargetException | URISyntaxException | SQLException | ParseException | InvalidAmountException | InvalidDateException | InvalidFormatException | NotFoundException ex) {
             setError(response, ex);
             out(ex);
@@ -108,6 +111,7 @@ public class MobileMoneyController {
         try {
             new Customer().withdraw(_withdraw);
             response.getStatus().setMessage("Succés");
+            response.getData().add(NotificationMobileMoney.notifyWithdraw(_withdraw.getAmount(), _withdraw.getDate(), _withdraw.getPhone_number()));
         } catch (IllegalAccessException | IllegalArgumentException | InstantiationException | NoSuchMethodException | InvocationTargetException | URISyntaxException | NoSuchAlgorithmException | SQLException | ParseException | InvalidAmountException | InvalidDateException | InvalidFormatException | NotFoundException | RequiredException ex) {
             setError(response, ex);
             out(ex);
@@ -121,6 +125,7 @@ public class MobileMoneyController {
         try {
             new Customer().transfer(_transfer);
             response.getStatus().setMessage("Succés");
+            response.getData().add(NotificationMobileMoney.notifyTransfert(_transfer.getAmount(), _transfer.getDate(), _transfer.getPhone_number(), _transfer.getPhone_number_destination()));
         } catch (IllegalAccessException | IllegalArgumentException | InstantiationException | NoSuchMethodException | InvocationTargetException | URISyntaxException | NoSuchAlgorithmException | SQLException | ParseException | InvalidAmountException | InvalidDateException | InvalidFormatException | NotFoundException | RequiredException ex) {
             setError(response, ex);
             out(ex);
