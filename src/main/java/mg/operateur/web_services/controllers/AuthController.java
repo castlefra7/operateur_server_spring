@@ -62,7 +62,7 @@ public class AuthController {
     ) {
         AuthResponseBody response = new AuthResponseBody();
        try {
-            Customer found = new Customer().find(_customer.getPhoneNumber());
+            Customer found = new Customer().findTrue(_customer.getPhoneNumber());
 
             if (!found.getPassword().equals(PasswordHelper.md5(_customer.getPassword()))) {
                 throw new Exception("Mot de passe ou numero incorrect");

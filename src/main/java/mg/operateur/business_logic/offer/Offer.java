@@ -343,9 +343,9 @@ public final class Offer {
         }
     }
 
-    public void buy(TransacJSON _purchase, OfferRepository offerRepository, PurchaseRepository purchaseRepository, Connection conn) throws NotFoundException, RequiredException, SQLException, InstantiationException, NoSuchMethodException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, ParseException, LimitReachedException, InvalidAmountException, InvalidDateException, InvalidFormatException {
+    public void buy(TransacJSON _purchase, OfferRepository offerRepository, PurchaseRepository purchaseRepository, Connection conn) throws NotFoundException, RequiredException, SQLException, InstantiationException, NoSuchMethodException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, ParseException, LimitReachedException, InvalidAmountException, InvalidDateException, InvalidFormatException, IOException, URISyntaxException {
 
-        mg.operateur.business_logic.mobile_credit.Customer foundCustomer = new mg.operateur.business_logic.mobile_credit.Customer().find(_purchase.getPhone_number(), conn);
+        mg.operateur.business_logic.mobile_credit.Customer foundCustomer = new mg.operateur.business_logic.mobile_credit.Customer().findTrue(_purchase.getPhone_number(), conn);
         foundCustomer.checkLastOperation(CDate.getDate().parse(_purchase.getDate()), conn);
 
         Offer offer = offerRepository.findByCode(_purchase.getCode());

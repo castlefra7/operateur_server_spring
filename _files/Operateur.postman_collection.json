@@ -13,7 +13,7 @@
 					"bearer": [
 						{
 							"key": "token",
-							"value": "eyJraWQiOiJ5b3UiLCJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI5IiwiaXNzIjoibWUiLCJzdWIiOiJKZWFuIn0.LGH1zISNy_VtN7NT-0UHxGeWjdiOC9AVVSS-Eb7UFhY",
+							"value": "eyJraWQiOiJ5b3UiLCJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJhZG1pbiIsImlzcyI6Im1lIiwic3ViIjoiQWRtaW4ifQ.pxbaB-frekVB6WHfoi4_6bvx1GaEhNeMS8o6chHYfeE",
 							"type": "string"
 						}
 					]
@@ -21,12 +21,13 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{URL}}/test",
+					"raw": "{{URL}}/pricings/internet",
 					"host": [
 						"{{URL}}"
 					],
 					"path": [
-						"test"
+						"pricings",
+						"internet"
 					]
 				}
 			},
@@ -39,7 +40,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\"createdAt\": \"2021-04-01 08:00\", \"password\": \"root\", \"name\": \"admin\"}",
+					"raw": "{\"createdAt\": \"2021-04-01 08:00\", \"password\": \"root\", \"name\": \"adminProd\"}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -67,7 +68,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\"createdAt\": \"2021-04-01 08:00\", \"password\": \"root\", \"name\": \"admin\"}",
+					"raw": "{\"createdAt\": \"2021-04-01 08:00\", \"password\": \"root\", \"name\": \"adminProd\"}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -95,7 +96,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\"name\": \"guillaume\", \"email\": \"guillaume@gmail.com\", \"password\": \"2811\", \"createdAt\": \"2021-04-01 08:00\"}",
+					"raw": "{\"name\": \"Rakoto\", \"email\": \"rakoto@gmail.com\", \"password\": \"2811\", \"createdAt\": \"2021-04-01 08:00\"}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -294,7 +295,7 @@
 					"bearer": [
 						{
 							"key": "token",
-							"value": "eyJraWQiOiJ5b3UiLCJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJhZG1pbiIsImlzcyI6Im1lIiwic3ViIjoiQWRtaW4ifQ.pxbaB-frekVB6WHfoi4_6bvx1GaEhNeMS8o6chHYfeE",
+							"value": "eyJraWQiOiJ5b3UiLCJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJhZG1pblByb2QiLCJpc3MiOiJtZSIsInN1YiI6IkFkbWluIn0.hwBnZUWy6xnjWpZGMdhOgkGa8xW9N4mn7_oxo3gWne4",
 							"type": "string"
 						}
 					]
@@ -322,7 +323,7 @@
 					"bearer": [
 						{
 							"key": "token",
-							"value": "eyJraWQiOiJ5b3UiLCJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJhZG1pbiIsImlzcyI6Im1lIiwic3ViIjoiQWRtaW4ifQ.pxbaB-frekVB6WHfoi4_6bvx1GaEhNeMS8o6chHYfeE",
+							"value": "eyJraWQiOiJ5b3UiLCJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJhZG1pblByb2QiLCJpc3MiOiJtZSIsInN1YiI6IkFkbWluIn0.hwBnZUWy6xnjWpZGMdhOgkGa8xW9N4mn7_oxo3gWne4",
 							"type": "string"
 						}
 					]
@@ -431,7 +432,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "\r\n{\r\n    \"code\": \"#105#\",\r\n    \"name\": \"Offre Appel 3000 Ar\",\r\n    \"isOneDay\": \"false\",\r\n    \"createdAt\": \"2021-01-01 12:00\",\r\n    \"validityDay\": 2,\r\n    \"hourMin\": 21,\r\n    \"hourMax\": 23,\r\n    \"limitation\": {\r\n        \"buyingLimit\": 1,\r\n        \"durationInDays\": 1\r\n    },\r\n    \"price\": 1000,\r\n    \"amounts\": [\r\n        {\r\n            \"isUnlimited\": false,\r\n            \"application\": {\r\n                \"id\": 1,\r\n                \"name\": \"Appel\",\r\n                \"internet_application_id\": \"-1\",\r\n                \"t_type\": \"c\",\r\n                \"unit\": {\r\n                    \"id\": 1,\r\n                    \"suffix\": \"Ar\"\r\n                }\r\n            },\r\n           \"utilization\": {\r\n               \"intra\": {\r\n                   \"price\": \"50\",\r\n                   \"per\": \"sec\"\r\n               },\r\n               \"extra\": {\r\n                   \"price\": \"100\",\r\n                   \"per\": \"sec\"\r\n               }\r\n           },\r\n            \"value\": \"3000\"\r\n        }\r\n    ]\r\n}",
+					"raw": "\r\n{\r\n    \"code\": \"#100#\",\r\n    \"name\": \"Offre Appel 3000 Ar\",\r\n    \"isOneDay\": \"false\",\r\n    \"createdAt\": \"2021-01-01 12:00\",\r\n    \"validityDay\": 2,\r\n    \"hourMin\": 21,\r\n    \"hourMax\": 23,\r\n    \"limitation\": {\r\n        \"buyingLimit\": 1,\r\n        \"durationInDays\": 1\r\n    },\r\n    \"price\": 1000,\r\n    \"amounts\": [\r\n        {\r\n            \"isUnlimited\": false,\r\n            \"application\": {\r\n                \"id\": 1,\r\n                \"name\": \"Appel\",\r\n                \"internet_application_id\": \"-1\",\r\n                \"t_type\": \"c\",\r\n                \"unit\": {\r\n                    \"id\": 1,\r\n                    \"suffix\": \"Ar\"\r\n                }\r\n            },\r\n           \"utilization\": {\r\n               \"intra\": {\r\n                   \"price\": \"50\",\r\n                   \"per\": \"sec\"\r\n               },\r\n               \"extra\": {\r\n                   \"price\": \"100\",\r\n                   \"per\": \"sec\"\r\n               }\r\n           },\r\n            \"value\": \"3000\"\r\n        }\r\n    ]\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
