@@ -12,6 +12,7 @@ import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
 import java.text.ParseException;
 import mg.operateur.business_logic.mobile_credit.Customer;
+import mg.operateur.business_logic.notifications.NotificationCredit;
 import mg.operateur.gen.InvalidAmountException;
 import mg.operateur.gen.InvalidDateException;
 import mg.operateur.gen.InvalidFormatException;
@@ -72,6 +73,7 @@ public class CreditController {
         ResponseBody response = new ResponseBody();
         try {
             new Customer().buyCredit(_credit);
+            response.getData().add(NotificationCredit.notifyCredit(_credit.getAmount(), _credit.getDate(), _credit.getPhone_number()));
         } catch(IllegalAccessException | IllegalArgumentException | InstantiationException | NoSuchMethodException | InvocationTargetException | URISyntaxException | SQLException | ParseException | InvalidAmountException | InvalidDateException | InvalidFormatException | NotFoundException ex) {
             setError(response, ex);
             out(ex);
@@ -84,6 +86,7 @@ public class CreditController {
         ResponseBody response = new ResponseBody();
         try {
            new Customer().transferCredit(_transfer);
+           response.getData().add(NotificationCredit.notifyTransfertCredit(_transfer.getAmount(), _transfer.getDate(), _transfer.getPhone_number(), _transfer.getPhone_number_destination()));
         } catch(IllegalAccessException | IllegalArgumentException | InstantiationException | NoSuchMethodException | InvocationTargetException | URISyntaxException | NoSuchAlgorithmException | SQLException | ParseException | InvalidAmountException | InvalidDateException | InvalidFormatException | NotFoundException | RequiredException ex) {
             setError(response, ex);
             out(ex);

@@ -144,6 +144,15 @@ create table mg.internet_consumptions (
     foreign key (customer_id) references mg.customers(id),
     foreign key (internet_application_id) references mg.internet_applications(id)
 );
+
+create table mg.notifs (
+    id serial primary key,
+    message varchar(200),
+    customer_id int,
+    date date,
+    foreign key (customer_id) references mg.customers (id)
+);
+
 /* STATS */
 create view mg.deposits_stat as select date(created_at), sum(amount) as amount from mg.deposits where isValidated is true group by date(created_at) order by date(created_at);
 create view mg.withdraws_stat as select date(created_at), sum(amount) as amount from mg.withdraws group by date(created_at) order by date(created_at) ;

@@ -10,11 +10,13 @@ import java.lang.reflect.InvocationTargetException;
 import java.net.URISyntaxException;
 import java.sql.SQLException;
 import mg.operateur.business_logic.mobile_credit.CallsHistory;
+import mg.operateur.business_logic.notifications.NotifyMessage;
 import mg.operateur.web_services.ResponseBody;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -43,6 +45,20 @@ public class CustomerController {
             response.getData().add(new CallsHistory().findAll(Integer.valueOf(id)));
             response.getStatus().setMessage("Succés");
         } catch(IllegalAccessException | IllegalArgumentException | InstantiationException | NoSuchMethodException | InvocationTargetException | URISyntaxException | SQLException ex) {
+            setError(response, ex);
+            out(ex);
+        }
+        return response;
+    }
+    
+    @GetMapping("/notifs")
+    public ResponseBody getNotifs(@RequestParam(value="phoneNumber") String phoneNumber) throws IOException {
+        ResponseBody response = new ResponseBody();
+    
+        try {
+            response.getData().add(new NotifyMessage().findByPhoneNumber(phoneNumber));
+            response.getStatus().setMessage("Succés");
+        } catch(Exception ex) {
             setError(response, ex);
             out(ex);
         }
