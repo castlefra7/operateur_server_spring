@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import mg.operateur.business_logic.mobile_credit.Customer;
 import mg.operateur.business_logic.mobile_credit.ResponseMessage;
+import mg.operateur.business_logic.notifications.NotificationOffer;
 import mg.operateur.business_logic.offer.Offer;
 import mg.operateur.gen.InvalidAmountException;
 import mg.operateur.gen.InvalidDateException;
@@ -73,6 +74,8 @@ public class OfferController {
         try {
             new Offer().buyFromMobileMoney(_purchase, offerRepository, purchaseRepository);
             response.getStatus().setMessage("Succés");
+            Offer offer = offerRepository.findByCode(_purchase.getCode());
+            response.getData().add(NotificationOffer.notifyPurchaseFromMobileMoney(offer.getName(), _purchase.getDate(), _purchase.getPhone_number()));
         } catch (IllegalAccessException | IllegalArgumentException | InstantiationException | NoSuchMethodException | InvocationTargetException | URISyntaxException | NoSuchAlgorithmException | SQLException | ParseException | InvalidAmountException | InvalidDateException | InvalidFormatException | LimitReachedException | NotFoundException | RequiredException ex) {
             setError(response, ex);
             out(ex);
@@ -88,6 +91,8 @@ public class OfferController {
         try {
             new Offer().buy(_purchase, offerRepository, purchaseRepository);
             response.getStatus().setMessage("Succés");
+            Offer offer = offerRepository.findByCode(_purchase.getCode());
+            response.getData().add(NotificationOffer.notifyPurchase(offer.getName(), _purchase.getDate(), _purchase.getPhone_number()));
         } catch (IllegalAccessException | IllegalArgumentException | InstantiationException | NoSuchMethodException | InvocationTargetException | URISyntaxException | SQLException | ParseException | InvalidAmountException | InvalidDateException | InvalidFormatException | LimitReachedException | NotFoundException | RequiredException ex) {
             setError(response, ex);
             out(ex);
