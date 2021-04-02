@@ -14,6 +14,7 @@ import java.text.ParseException;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import mg.operateur.business_logic.mobile_credit.Customer;
+import mg.operateur.business_logic.mobile_credit.ResponseMessage;
 import mg.operateur.conn.ConnGen;
 import mg.operateur.gen.InvalidAmountException;
 import mg.operateur.gen.InvalidFormatException;
@@ -64,7 +65,11 @@ public class BalanceController {
             double creditBalance = new Customer().creditBalance(_ask, conn);
             double moneyBalance = new Customer().mobileBalance(_ask, conn);
 
-            response.getData().add(new BalanceJSON(creditBalance, moneyBalance, new Customer().getRemainings(_ask, purchaseRepository)));
+            response.getData().add(new BalanceJSON(
+                    creditBalance, 
+                    moneyBalance, 
+                    ResponseMessage.customerRemainCallsInMess(new Customer().getRemainings(_ask, purchaseRepository)),
+                   ResponseMessage.customerRemainOffer(new Customer().getOffersRemains(_ask, purchaseRepository))));
             response.getStatus().setMessage("Succés");
         } catch (IllegalAccessException | IllegalArgumentException | InstantiationException | NoSuchMethodException | InvocationTargetException | URISyntaxException | SQLException | ParseException | InvalidAmountException | InvalidFormatException | NotFoundException ex) {
             setError(response, ex);

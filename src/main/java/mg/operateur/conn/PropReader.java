@@ -24,7 +24,7 @@ public class PropReader {
     
     private void initReader() throws FileNotFoundException, IOException {
         String rootPath = Thread.currentThread().getContextClassLoader().getResource("").getPath();
-        String appConfigPath = rootPath + "application.properties";
+        String appConfigPath = rootPath + "db.properties";
         prop = new Properties();
         prop.load(new FileInputStream(appConfigPath));
     }

@@ -134,7 +134,6 @@ public final class Customer extends Person {
                             strType += "Sec";
                         } else {
                             strType += "Ar";
-                            // TODO convert utilisation to second;
                         }
                         amount.setValue(val);
                     }

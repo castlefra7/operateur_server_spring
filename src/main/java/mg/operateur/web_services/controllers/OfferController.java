@@ -130,7 +130,7 @@ public class OfferController {
     public ResponseBody response(@RequestBody AskJSON _ask) throws IOException {
         ResponseBody response = new ResponseBody();
         try {
-            response.getData().add(new Customer().getRemainings(_ask, purchaseRepository));
+            response.getData().add(ResponseMessage.customerRemainCallsInMess(new Customer().getRemainings(_ask, purchaseRepository)));
         } catch (IllegalAccessException | IllegalArgumentException | InstantiationException | NoSuchMethodException | InvocationTargetException | URISyntaxException | SQLException | ParseException | InvalidAmountException | InvalidFormatException | NotFoundException ex) {
             setError(response, ex);
             out(ex);

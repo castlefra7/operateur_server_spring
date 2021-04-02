@@ -183,7 +183,7 @@ create view mg.buyed_credit_sums as select customer_id, sum(amount) as sum_buyed
 create view mg.credit_consumption_sums as select customer_id, sum(cons_amount) as sum_cons_amount from mg.credit_consumptions group by customer_id;
 create view mg.customers_credit_balances as select mg.customers.id, (coalesce(sum_buyed_credit,0) - coalesce(sum_cons_amount,0)) as balance from mg.customers left join mg.buyed_credit_sums on mg.buyed_credit_sums.customer_id = mg.customers.id left join mg.credit_consumption_sums on mg.credit_consumption_sums.customer_id = mg.customers.id;
 insert into mg.customers (created_at, name, email, phone_number, password) values  ('2000-01-01', 'exterior user', 'exterior@gmail.com', '0', '63a9f0ea7bb98050796b649e85481845');
-insert into mg.conf_operator (created_at, prefix , name) values ('2000-01-01', '+26133', 'orange');
+insert into mg.conf_operator (created_at, prefix , name) values ('2000-01-01', '+26133', 'kabs');
 
 
 insert into mg.fees (created_at, amount_min, amount_max, amount_fee) values ('2000-01-01 00:00', 100, 1000, 50);

@@ -15,11 +15,32 @@ public final class BalanceJSON {
     private double creditBalance;
     private double mobileMoneyBalance;
     private HashMap<String, Double> remainingOffers;
+    private String remainCalIntMess;
+    private String remainOffers;
+
+    public String getRemainCalIntMess() {
+        return remainCalIntMess;
+    }
+
+    public void setRemainCalIntMess(String remainCalIntMess) {
+        this.remainCalIntMess = remainCalIntMess;
+    }
+
+    public String getRemainOffers() {
+        return remainOffers;
+    }
+
+    public void setRemainOffers(String remainOffers) {
+        this.remainOffers = remainOffers;
+    }
     
-    public BalanceJSON(double _credit, double _money, HashMap<String, Double> _remain) {
+    
+    
+    public BalanceJSON(double _credit, double _money, String _remainCall, String _remainOffer) {
         this.setCreditBalance(_credit);
         this.setMobileMoneyBalance(_money);
-        this.setRemainingOffers(_remain);
+        this.setRemainCalIntMess(_remainCall);
+        this.setRemainOffers(_remainOffer);
     }
 
     public double getCreditBalance() {
